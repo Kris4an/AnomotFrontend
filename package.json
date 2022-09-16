@@ -9,9 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/styled-components": "^5.1.26",
+    "i18next": "^21.9.1",
     "next": "12.3.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "styled-components": "^5.3.5",
+    "typeface-roboto": "^1.1.13",
+    "zustand": "^4.1.1"
   },
   "devDependencies": {
     "@types/node": "18.7.17",
