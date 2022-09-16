@@ -4,7 +4,7 @@ import styled from 'styled-components'
 const Button = styled.button`
     width: 16rem;
     height: 3rem;
-    padding: 25px 50px;
+    padding: 10px 20px;
     gap: 10px;
     background: ${props => props.theme.colors.primary};
     color: ${props => props.theme.colors.textInverted};
@@ -21,9 +21,6 @@ const Button = styled.button`
     &:hover{
         background: ${props => props.theme.colors.buttonHover};
     }
-    &:focus {
-        background: ${props => props.theme.colors.primary};
-    }
     &:active {
         background: ${props => props.theme.colors.secondary};
     }
@@ -31,7 +28,6 @@ const Button = styled.button`
         background: ${props => props.theme.colors.buttonDisabled};
     }
 
-    
 `;
 
 export default Button;
