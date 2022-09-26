@@ -4,14 +4,13 @@ import LogoSlogan from '../components/LogoSlogan';
 import AuthContainer from '../components/AuthContainer';
 import LoginInput from '../components/LoginInput';
 import styled from 'styled-components'
-import { Suspense, useState } from 'react';
+import { MutableRefObject, useRef, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 
 const Holder = styled.div`
   height: 100vh;
   display: flex;
   flex-direction: row;
-  //gap: 25rem;
   gap: 25vw;
   justify-content: center;
   align-items: center;
@@ -57,12 +56,10 @@ const MfaInput = styled.input`
 const Login: NextPage = () => {
   
   return (
-    <Suspense fallback = {"Loading😴"}>
-      <Holder>
-        <LogoSlogan/>
-        <Content stage = {2}/>
-      </Holder>
-    </Suspense>
+    <Holder>
+      <LogoSlogan/>
+      <Content stage = {2}/>
+    </Holder>
   )
 }
 
@@ -75,21 +72,23 @@ function Content({stage}:Props){
   const [t2] = useTranslation("login");
 
   const [mfaInputCount, setMfaInputCount] = useState(1);
-  const [mfaInputMaxLenght, setMfaInputMaxLenght] = useState(6);
+  const [mfaInputMaxLength, setMfaInputMaxLength] = useState(6);
 
-  const inp0:any = React.createRef();
-  const inp1:any = React.createRef();
-  const inp2:any = React.createRef();
-  const inp3:any = React.createRef();
-  const inp4:any = React.createRef();
-  const inp5:any = React.createRef();
-  //const but:any = React.createRef();
-  
+  const inp0: any = React.createRef();
+  const inp1: any = React.createRef();
+  const inp2: any = React.createRef();
+  const inp3: any = React.createRef();
+  const inp4: any = React.createRef();
+  const inp5: any = React.createRef();
   
   const mfaInputHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (isNaN(Number(event.target.value))) {
+      event.target.value = "";
+      return;
+    }
+
     if(event.target.value.length >= 6){
-      console.log("hello");
-      const s:string = event.target.value;
+      const s: string = event.target.value;
       inp0.current.value = s.charAt(0);
       inp1.current.value = s.charAt(1);
       inp2.current.value = s.charAt(2);
@@ -99,11 +98,11 @@ function Content({stage}:Props){
       return;
     }
 
-    setMfaInputMaxLenght(1);
+    setMfaInputMaxLength(1);
     if(event.target.value != "") setMfaInputCount(mfaInputCount+1);
     else {
       setMfaInputCount(mfaInputCount-1);
-      if(mfaInputCount == 2) setMfaInputMaxLenght(6);
+      if(mfaInputCount == 2) setMfaInputMaxLength(6);
       return;
     }
 
@@ -139,7 +138,7 @@ function Content({stage}:Props){
   switch(stage){
       case 0:
         return(
-          <AuthContainer style={{scale: '110%'}}>
+          <AuthContainer>
             <LoginInput inputType = 'Email' placeHolder = {t1("email")}></LoginInput>
             <Holder2>
               <LoginInput inputType = 'Password' placeHolder = {t1("password")}></LoginInput>
@@ -152,24 +151,24 @@ function Content({stage}:Props){
         )
       case 1:
         return(
-          <AuthContainer style={{scale: '110%', width: '30rem', height: '25rem'}}>
+          <AuthContainer style={{width: '30rem', height: '25rem'}}>
             <MfaText>{t2("mfa")}</MfaText>
             <Button buttonType='Secondary' text = {t1("email")} style = {{width: '23rem'}}></Button>
             <Button buttonType='Secondary' text = 'TOTP' style = {{width: '23rem'}}></Button>
-            <Button buttonType='Teriatary' text= {t2("recover")} style = {{scale: '100%', width: '20rem', marginTop: '0rem'}}></Button>
+            <Button buttonType='Teriatary' text= {t2("recover")} style = {{width: '20rem'}}></Button>
           </AuthContainer>
         )
       case 2:
         return(
-          <AuthContainer style={{scale: '110%', width: '25.6rem', height: '20rem'}}>
+          <AuthContainer style={{width: '25.6rem', height: '20rem'}}>
             <MfaText>{t2("code")}</MfaText>
             <Holder3>
-              <MfaInput ref={inp0} type="text" minLength={1} maxLength={mfaInputMaxLenght} pattern='[0-9]' onChange={mfaInputHandleChange}></MfaInput>
-              <MfaInput ref={inp1} type="text" minLength={1} maxLength={mfaInputMaxLenght} pattern='[0-9]' onChange={mfaInputHandleChange}></MfaInput>
-              <MfaInput ref={inp2} type="text" minLength={1} maxLength={mfaInputMaxLenght} pattern='[0-9]' onChange={mfaInputHandleChange}></MfaInput>
-              <MfaInput ref={inp3} type="text" minLength={1} maxLength={mfaInputMaxLenght} pattern='[0-9]' onChange={mfaInputHandleChange}></MfaInput>
-              <MfaInput ref={inp4} type="text" minLength={1} maxLength={mfaInputMaxLenght} pattern='[0-9]' onChange={mfaInputHandleChange}></MfaInput>
-              <MfaInput ref={inp5} type="text" minLength={1} maxLength={mfaInputMaxLenght} pattern='[0-9]' onChange={mfaInputHandleChange}></MfaInput>
+              <MfaInput key={0} ref={inp0} type="text" minLength={1} maxLength={mfaInputMaxLength} pattern='[0-9]' onChange={mfaInputHandleChange}></MfaInput>
+              <MfaInput key={1} ref={inp1} type="text" minLength={1} maxLength={mfaInputMaxLength} pattern='[0-9]' onChange={mfaInputHandleChange}></MfaInput>
+              <MfaInput key={2} ref={inp2} type="text" minLength={1} maxLength={mfaInputMaxLength} pattern='[0-9]' onChange={mfaInputHandleChange}></MfaInput>
+              <MfaInput key={3} ref={inp3} type="text" minLength={1} maxLength={mfaInputMaxLength} pattern='[0-9]' onChange={mfaInputHandleChange}></MfaInput>
+              <MfaInput key={4} ref={inp4} type="text" minLength={1} maxLength={mfaInputMaxLength} pattern='[0-9]' onChange={mfaInputHandleChange}></MfaInput>
+              <MfaInput key={5} ref={inp5} type="text" minLength={1} maxLength={mfaInputMaxLength} pattern='[0-9]' onChange={mfaInputHandleChange}></MfaInput>
             </Holder3>
             <Button buttonType='Solid' text = {t1("continue")} ></Button>
           </AuthContainer>

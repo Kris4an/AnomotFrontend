@@ -2,10 +2,6 @@ import type { NextPage } from 'next'
 import styled from 'styled-components'
 
 const ContainerStyle = styled.div`
-    //width: min-content;
-    //height: min-content;
-    //max-width: 60rem;
-    //max-height: 60rem;
     aspect-ratio: 0.85;
     display: flex;
     flex-direction: column;

@@ -30,7 +30,6 @@ const Container1 = styled.div`
     display: flex;
     flex-direction: row;
     align-items: flex-end;
-    //justify-content: safe;
 `;
 
 const Container2 = styled.div`

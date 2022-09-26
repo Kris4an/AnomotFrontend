@@ -2,7 +2,6 @@ import type { NextPage } from 'next'
 import styled, { CSSProperties } from 'styled-components'
 
 const DefaultButton = styled.button`
-    //max-width: 16rem;
     width: 100%;
     height: 3rem;
     padding: 10px 20px;
@@ -18,6 +17,7 @@ const DefaultButton = styled.button`
     font-size: 20px;
     line-height: 23px;
     display: flex;
+    cursor: pointer;
     transition: background ease-in-out 200ms;
 
     &:hover{
@@ -34,7 +34,6 @@ const DefaultButton = styled.button`
 
 const SolidButton = styled.button`
     width: 100%;
-    //max-width: 16rem;
     height: 3rem;
     padding: 10px 20px;
     gap: 10px;
@@ -49,6 +48,7 @@ const SolidButton = styled.button`
     font-size: 20px;
     line-height: 23px;
     display: flex;
+    cursor: pointer;
     transition: background ease-in-out 200ms;
 
 
@@ -79,6 +79,7 @@ const SecondaryButton = styled.button`
     font-size: 20px;
     line-height: 23px;
     display: flex;
+    cursor: pointer;
     transition: background ease-in-out 200ms;
 
     &:hover{
@@ -110,6 +111,7 @@ const TeriataryButton = styled.button`
     font-size: 20px;
     line-height: 23px;
     display: flex;
+    cursor: pointer;
 
     &:hover{
         text-decoration-line: underline;

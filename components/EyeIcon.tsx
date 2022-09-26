@@ -7,22 +7,16 @@ const IconSVG = styled.svg`
 `;
 
 const Holder = styled.button`
-    //position: relative;
     width: 2rem;
     height: 3rem;
     display: flex;
     align-items: center;
     border: none;
-    //padding-right: 6px;
-    //padding-top: 5px;
-    //padding-bottom: 5px;
     border-top: 1px solid ${props => props.theme.colors.secondary};
     border-bottom: 1px solid ${props => props.theme.colors.secondary};
     border-right: 1px solid ${props => props.theme.colors.secondary};
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
-    //left: 85%;
-    //top: -50%;
     background: ${props => props.theme.colors.secondaryButtonBackground};
 
 `;
