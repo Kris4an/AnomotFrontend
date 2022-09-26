@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import styled, { CSSProperties } from 'styled-components'
 
 const DefaultButton = styled.button`
-    max-width: 16rem;
+    //max-width: 16rem;
     width: 100%;
     height: 3rem;
     padding: 10px 20px;
@@ -34,7 +34,7 @@ const DefaultButton = styled.button`
 
 const SolidButton = styled.button`
     width: 100%;
-    max-width: 16rem;
+    //max-width: 16rem;
     height: 3rem;
     padding: 10px 20px;
     gap: 10px;
@@ -70,7 +70,7 @@ const SecondaryButton = styled.button`
     gap: 10px;
     background: ${props => props.theme.colors.secondaryButtonBackground};
     color: ${props => props.theme.colors.primary};
-    border: none;
+    border: 1px solid ${props => props.theme.colors.primary};
     border-radius: 10px;
     justify-content: center;
     align-items: center;
@@ -91,7 +91,7 @@ const SecondaryButton = styled.button`
     }
     &:disabled{
         background: ${props => props.theme.colors.secondaryButtonBackground};
-        color: ${props => props.theme.colors.secondaryButtonDisabled};
+        color: ${props => props.theme.colors.buttonDisabled};
     }
 `;
 
@@ -121,18 +121,19 @@ type Props = {
     buttonType: string,
     text: string
     style?: CSSProperties
+    ref?: any
 }
-function Button({disabled, buttonType, text, style}: Props){
+function Button({disabled, buttonType, text, style, ref}: Props){
 
     switch (buttonType) {
         case "Default":
-            return(<DefaultButton disabled = {disabled} style = {style}>{text}</DefaultButton>);
+            return(<DefaultButton ref={ref} disabled = {disabled} style = {style}>{text}</DefaultButton>);
         case "Solid":
-            return(<SolidButton disabled = {disabled} style = {style}>{text}</SolidButton>);
+            return(<SolidButton ref={ref} disabled = {disabled} style = {style}>{text}</SolidButton>);
         case "Secondary":
-            return(<SecondaryButton disabled = {disabled} style = {style}>{text}</SecondaryButton>);
+            return(<SecondaryButton ref={ref} disabled = {disabled} style = {style}>{text}</SecondaryButton>);
         case "Teriatary":
-            return(<TeriataryButton disabled = {disabled} style = {style}>{text}</TeriataryButton>);  
+            return(<TeriataryButton ref={ref} disabled = {disabled} style = {style}>{text}</TeriataryButton>);  
     }
     return <button disabled = {disabled}>{text}</button>;
 ;

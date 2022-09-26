@@ -6,12 +6,13 @@ const IconSVG = styled.svg`
     
 `;
 
-const Holder = styled.div`
+const Holder = styled.button`
     //position: relative;
     width: 2rem;
     height: 3rem;
     display: flex;
     align-items: center;
+    border: none;
     //padding-right: 6px;
     //padding-top: 5px;
     //padding-bottom: 5px;

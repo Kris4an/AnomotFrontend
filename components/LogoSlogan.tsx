@@ -41,7 +41,7 @@ const Container2 = styled.div`
 
 function LogoSlogan(){
     return(
-        <Container1>
+        <Container1 translate='no'>
             <Logo></Logo>
             <Container2>
                 <Name>ANOMOT</Name>
