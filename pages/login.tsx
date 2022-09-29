@@ -4,7 +4,7 @@ import LogoSlogan from '../components/LogoSlogan';
 import AuthContainer from '../components/AuthContainer';
 import LoginInput from '../components/LoginInput';
 import styled from 'styled-components'
-import { MutableRefObject, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 
 const Holder = styled.div`
@@ -58,7 +58,7 @@ const Login: NextPage = () => {
   return (
     <Holder>
       <LogoSlogan/>
-      <Content stage = {2}/>
+      <Content stage = {3}/>
     </Holder>
   )
 }
@@ -71,69 +71,57 @@ function Content({stage}:Props){
   const [t1] = useTranslation("common");
   const [t2] = useTranslation("login");
 
-  const [mfaInputCount, setMfaInputCount] = useState(1);
-  const [mfaInputMaxLength, setMfaInputMaxLength] = useState(6);
-
   const inp0: any = React.createRef();
   const inp1: any = React.createRef();
   const inp2: any = React.createRef();
   const inp3: any = React.createRef();
   const inp4: any = React.createRef();
   const inp5: any = React.createRef();
+
+  const inp10: any = React.createRef();
+  const inp11: any = React.createRef();
+  const inp12: any = React.createRef();
+  const inp13: any = React.createRef();
+  const inp14: any = React.createRef();
+  const inp15: any = React.createRef();
+  const inp16: any = React.createRef();
+  const inp17: any = React.createRef();
   
-  const mfaInputHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (isNaN(Number(event.target.value))) {
+  const mfaInputHandleChange = (event: React.ChangeEvent<HTMLInputElement>,  inpsProp:any[]) => {
+    const inps: any[] = inpsProp;
+
+    if(event.target.value == "") return;
+    
+
+    if(inps.length == 6 && (isNaN(Number(event.target.value)) || event.target.value.charAt(0) == ' ')) {
       event.target.value = "";
       return;
     }
-
-    if(event.target.value.length >= 6){
+    else{
+      for(let i = 0; i < event.target.value.length;i++){
+        if((isNaN(Number(event.target.value)) || event.target.value.charAt(0) == ' ') && !(event.target.value.charAt(i).toLowerCase() !== event.target.value.charAt(i).toUpperCase())){
+          event.target.value = "";
+          return;
+        }
+      }
+    }
+    if(event.target.value.length > 2){
       const s: string = event.target.value;
-      inp0.current.value = s.charAt(0);
-      inp1.current.value = s.charAt(1);
-      inp2.current.value = s.charAt(2);
-      inp3.current.value = s.charAt(3);
-      inp4.current.value = s.charAt(4);
-      inp5.current.value = s.charAt(5);
+      for(let i = 0; i < inps.length;i++){
+        if(s.charAt(i)=="") {
+          inps[i].current.focus();
+          return;
+        }
+        inps[i].current.value = s.charAt(i);
+      }
+
+      inps[inps.length-1].current.focus();
       return;
     }
-
-    setMfaInputMaxLength(1);
-    if(event.target.value != "") setMfaInputCount(mfaInputCount+1);
-    else {
-      setMfaInputCount(mfaInputCount-1);
-      if(mfaInputCount == 2) setMfaInputMaxLength(6);
-      return;
-    }
-
-    switch (mfaInputCount){
-      case 0: {
-        inp0.current.focus();
-        break;
-      }
-      case 1: {
-        inp1.current.focus();
-        break;
-      }
-      case 2: {
-        inp2.current.focus();
-        break;
-      }
-      case 3: {
-        inp3.current.focus();
-        break;
-      }
-      case 4: {
-        inp4.current.focus();
-        break;
-      }
-      case 5: {
-        inp5.current.focus();
-        break;
-      }
-    }
-    
+    if(event.target.value.length > 1) inps[Number(event.currentTarget.id)].current.value = event.target.value.charAt(0);
+    if(Number(event.currentTarget.id) < inps.length-1)inps[Number(event.currentTarget.id)+1].current.focus();
   };
+
 
   switch(stage){
       case 0:
@@ -158,21 +146,42 @@ function Content({stage}:Props){
             <Button buttonType='Teriatary' text= {t2("recover")} style = {{width: '20rem'}}></Button>
           </AuthContainer>
         )
-      case 2:
+      case 2:{
+        const inps: any[] = [inp0, inp1, inp2, inp3, inp4, inp5];
         return(
           <AuthContainer style={{width: '25.6rem', height: '20rem'}}>
             <MfaText>{t2("code")}</MfaText>
             <Holder3>
-              <MfaInput key={0} ref={inp0} type="text" minLength={1} maxLength={mfaInputMaxLength} pattern='[0-9]' onChange={mfaInputHandleChange}></MfaInput>
-              <MfaInput key={1} ref={inp1} type="text" minLength={1} maxLength={mfaInputMaxLength} pattern='[0-9]' onChange={mfaInputHandleChange}></MfaInput>
-              <MfaInput key={2} ref={inp2} type="text" minLength={1} maxLength={mfaInputMaxLength} pattern='[0-9]' onChange={mfaInputHandleChange}></MfaInput>
-              <MfaInput key={3} ref={inp3} type="text" minLength={1} maxLength={mfaInputMaxLength} pattern='[0-9]' onChange={mfaInputHandleChange}></MfaInput>
-              <MfaInput key={4} ref={inp4} type="text" minLength={1} maxLength={mfaInputMaxLength} pattern='[0-9]' onChange={mfaInputHandleChange}></MfaInput>
-              <MfaInput key={5} ref={inp5} type="text" minLength={1} maxLength={mfaInputMaxLength} pattern='[0-9]' onChange={mfaInputHandleChange}></MfaInput>
+              <MfaInput id={"0"} ref={inp0} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}></MfaInput>
+              <MfaInput id={"1"} ref={inp1} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}></MfaInput>
+              <MfaInput id={"2"} ref={inp2} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}></MfaInput>
+              <MfaInput id={"3"} ref={inp3} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}></MfaInput>
+              <MfaInput id={"4"} ref={inp4} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}></MfaInput>
+              <MfaInput id={"5"} ref={inp5} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}></MfaInput>
             </Holder3>
             <Button buttonType='Solid' text = {t1("continue")} ></Button>
           </AuthContainer>
         )
+      }
+        case 3:{
+          const inps: any[] = [inp10, inp11, inp12, inp13, inp14, inp15, inp16, inp17];
+          return(
+            <AuthContainer style={{width: '27.6rem', height: '24rem'}}>
+              <MfaText>{t2("recoverText")}</MfaText>
+              <Holder3>
+                <MfaInput id={"0"} ref={inp10} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}></MfaInput>
+                <MfaInput id={"1"} ref={inp11} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}></MfaInput>
+                <MfaInput id={"2"} ref={inp12} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}></MfaInput>
+                <MfaInput id={"3"} ref={inp13} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}></MfaInput>
+                <MfaInput id={"4"} ref={inp14} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}></MfaInput>
+                <MfaInput id={"5"} ref={inp15} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}></MfaInput>
+                <MfaInput id={"6"} ref={inp16} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}></MfaInput>
+                <MfaInput id={"7"} ref={inp17} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}></MfaInput>
+              </Holder3>
+              <Button buttonType='Solid' text = {t1("continue")} ></Button>
+            </AuthContainer>
+          )
+        }
     }
     return <div></div>
 }

@@ -5,5 +5,6 @@
     "errorMessage": "Your email or password are incorrect",
     "mfa": "It looks like 2-factor authentication is activated. Choose your desired method:",
     "code": "Enter the 6-digit code so we can verify its you:",
-    "recover": "Recover account"
+    "recover": "Recover account",
+    "recoverText": "In case you have lost access to your 2-factor authentication method, please enter one of the recovery codes in order to log back in to your account"
 }
