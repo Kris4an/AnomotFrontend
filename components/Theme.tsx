@@ -2,6 +2,7 @@ const theme: any = {
   colors: {
     primary: '#29335C',
     textInverted: '#ffffff',
+    text: '#000000',
     buttonHover: '#21294A',
     secondary: '#1D2440',
     buttonDisabled: '#7F859D',

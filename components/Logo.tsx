@@ -1,4 +1,3 @@
-import type { NextPage } from 'next'
 import styled from 'styled-components'
 
 const LogoSVG = styled.svg`

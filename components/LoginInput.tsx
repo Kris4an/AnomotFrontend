@@ -1,5 +1,4 @@
-import type { NextPage } from 'next'
-import { HTMLInputTypeAttribute, MouseEventHandler, useState } from 'react';
+import { CSSProperties, HTMLInputTypeAttribute, MouseEventHandler, useState } from 'react';
 import styled, { css } from 'styled-components'
 import { Eye, EyeSlash } from './EyeIcon';
 
@@ -9,6 +8,7 @@ const InputStyle = styled.input`
 
     width: 16rem;
     height: 3rem;
+    aspect-ratio: 0.1875;
 
     background: ${props => props.theme.colors.secondaryButtonBackground};
     border: 1px solid ${props => props.theme.colors.secondary};
@@ -35,6 +35,8 @@ const InputStyle = styled.input`
 type Props = {
     inputType: HTMLInputTypeAttribute,
     placeHolder: string,
+    style?: CSSProperties,
+    handleChange?: any
 }
 
 const Holder = styled.div`
@@ -43,7 +45,7 @@ const Holder = styled.div`
     flex-direction: row;
 `;
 
-function LoginInput({inputType, placeHolder}: Props){
+function LoginInput({inputType, placeHolder, style, handleChange}: Props){
     const [showPassword, setshowPassword] = useState(false);
     
     const handleClick = (e: any) => {
@@ -52,13 +54,13 @@ function LoginInput({inputType, placeHolder}: Props){
 
     switch(inputType){
         case 'Text': 
-            return(<InputStyle type = 'text' placeholder = {placeHolder}></InputStyle>)
+            return(<InputStyle onChange = {handleChange} type = 'text' placeholder = {placeHolder} style={style}></InputStyle>)
         case 'Email': 
-            return(<InputStyle type = 'email' placeholder = {placeHolder}></InputStyle>)
+            return(<InputStyle onChange = {handleChange} type = 'email' placeholder = {placeHolder} style={style}></InputStyle>)
         case 'Password': 
             return(
                 <Holder>
-                    <InputStyle className='password' type = {showPassword ? 'text':'password'} placeholder = {placeHolder} minLength = {10} maxLength = {512}></InputStyle>
+                    <InputStyle onChange = {handleChange} className='password' type = {showPassword ? 'text':'password'} placeholder = {placeHolder} minLength = {10} maxLength = {512} style={style}></InputStyle>
                     <span onClick={handleClick}>
                         {showPassword ? <EyeSlash></EyeSlash>: <Eye></Eye>}
                     </span>

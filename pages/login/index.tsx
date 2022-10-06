@@ -1,11 +1,13 @@
 import type { NextPage } from 'next'
-import Button from '../components/Button';
-import LogoSlogan from '../components/LogoSlogan';
-import AuthContainer from '../components/AuthContainer';
-import LoginInput from '../components/LoginInput';
+import Button from '../../components/Button';
+import LogoSlogan from '../../components/LogoSlogan';
+import AuthContainer from '../../components/AuthContainer';
+import LoginInput from '../../components/LoginInput';
 import styled from 'styled-components'
-import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
+import create from 'zustand'
+import router, { useRouter } from 'next/router'
+
 
 const Holder = styled.div`
   height: 100vh;
@@ -30,14 +32,14 @@ const Holder3 = styled.div`
 
 const ErrorMessage = styled.p`
   color: #F10000;
-  width: 16rem;
   font-size: 14px;
   align-self: flex-start;
-  margin: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 `;
 
 const MfaText = styled.p`
-  color: black;
+  color: ${props => props.theme.colors.text};;
   font-size: 24px;
   text-align: center;
 `;
@@ -45,20 +47,32 @@ const MfaText = styled.p`
 const MfaInput = styled.input`
   border: none;
   background: none;
-  border-bottom: 3.5px solid ${props => props.theme.colors.buttonDisabled};;
-  color: black;
+  border-bottom: 3.5px solid ${props => props.theme.colors.buttonDisabled};
+  color: ${props => props.theme.colors.text};;
   width: 2.5rem;
   font-size: 36px;
   line-height: 42px;
   text-align: center;
 `;
 
+interface PageState {
+  page: number
+  goTo: (by: number) => void
+}
+const usePages = create<PageState>()((set) => ({
+  page: 0,
+  goTo: (by) => set((state) => ({ page: by })),
+}))
+
 const Login: NextPage = () => {
-  
+  useEffect(() => {
+    document.title = "Anomot - Page not found";
+    document.body.style.backgroundColor = "#ffffff" 
+  },[usePages((state) => state.page)])
   return (
     <Holder>
       <LogoSlogan/>
-      <Content stage = {3}/>
+      <Content stage = {usePages((state) => state.page)}/>
     </Holder>
   )
 }
@@ -68,6 +82,11 @@ type Props = {
 }
 
 function Content({stage}:Props){
+  const goToPage = usePages((state) => state.goTo)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(false);
+
   const [t1] = useTranslation("common");
   const [t2] = useTranslation("login");
 
@@ -122,28 +141,64 @@ function Content({stage}:Props){
     if(Number(event.currentTarget.id) < inps.length-1)inps[Number(event.currentTarget.id)+1].current.focus();
   };
 
+  const emailInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+  }
+  const passwordInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+  }
+  const loginButton = () => {
+    //server magic
+    setErrorMessage(!errorMessage);
+    goToPage(1);
+  }
+  const forgotPasswordButton = () => {
+    router.push('/login/forgotten-password');
+  }
+  const createAccountButton = () => {
+    router.push('/create');
+  }
+
+  const mfaEmailButton = () => {
+    (async () => { 
+      router.push('/login/success');
+
+      setTimeout( () => { goToPage(2); }, 500 );
+  })();
+  }
+  const mfaTOTPButton = () => {
+    (async () => { 
+      router.push('/login/success');
+
+      setTimeout( () => { goToPage(2); }, 500 );
+  })();
+  }
+  const recoverAccountButton = () => {
+    router.push('/create');
+  }
+
 
   switch(stage){
       case 0:
         return(
           <AuthContainer>
-            <LoginInput inputType = 'Email' placeHolder = {t1("email")}></LoginInput>
+            <LoginInput handleChange = {emailInput} inputType = 'Email' placeHolder = {t1("email")}></LoginInput>
             <Holder2>
-              <LoginInput inputType = 'Password' placeHolder = {t1("password")}></LoginInput>
-              {true? <ErrorMessage>{t2("errorMessage")}</ErrorMessage>:null}
+              <LoginInput handleChange = {passwordInput} inputType = 'Password' placeHolder = {t1("password")}></LoginInput>
+              {errorMessage? <ErrorMessage>{t2("errorMessage")}</ErrorMessage>:null}
             </Holder2>
-            <Button buttonType='Default' text = {t2("login")}></Button>
-            <Button buttonType='Teriatary' text = {t2("forgotPassword")} style = {{scale: '80%'}}></Button>
-            <Button buttonType='Solid' text = {t2("createAccount")} style = {{scale: '80%'}}></Button>
+            <Button buttonType='Default' handleClick={loginButton} text = {t2("login")}></Button>
+            <Button buttonType='Teriatary' handleClick={forgotPasswordButton} text = {t2("forgotPassword")} style = {{scale: '80%'}}></Button>
+            <Button buttonType='Solid' handleClick={recoverAccountButton} text = {t2("createAccount")} style = {{scale: '80%'}}></Button>
         </AuthContainer>
         )
       case 1:
         return(
           <AuthContainer style={{width: '30rem', height: '25rem'}}>
             <MfaText>{t2("mfa")}</MfaText>
-            <Button buttonType='Secondary' text = {t1("email")} style = {{width: '23rem'}}></Button>
-            <Button buttonType='Secondary' text = 'TOTP' style = {{width: '23rem'}}></Button>
-            <Button buttonType='Teriatary' text= {t2("recover")} style = {{width: '20rem'}}></Button>
+            <Button buttonType='Secondary' handleClick={mfaEmailButton} text = {t1("email")} style = {{width: '23rem'}}></Button>
+            <Button buttonType='Secondary' handleClick={mfaTOTPButton}text = 'TOTP' style = {{width: '23rem'}}></Button>
+            <Button buttonType='Teriatary' handleClick={createAccountButton} text= {t2("recover")} style = {{width: '20rem'}}></Button>
           </AuthContainer>
         )
       case 2:{
@@ -187,7 +242,8 @@ function Content({stage}:Props){
 }
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 export async function getStaticProps({ locale }:any) {
   return {

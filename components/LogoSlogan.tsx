@@ -1,5 +1,4 @@
-import type { NextPage } from 'next'
-import styled from 'styled-components'
+import styled, { CSSProperties } from 'styled-components'
 import Logo from './Logo'
 
 const Name = styled.div`
@@ -38,9 +37,13 @@ const Container2 = styled.div`
     margin-left: 1rem;
 `;
 
-function LogoSlogan(){
+type Props = {
+    style?: CSSProperties
+  }
+
+function LogoSlogan({style}:Props){
     return(
-        <Container1 translate='no'>
+        <Container1 translate='no' style={style}>
             <Logo></Logo>
             <Container2>
                 <Name>ANOMOT</Name>

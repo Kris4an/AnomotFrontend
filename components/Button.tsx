@@ -1,4 +1,3 @@
-import type { NextPage } from 'next'
 import styled, { CSSProperties } from 'styled-components'
 
 const DefaultButton = styled.button`
@@ -17,6 +16,7 @@ const DefaultButton = styled.button`
     font-size: 20px;
     line-height: 23px;
     display: flex;
+    text-align: center;
     cursor: pointer;
     transition: background ease-in-out 200ms;
 
@@ -48,6 +48,7 @@ const SolidButton = styled.button`
     font-size: 20px;
     line-height: 23px;
     display: flex;
+    text-align: center;
     cursor: pointer;
     transition: background ease-in-out 200ms;
 
@@ -79,6 +80,7 @@ const SecondaryButton = styled.button`
     font-size: 20px;
     line-height: 23px;
     display: flex;
+    text-align: center;
     cursor: pointer;
     transition: background ease-in-out 200ms;
 
@@ -111,6 +113,7 @@ const TeriataryButton = styled.button`
     font-size: 20px;
     line-height: 23px;
     display: flex;
+    text-align: center;
     cursor: pointer;
 
     &:hover{
@@ -121,21 +124,22 @@ const TeriataryButton = styled.button`
 type Props = {
     disabled?: boolean,
     buttonType: string,
-    text: string
-    style?: CSSProperties
-    ref?: any
+    text: string,
+    style?: CSSProperties,
+    ref?: any,
+    handleClick?: any
 }
-function Button({disabled, buttonType, text, style, ref}: Props){
+function Button({disabled, buttonType, text, style, ref, handleClick}: Props){
 
     switch (buttonType) {
         case "Default":
-            return(<DefaultButton ref={ref} disabled = {disabled} style = {style}>{text}</DefaultButton>);
+            return(<DefaultButton onClick={handleClick} ref={ref} disabled = {disabled} style = {style}>{text}</DefaultButton>);
         case "Solid":
-            return(<SolidButton ref={ref} disabled = {disabled} style = {style}>{text}</SolidButton>);
+            return(<SolidButton onClick={handleClick} ref={ref} disabled = {disabled} style = {style}>{text}</SolidButton>);
         case "Secondary":
-            return(<SecondaryButton ref={ref} disabled = {disabled} style = {style}>{text}</SecondaryButton>);
+            return(<SecondaryButton onClick={handleClick} ref={ref} disabled = {disabled} style = {style}>{text}</SecondaryButton>);
         case "Teriatary":
-            return(<TeriataryButton ref={ref} disabled = {disabled} style = {style}>{text}</TeriataryButton>);  
+            return(<TeriataryButton onClick={handleClick} ref={ref} disabled = {disabled} style = {style}>{text}</TeriataryButton>);  
     }
     return <button disabled = {disabled}>{text}</button>;
 ;

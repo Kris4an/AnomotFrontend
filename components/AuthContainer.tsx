@@ -1,4 +1,3 @@
-import type { NextPage } from 'next'
 import styled from 'styled-components'
 
 const ContainerStyle = styled.div`
@@ -12,6 +11,7 @@ const ContainerStyle = styled.div`
     background: ${props => props.theme.colors.authContainerBackground};
     box-shadow: 4px 4px 10px ${props => props.theme.colors.authContainerShadow};;
     border-radius: 10px;
+    transition: all 3s ease-in;
 `;
 
 export default ContainerStyle;
