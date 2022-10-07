@@ -8,6 +8,7 @@ import { useTranslation } from 'next-i18next';
 import create from 'zustand'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React, { useEffect } from 'react';
+import Checkbox from '../components/Checkbox';
 
 
 const Holder = styled.div`
@@ -53,9 +54,10 @@ function Content({stage}:Props){
   switch(stage){
       case 0:
         return(
-            <AuthContainer style={{height: '30rem', gap: '4rem', width: '28rem'}}>
+            <AuthContainer style={{height: '30rem', gap: '1.5rem', width: '28rem'}}>
                 <Text>{t2("letsBegin")}</Text>
                 <LoginInput inputType = 'Email' placeHolder = {t1("email")} style = {{width: '20rem', height: '3.5rem', fontSize: '20px'}}></LoginInput>
+                <Checkbox text={t2("acceptTerms")} style = {{marginBottom: '1rem'}}></Checkbox>
                 <Button buttonType='Solid' text = {t1("continue")} style = {{width: '20rem', height: '20rem', fontSize: '20px'}}></Button>
             </AuthContainer>
         )

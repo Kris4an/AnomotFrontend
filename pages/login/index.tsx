@@ -7,6 +7,10 @@ import styled from 'styled-components'
 import { useTranslation } from 'next-i18next';
 import create from 'zustand'
 import router, { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import MessageScreen from '../../components/MessageScreen';
 
 
 const Holder = styled.div`
@@ -89,6 +93,7 @@ function Content({stage}:Props){
 
   const [t1] = useTranslation("common");
   const [t2] = useTranslation("login");
+  const [t3] = useTranslation("message-screens");
 
   const inp0: any = React.createRef();
   const inp1: any = React.createRef();
@@ -160,21 +165,16 @@ function Content({stage}:Props){
   }
 
   const mfaEmailButton = () => {
-    (async () => { 
-      router.push('/login/success');
-
-      setTimeout( () => { goToPage(2); }, 500 );
-  })();
+    goToPage(4);
   }
   const mfaTOTPButton = () => {
-    (async () => { 
-      router.push('/login/success');
-
-      setTimeout( () => { goToPage(2); }, 500 );
-  })();
+    goToPage(4);
   }
   const recoverAccountButton = () => {
-    router.push('/create');
+    goToPage(3);
+  }
+  const successButton = () => {
+    goToPage(2);
   }
 
 
@@ -189,7 +189,7 @@ function Content({stage}:Props){
             </Holder2>
             <Button buttonType='Default' handleClick={loginButton} text = {t2("login")}></Button>
             <Button buttonType='Teriatary' handleClick={forgotPasswordButton} text = {t2("forgotPassword")} style = {{scale: '80%'}}></Button>
-            <Button buttonType='Solid' handleClick={recoverAccountButton} text = {t2("createAccount")} style = {{scale: '80%'}}></Button>
+            <Button buttonType='Solid' handleClick={createAccountButton} text = {t2("createAccount")} style = {{scale: '80%'}}></Button>
         </AuthContainer>
         )
       case 1:
@@ -198,7 +198,7 @@ function Content({stage}:Props){
             <MfaText>{t2("mfa")}</MfaText>
             <Button buttonType='Secondary' handleClick={mfaEmailButton} text = {t1("email")} style = {{width: '23rem'}}></Button>
             <Button buttonType='Secondary' handleClick={mfaTOTPButton}text = 'TOTP' style = {{width: '23rem'}}></Button>
-            <Button buttonType='Teriatary' handleClick={createAccountButton} text= {t2("recover")} style = {{width: '20rem'}}></Button>
+            <Button buttonType='Teriatary' handleClick={recoverAccountButton} text= {t2("recover")} style = {{width: '20rem'}}></Button>
           </AuthContainer>
         )
       case 2:{
@@ -221,7 +221,7 @@ function Content({stage}:Props){
         case 3:{
           const inps: any[] = [inp10, inp11, inp12, inp13, inp14, inp15, inp16, inp17];
           return(
-            <AuthContainer style={{width: '27.6rem', height: '24rem'}}>
+            <AuthContainer style={{width: '30rem', height: '25rem'}}>
               <MfaText>{t2("recoverText")}</MfaText>
               <Holder3>
                 <MfaInput id={"0"} ref={inp10} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}></MfaInput>
@@ -237,18 +237,19 @@ function Content({stage}:Props){
             </AuthContainer>
           )
         }
+        case 4:{
+          return(
+            <MessageScreen handleClick={successButton} stage = {true} text = {t3("mfaS")} continueTxt = {t1("continue")}></MessageScreen>
+        )
+        }
     }
     return <div></div>
 }
 
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-
 export async function getStaticProps({ locale }:any) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common', 'login'])),
+      ...(await serverSideTranslations(locale, ['common', 'login', 'message-screens'])),
       // Will be passed to the page component as props
     },
   };

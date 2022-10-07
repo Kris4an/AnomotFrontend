@@ -3,10 +3,17 @@ import styled from 'styled-components'
 import { useEffect } from 'react';
 
 const Holder = styled.div`
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
     display: flex;
     flex-flow: column;
     align-items: center;
     gap: 5rem;
+    background: #1D2440;
+    //z-index: 99999;
 `;
 const MaskSVG = styled.svg`
     margin-top: 10rem;
@@ -31,10 +38,6 @@ type Props1 = {
   handleClick: any
 }
 function MessageScreen({stage, text, continueTxt, handleClick}:Props1){
-    useEffect(() => {
-        document.body.style.backgroundColor = "#1D2440"
-        document.title = "Anomot";
-      },[])
     return (
             <Holder>
                 <Mask stage = {stage}/>

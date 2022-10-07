@@ -11,7 +11,6 @@ const ContainerStyle = styled.div`
     background: ${props => props.theme.colors.authContainerBackground};
     box-shadow: 4px 4px 10px ${props => props.theme.colors.authContainerShadow};;
     border-radius: 10px;
-    transition: all 3s ease-in;
 `;
 
 export default ContainerStyle;
