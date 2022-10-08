@@ -1,5 +1,14 @@
 {
     "letsBegin": "Let's begin! First enter your email",
     "choosePassword": "Now choose a secure password",
-    "acceptTerms": "I'm over 18 and accept the Terms of Service"
+    "acceptTerms": "I'm over 18 and accept the Terms of Service",
+    "chooseSecurePassword": "Now choose a secure password",
+    "veryBad": "very Bad",
+    "weak": "Weak",
+    "good": "Good",
+    "excellent": "Excellent",
+    "passwordRequirement0": "Password needs to be at least 10 symbols",
+    "passwordRequirement1": "Password needs have at least 1 number",
+    "passwordRequirement2": "Password needs have at least 1 letter",
+    "passwordRequirement3": "It is adviced that the password shall not contain commonly used words"
 }

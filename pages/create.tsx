@@ -7,8 +7,9 @@ import styled from 'styled-components'
 import { useTranslation } from 'next-i18next';
 import create from 'zustand'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Checkbox from '../components/Checkbox';
+import PasswordStrength from '../components/PasswordStrength';
 
 
 const Holder = styled.div`
@@ -38,7 +39,7 @@ const Create: NextPage = () => {
     return (
         <Holder>
             <LogoSlogan style={{marginTop: '4rem'}}/>
-            <Content stage = {0}/>
+            <Content stage = {1}/>
       </Holder>
     )
   }
@@ -50,17 +51,28 @@ type Props = {
 function Content({stage}:Props){
   const [t1] = useTranslation("common");
   const [t2] = useTranslation("create");
-    //style = {{width: '90%', height: '16.875%'}}
+  
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const handleChecboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAcceptedTerms(event.target.checked);
+  }
   switch(stage){
       case 0:
         return(
             <AuthContainer style={{height: '30rem', gap: '1.5rem', width: '28rem'}}>
                 <Text>{t2("letsBegin")}</Text>
                 <LoginInput inputType = 'Email' placeHolder = {t1("email")} style = {{width: '20rem', height: '3.5rem', fontSize: '20px'}}></LoginInput>
-                <Checkbox text={t2("acceptTerms")} style = {{marginBottom: '1rem'}}></Checkbox>
-                <Button buttonType='Solid' text = {t1("continue")} style = {{width: '20rem', height: '20rem', fontSize: '20px'}}></Button>
+                <Checkbox text={t2("acceptTerms")} handleChange={handleChecboxChange} style = {{marginBottom: '1rem'}}></Checkbox>
+                <Button buttonType='Solid' disabled = {!acceptedTerms} text = {t1("continue")} style = {{width: '20rem', height: '20rem', fontSize: '20px'}}></Button>
             </AuthContainer>
         )
+      case 1:
+        return(
+            <AuthContainer style={{height: '30rem', gap: '1.5rem', width: '55rem'}}>
+                <PasswordStrength stage = {0} text = {"Very bad"}></PasswordStrength>
+            </AuthContainer>
+        )
+        
     }
     return <div></div>
 }

@@ -13,16 +13,10 @@ const CheckboxStyle = styled.input`
     position: relative;
     z-index: 1;
 
-    &:hover{
-        //background: #e4e6e7;
-    }
     &:checked{
-        //background: linear-gradient(0deg, #29335C, #29335C), #29335C;
-        border: 10px solid ${props => props.theme.colors.primary};;
+        border: 10px solid ${props => props.theme.colors.primary};
         border-radius: 10px;
-        //-moz-border-radius: 200px
         background: transparent;
-        //border-inline-color: #21294A;
     }
 `;
 const Holder = styled.div`
@@ -44,19 +38,18 @@ const Round = styled.div`
     height: 24px;
     margin: 6px;
     border-radius: 10px;
-    //display: inline-block;
     background-color: ${props => props.theme.colors.secondaryButtonBackground};;
-    //z-index: 1;
 `;
 type Props = {
     text: string,
-    style?: CSSProperties
+    style?: CSSProperties,
+    handleChange?: any
 }
-function Checkbox({text, style}:Props){
+function Checkbox({text, style, handleChange}:Props){
     return(
         <Holder style={style}>
             <Holder2>
-                <CheckboxStyle type="checkbox"></CheckboxStyle>
+                <CheckboxStyle type="checkbox" onChange={handleChange}></CheckboxStyle>
                 <Round></Round>
             </Holder2>
             <label>{text}</label>
