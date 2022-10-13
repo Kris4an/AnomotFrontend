@@ -33,12 +33,20 @@ const Round = styled.div`
     position: relative;
     top: -40px;
     left: 0px;
-    border: 4px solid ${props => props.theme.colors.primary};;
+    border: 4px solid ${props => props.theme.colors.primary};
     width: 24px;
     height: 24px;
     margin: 6px;
     border-radius: 10px;
-    background-color: ${props => props.theme.colors.secondaryButtonBackground};;
+    background-color: ${props => props.theme.colors.secondaryButtonBackground};
+`;
+const Text = styled.span`
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 21px;
+    color: ${props => props.theme.colors.text};
 `;
 type Props = {
     text: string,
@@ -52,7 +60,7 @@ function Checkbox({text, style, handleChange}:Props){
                 <CheckboxStyle type="checkbox" onChange={handleChange}></CheckboxStyle>
                 <Round></Round>
             </Holder2>
-            <label>{text}</label>
+            <Text>{text}</Text>
         </Holder>
     )
 }

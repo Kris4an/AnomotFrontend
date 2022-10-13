@@ -1,5 +1,8 @@
 {
     "email": "Email",
     "password": "Password",
-    "continue": "Continue"
+    "repeatPassword": "Repeat password",
+    "continue": "Continue",
+    "userName": "User name",
+    "skip": "Skip"
 }
