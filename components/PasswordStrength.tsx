@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useTranslation } from "next-i18next";
 import styled from "styled-components";
 
 interface StyledProps {
@@ -9,6 +9,7 @@ const StrengthStage = styled.div<StyledProps>`
     height: 15px;
 
     background: ${(props) => props.color};
+    transition: background 0.3s;
 `;
 const StrengthStage2 = styled(StrengthStage)`
     border-radius: 5px 0px 0px 5px;
@@ -36,15 +37,17 @@ const Text = styled.label`
     font-weight: 400;
     font-size: 18px;
     line-height: 21px;
+    font-family: 'Roboto';
     color: ${props => props.theme.colors.text};
 `;
 
 type Props = {
-    stage: number,
-    text: string
+    stage: number
 };
-function PasswordStrength({stage, text}:Props){
+function PasswordStrength({stage}:Props){
+    const [t2] = useTranslation("create");
     const colorsPalette:string[] = ["#9499AE","#F10000","#F3A712","#F3F655","#3FD918"];
+    const messages:string[] = [t2("tragic"),t2("veryBad"),t2("weak"),t2("good"),t2("excellent")];
 
     return(
         <Holder>
@@ -54,7 +57,7 @@ function PasswordStrength({stage, text}:Props){
                 {stage>=3? <StrengthStage color = {colorsPalette[stage]}/>:<StrengthStage color = {colorsPalette[0]}/>}
                 {stage==4? <StrengthStage3 color = {colorsPalette[stage]}/>:<StrengthStage3 color = {colorsPalette[0]}/>}
             </Holder2>
-            <Text>{text}</Text>
+            <Text>{messages[stage]}</Text>
         </Holder>
     )
 }

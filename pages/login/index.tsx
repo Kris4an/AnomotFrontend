@@ -11,7 +11,12 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import MessageScreen from '../../components/MessageScreen';
+import instance from '../../axios_instance';
+import useSWR, { useSWRConfig } from 'swr';
 
+const fetcher = (url: any, email: string) => instance.post(url, {'email': email}).then(res => {
+  return res.data;
+})
 
 const Holder = styled.div`
   height: 100vh;
@@ -59,34 +64,25 @@ const MfaInput = styled.input`
   text-align: center;
 `;
 
-interface PageState {
-  page: number
-  goTo: (by: number) => void
-}
-const usePages = create<PageState>()((set) => ({
-  page: 0,
-  goTo: (by) => set((state) => ({ page: by })),
-}))
-
 const Login: NextPage = () => {
+  
   useEffect(() => {
     document.title = "Anomot - Page not found";
     document.body.style.backgroundColor = "#ffffff" 
-  },[usePages((state) => state.page)])
+  },[])
   return (
     <Holder>
       <LogoSlogan/>
-      <Content stage = {usePages((state) => state.page)}/>
+      <Content/>
     </Holder>
   )
 }
 
-type Props = {
-  stage: number
-}
+function Content(){
+  //const { data, error } = useSWR(['/account/password/reset/new',"khristakiev@gmail.com"], fetcher);
+  //const { mutate } = useSWRConfig();
 
-function Content({stage}:Props){
-  const goToPage = usePages((state) => state.goTo)
+  const [stage,goToPage] = useState(0);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(false);
@@ -176,6 +172,9 @@ function Content({stage}:Props){
   const successButton = () => {
     goToPage(2);
   }
+  const continueMFAButton = () => {
+    
+  }
 
 
   switch(stage){
@@ -214,7 +213,7 @@ function Content({stage}:Props){
               <MfaInput id={"4"} ref={inp4} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}></MfaInput>
               <MfaInput id={"5"} ref={inp5} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}></MfaInput>
             </Holder3>
-            <Button buttonType='Solid' text = {t1("continue")} ></Button>
+            <Button buttonType='Solid' handleClick={continueMFAButton} text = {t1("continue")} ></Button>
           </AuthContainer>
         )
       }

@@ -1,6 +1,7 @@
 import Button from './Button';
 import styled from 'styled-components'
 import { useEffect } from 'react';
+import { useTranslation } from 'next-i18next';
 
 const Holder = styled.div`
     position: fixed;
@@ -28,6 +29,7 @@ const Message = styled.p`
     font-size: 36px;
     line-height: 44px;
     text-align: center;
+    max-width: 80vw;
     color: ${props => props.theme.colors.secondaryButtonBackground};;
 
 `;

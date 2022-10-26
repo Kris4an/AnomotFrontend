@@ -37,7 +37,8 @@ type Props = {
     placeHolder: string,
     style?: CSSProperties,
     passwordStyle?: CSSProperties,
-    handleChange?: any
+    handleChange?: any,
+    maxLength?: any
 }
 
 const Holder = styled.div`
@@ -46,7 +47,7 @@ const Holder = styled.div`
     flex-direction: row;
 `;
 
-function LoginInput({inputType, placeHolder, style, handleChange, passwordStyle}: Props){
+function LoginInput({inputType, placeHolder, style, handleChange, passwordStyle, maxLength}: Props){
     const [showPassword, setshowPassword] = useState(false);
     
     const handleClick = (e: any) => {
@@ -55,9 +56,9 @@ function LoginInput({inputType, placeHolder, style, handleChange, passwordStyle}
 
     switch(inputType){
         case 'Text': 
-            return(<InputStyle onChange = {handleChange} type = 'text' placeholder = {placeHolder} style={style}></InputStyle>)
+            return(<InputStyle onChange = {handleChange} maxLength={maxLength} type = 'text' placeholder = {placeHolder} style={style}></InputStyle>)
         case 'Email': 
-            return(<InputStyle onChange = {handleChange} type = 'email' placeholder = {placeHolder} style={style}></InputStyle>)
+            return(<InputStyle onChange = {handleChange} maxLength={254} type = 'email' placeholder = {placeHolder} style={style}></InputStyle>)
         case 'Password': 
             return(
                 <Holder>

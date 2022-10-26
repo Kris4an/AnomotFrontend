@@ -51,13 +51,14 @@ const Text = styled.span`
 type Props = {
     text: string,
     style?: CSSProperties,
-    handleChange?: any
+    handleChange?: any,
+    ref?: any
 }
-function Checkbox({text, style, handleChange}:Props){
+function Checkbox({text, style, handleChange, ref}:Props){
     return(
         <Holder style={style}>
             <Holder2>
-                <CheckboxStyle type="checkbox" onChange={handleChange}></CheckboxStyle>
+                <CheckboxStyle ref={ref} type="checkbox" onChange={handleChange}></CheckboxStyle>
                 <Round></Round>
             </Holder2>
             <Text>{text}</Text>
