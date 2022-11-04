@@ -17,5 +17,7 @@
     "chooseProfilePic": "Now you can choose a profile picture",
     "messageScreen1": "We successfully created your account",
     "messageScreen0": "The email with witch you tried to register is already in use.",
-    "weSentEmail": "We sent you a verification email. Check your inbox to confirm your email."
+    "weSentEmail": "We sent you a verification email. Check your inbox to confirm your email.",
+    "verified": "Your email is verified",
+    "verifyFail":"We failed to verify your email"
 }

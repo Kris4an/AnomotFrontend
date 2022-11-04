@@ -51,9 +51,11 @@ interface PassReq{
 };
 type Props = {
     handleButtonPasword: any,
-    updatePassword: any
+    updatePassword: any,
+    title: string,
+    buttonText: string
 };
-function CreatePassword({handleButtonPasword, updatePassword} : Props){
+function CreatePassword({handleButtonPasword, updatePassword, title, buttonText} : Props){
     const [t1] = useTranslation("common");
     const [t2] = useTranslation("create");
 
@@ -138,7 +140,7 @@ function CreatePassword({handleButtonPasword, updatePassword} : Props){
 
     return(
         <AuthContainer style={{height: '32rem', gap: '1rem', width: '45rem'}}>
-              <Text>{t2("chooseSecurePassword")}</Text>
+              <Text>{title}</Text>
               <Holder2>
                 <Holder3>
                   <LoginInput inputType="Password" handleChange={passwordInput} placeHolder={t1("password")} style={{width: '17rem', height: '3.5rem'}} passwordStyle={{height: '3.5rem'}}></LoginInput>
@@ -151,7 +153,7 @@ function CreatePassword({handleButtonPasword, updatePassword} : Props){
                 </Holder4>
                 
               </Holder2>
-              <Button buttonType='Solid' handleClick={handleButtonPasword} disabled={!(password == passwordRepeat && passwordsValid)} text={t1("continue")} style = {{width: '20rem', fontSize: '20px'}}/>
+              <Button buttonType='Solid' handleClick={handleButtonPasword} disabled={!(password == passwordRepeat && passwordsValid)} text={buttonText} style = {{width: '20rem', fontSize: '20px'}}/>
             </AuthContainer>
     )
 }

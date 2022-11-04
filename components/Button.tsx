@@ -19,6 +19,7 @@ const DefaultButton = styled.button`
     text-align: center;
     cursor: pointer;
     transition: background ease-in-out 200ms;
+    font-family: 'Roboto';
 
     &:hover{
         background: ${props => props.theme.colors.buttonHover};
@@ -51,6 +52,7 @@ const SolidButton = styled.button`
     text-align: center;
     cursor: pointer;
     transition: background ease-in-out 200ms;
+    font-family: 'Roboto';
 
 
     &:hover{
@@ -83,6 +85,7 @@ const SecondaryButton = styled.button`
     text-align: center;
     cursor: pointer;
     transition: background ease-in-out 200ms;
+    font-family: 'Roboto';
 
     &:hover{
         background: ${props => props.theme.colors.buttonHover};
@@ -115,6 +118,7 @@ const TeriataryButton = styled.button`
     display: flex;
     text-align: center;
     cursor: pointer;
+    font-family: 'Roboto';
 
     &:hover{
         text-decoration-line: underline;

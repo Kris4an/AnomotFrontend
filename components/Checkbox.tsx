@@ -51,7 +51,7 @@ const Text = styled.span`
 type Props = {
     text: string,
     style?: CSSProperties,
-    handleChange?: any,
+    handleChange: any,
     ref?: any
 }
 function Checkbox({text, style, handleChange, ref}:Props){
