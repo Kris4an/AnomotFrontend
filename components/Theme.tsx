@@ -9,7 +9,8 @@ const theme: any = {
     secondaryButtonBackground: '#F7F9FA',
     authContainerBackground: '#EFF2F5',
     authContainerShadow: 'rgba(0, 0, 0, 0.25)',
-    inputPlaceholder: '#81898E'
+    inputPlaceholder: '#81898E',
+    navBarSecondary: '#69708D'
 
   },
 }

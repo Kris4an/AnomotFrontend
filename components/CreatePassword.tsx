@@ -139,22 +139,22 @@ function CreatePassword({handleButtonPasword, updatePassword, title, buttonText}
       }
 
     return(
-        <AuthContainer style={{height: '32rem', gap: '1rem', width: '45rem'}}>
-              <Text>{title}</Text>
-              <Holder2>
-                <Holder3>
-                  <LoginInput inputType="Password" handleChange={passwordInput} placeHolder={t1("password")} style={{width: '17rem', height: '3.5rem'}} passwordStyle={{height: '3.5rem'}}></LoginInput>
-                  <LoginInput inputType="Password" handleChange={(event: React.ChangeEvent<HTMLInputElement>) => (setPasswordRepeat(event.target.value))} placeHolder={t1("repeatPassword")} style={{width: '17rem', height: '3.5rem'}} passwordStyle={{height: '3.5rem'}}></LoginInput>
-                  {(password != passwordRepeat && passwordRepeat!="")? <ErrorText>{t2("passwordDoesntMatch")}</ErrorText>:null}
-                </Holder3>
-                <Holder4>
-                  <PasswordStrength stage = {passwordLevel}></PasswordStrength>
-                  <PasswordReqs props = {passwordMessages}></PasswordReqs>
-                </Holder4>
-                
-              </Holder2>
-              <Button buttonType='Solid' handleClick={handleButtonPasword} disabled={!(password == passwordRepeat && passwordsValid)} text={buttonText} style = {{width: '20rem', fontSize: '20px'}}/>
-            </AuthContainer>
+      <AuthContainer style={{ height: '32rem', gap: '1rem', width: '45rem' }}>
+        <Text>{title}</Text>
+        <Holder2>
+          <Holder3>
+            <LoginInput inputType="Password" handleChange={passwordInput} placeHolder={t1("password")} style={{ width: '17rem', height: '3.5rem' }} passwordStyle={{ height: '3.5rem' }}></LoginInput>
+            <LoginInput inputType="Password" handleChange={(event: React.ChangeEvent<HTMLInputElement>) => (setPasswordRepeat(event.target.value))} placeHolder={t1("repeatPassword")} style={{ width: '17rem', height: '3.5rem' }} passwordStyle={{ height: '3.5rem' }}></LoginInput>
+            {(password != passwordRepeat && passwordRepeat != "") ? <ErrorText>{t2("passwordDoesntMatch")}</ErrorText> : null}
+          </Holder3>
+          <Holder4>
+            <PasswordStrength stage={passwordLevel}></PasswordStrength>
+            <PasswordReqs props={passwordMessages}></PasswordReqs>
+          </Holder4>
+
+        </Holder2>
+        <Button buttonType='Solid' handleClick={handleButtonPasword} disabled={!(password == passwordRepeat && passwordsValid)} text={buttonText} style={{ width: '20rem', fontSize: '20px' }} />
+      </AuthContainer>
     )
 }
 

@@ -201,22 +201,22 @@ function Content(){
         const inps: any[] = [inp0, inp1, inp2, inp3, inp4, inp5];
 
         return(
-          <AuthContainer style={{width: '25.6rem', height: '20rem'}}>
+          <AuthContainer style={{ width: '25.6rem', height: '20rem' }}>
             <MfaText>{t2("code")}</MfaText>
             <Holder3>
-              <MfaInput id={"0"} ref={inp0} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}/>
-              <MfaInput id={"1"} ref={inp1} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}/>
-              <MfaInput id={"2"} ref={inp2} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}/>
-              <MfaInput id={"3"} ref={inp3} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}/>
-              <MfaInput id={"4"} ref={inp4} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}/>
-              <MfaInput id={"5"} ref={inp5} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}/>
+              <MfaInput id={"0"} ref={inp0} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)} />
+              <MfaInput id={"1"} ref={inp1} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)} />
+              <MfaInput id={"2"} ref={inp2} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)} />
+              <MfaInput id={"3"} ref={inp3} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)} />
+              <MfaInput id={"4"} ref={inp4} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)} />
+              <MfaInput id={"5"} ref={inp5} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)} />
             </Holder3>
             <Button buttonType='Solid' handleClick={() => {
-              
-              const method = (enableEmail? 'email':'totp');
-              fetcher2('/account/login', email, password, code, rememberMe, method, undefined).then(() => {router.push('/');}).catch((res) => {console.log(res.error)});
-              
-            }} text = {t1("continue")} disabled={code.length!=6}/>
+
+              const method = (enableEmail ? 'email' : 'totp');
+              fetcher2('/account/login', email, password, code, rememberMe, method, undefined).then(() => { router.push('/'); }).catch((res) => { console.log(res.error) });
+
+            }} text={t1("continue")} disabled={code.length != 6} />
           </AuthContainer>
         )
       }

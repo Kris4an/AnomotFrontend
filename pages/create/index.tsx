@@ -82,7 +82,7 @@ function Content(){
         return(
           <AuthContainer style={{height: '32rem', gap: '3rem', width: '30rem'}}>
             <Text style={{marginBottom: '6rem', marginTop: '0rem'}}>{t2("chooseUserName")}</Text>
-            <LoginInput inputType={"Text"} handleChange={(event: React.ChangeEvent<HTMLInputElement>) => (setUsername(event.target.value))} maxLength={40} placeHolder={t1("userName")} style={{width: '20rem', height: '3.5rem'}}></LoginInput>
+            <LoginInput inputType={"Text"} handleChange={(event: React.ChangeEvent<HTMLInputElement>) => (setUsername(event.target.value))} maxLength={40} placeHolder={t1("userName")} style={{width: '20rem', height: '3.5rem', fontSize: '20px'}}></LoginInput>
             <Button buttonType='Solid' handleClick={() => {
                 fetcher('/account/new', email, password, username).then(() => {goToPage(3);}).catch(function (error){goToPage(3); setSuccess(false);}); 
               }} 

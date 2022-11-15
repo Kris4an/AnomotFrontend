@@ -4,5 +4,7 @@
     "repeatPassword": "Repeat password",
     "continue": "Continue",
     "userName": "User name",
-    "skip": "Skip"
+    "skip": "Skip",
+    "settings": "Settings",
+    "save": "Save"
 }

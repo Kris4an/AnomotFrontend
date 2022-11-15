@@ -43,8 +43,8 @@ function PasswordReqs({props}: Props){
     return(
         <Holder>
             {
-                props.map((prop) =>
-                <PasswordRequirementsHolder>
+                props.map((prop, index) =>
+                <PasswordRequirementsHolder key={index}>
                     <div><Dot DotColor={colors[prop.stage]}></Dot></div>
                     <RequirementText>{prop.message}</RequirementText>
                 </PasswordRequirementsHolder>

@@ -1,0 +1,16 @@
+{
+    "profile": "Profile",
+    "language": "Language",
+    "theme": "Dark theme",
+    "security": "Security",
+    "downloadInfo": "Download your information",
+    "terms": "Terms of service",
+    "policy": "Privacy policy",
+    "openSource": "Open source license",
+    "version": "Version",
+    "changePassword": "Change password",
+    "newEmail": "New email",
+    "changePasswordText": "First enter your old password to change it",
+    "username": "Username",
+    "newUsername": "New username"
+}

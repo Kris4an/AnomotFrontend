@@ -18,7 +18,7 @@ const DefaultButton = styled.button`
     display: flex;
     text-align: center;
     cursor: pointer;
-    transition: background ease-in-out 200ms;
+    transition: background ease-in-out 300ms;
     font-family: 'Roboto';
 
     &:hover{
@@ -51,7 +51,7 @@ const SolidButton = styled.button`
     display: flex;
     text-align: center;
     cursor: pointer;
-    transition: background ease-in-out 200ms;
+    transition: background ease-in-out 300ms;
     font-family: 'Roboto';
 
 
@@ -84,7 +84,7 @@ const SecondaryButton = styled.button`
     display: flex;
     text-align: center;
     cursor: pointer;
-    transition: background ease-in-out 200ms;
+    transition: background ease-in-out 300ms;
     font-family: 'Roboto';
 
     &:hover{

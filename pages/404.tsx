@@ -49,7 +49,7 @@ const NotFound404:NextPage = () => {
   }
   const handleButtonClick = () => {
     document.body.style.backgroundColor = "#ffffff" 
-    router.push('/login');
+    router.push('/');
   }
   const [t1] = useTranslation("404");
     useEffect(() => {

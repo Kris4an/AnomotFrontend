@@ -38,7 +38,8 @@ type Props = {
     style?: CSSProperties,
     passwordStyle?: CSSProperties,
     handleChange?: any,
-    maxLength?: any
+    maxLength?: any,
+    ref?: any
 }
 
 const Holder = styled.div`
@@ -47,7 +48,7 @@ const Holder = styled.div`
     flex-direction: row;
 `;
 
-function LoginInput({inputType, placeHolder, style, handleChange, passwordStyle, maxLength}: Props){
+function LoginInput({inputType, placeHolder, style, handleChange, passwordStyle, maxLength,ref}: Props){
     const [showPassword, setshowPassword] = useState(false);
     
     const handleClick = (e: any) => {
