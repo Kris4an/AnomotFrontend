@@ -1,14 +1,12 @@
 import { NextPage } from "next";
 import router, { Router } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import useSWR from "swr";
 import instance from "../axios_instance";
 import IconButton from "../components/IconButton";
 import NavBar from "../components/NavBar";
 import ProfilePic from "../components/ProfilePic";
-
-const fetcher = (url: any) => instance.get(url).catch(()=>{router.push('/login')})
 
 const MainHolder = styled.div`
     width: 100%;
@@ -63,8 +61,12 @@ const StyledPath = styled.path`
 `;
 
 const Account:NextPage = () => {
-    const user = useSWR(fetcher("account/user"));
+    const fetcher = (url:any) => instance.get(url).then((res) => {console.log(res);res.data;}).catch((res) => {console.log('e'); res.error;});
+    const { data: userData, error: userDataError } = useSWR('/account/user',fetcher);
     const [postSelection, setPostSelection] = useState(true);
+    useEffect(() => {
+        fetcher('/account/user').catch(()=>{console.log('e1');});
+    },[])
     return(
         <NavBar stage={3}>
             <MainHolder>

@@ -89,15 +89,14 @@ type Props = {
 
 
 function ProfilePic({type,handleClickProfile}:Props){
-    const [username, setUsername] = useState('');
-    const fetcher = (url: any) => instance.get(url).then((res) => {console.log(res.data.username); setUsername(res.data.username)});
-    const user = useSWR(fetcher("account/user"));
+    const fetcher = (url:any) => instance.get(url).then((res) => res.data).catch((res) => res.error);
+    const { data: userData, error: userDataError } = useSWR('/account/user',fetcher);
     return(
         <Holder>
             <Holder2>
                 <Pic></Pic>
                 <Info>
-                    <UserNameText>{username}</UserNameText>
+                    <UserNameText>{userData?.username}</UserNameText>
                     <FollowersMainContainer>
                         <FollowersContainer>
                             <FollowerNumberText>300</FollowerNumberText>

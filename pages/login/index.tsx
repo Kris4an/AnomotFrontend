@@ -13,8 +13,6 @@ import instance from '../../axios_instance';
 import useSWR, { useSWRConfig } from 'swr';
 import Checkbox from '../../components/Checkbox';
 
-
-
 const Holder = styled.div`
   height: 100vh;
   display: flex;
@@ -40,6 +38,7 @@ const ErrorMessage = styled.p`
   align-self: flex-start;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+  font-family: 'Roboto';
 `;
 const MfaText = styled.p`
   color: ${props => props.theme.colors.text};;
