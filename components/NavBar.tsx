@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ReactNode } from "react";
 import styled from "styled-components";
 
 const Holder = styled.div`
@@ -12,12 +11,25 @@ const Holder = styled.div`
     height: 100vh;
     width: fit-content;
     padding: 10px 5px;
+    
+    @media (max-width: 800px) {
+        flex-direction: row;
+        width: 100vw;
+        height: fit-content;
+        border-right: none;
+        border-top: 1px solid ${props => props.theme.colors.primary};
+        padding: 4px 2px;
+    }
 `;
 const MainHolder = styled.div`
     display: flex;
     width: 100vw;
     max-width: 100%;
     height: 100vh;
+
+    @media (max-width: 800px) {
+        flex-direction: column-reverse;
+    }
 `;
 const StyledSVG =  styled.svg`
     &:hover{

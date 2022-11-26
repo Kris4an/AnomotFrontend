@@ -22,6 +22,10 @@
     "changeEmail2faMessage0": "We couldn't add email 2FA",
     "changeTotp2faMessage1": "We successfuly added TOTP 2FA",
     "changeTotp2faMessage0": "We couldn't add TOTP 2FA",
+    "removeEmail2faMessage1": "We successfuly removed email 2FA",
+    "removeEmail2faMessage0": "We couldn't remove email 2FA",
+    "removeTotp2faMessage1": "We successfuly removed TOTP 2FA",
+    "removeTotp2faMessage0": "We couldn't remove TOTP 2FA",
     "changePasswordMessage1": "We successfuly changed your password",
     "changePasswordMessage0": "We couldn't change your password",
     "resendVerificationEmailMessage0": "We couldn't send an email",
@@ -34,5 +38,15 @@
     "errorMessage": "Incorrect password",
     "removeEmail2fa": "Remove email 2FA",
     "removeTotp2fa": "Remove TOTP 2FA",
-    "copy": "Copy"
+    "copy": "Copy",
+    "recoveryCodes": "Recovery codes",
+    "generateRecoveryCodes": "Generate security codes",
+    "recoveryCodesInfo": "The recovery codes are useful if you lose access to you 2FA device. After you generate them write them down and keep them in a safe place",
+    "moreAboutRecoveryCodes": "More about recovery codes",
+    "deleteRecoveryCodes": "Delete recovery codes",
+    "loginFrom": "Login from",
+    "on": "on",
+    "near": "near",
+    "orUseTheCode": "Or use this code:",
+    "scan": "Scan with your app of choice"
 }

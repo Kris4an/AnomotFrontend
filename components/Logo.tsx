@@ -1,8 +1,12 @@
 import styled from 'styled-components'
 
 const LogoSVG = styled.svg`
-    width: 108.83px;
+    width: 108px;
     height: 155px;
+
+    @media (max-width: 800px) {
+      width: 87px;
+    }
 `;
 
 function Logo(){

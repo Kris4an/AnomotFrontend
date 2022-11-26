@@ -20,6 +20,12 @@ const Holder = styled.div`
   gap: 25vw;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 800px) {
+    flex-direction: column;
+    gap: 0px;
+    justify-content: space-around;
+  }
 `;
 const Holder2 = styled.div`
   display: flex;
@@ -44,6 +50,10 @@ const MfaText = styled.p`
   color: ${props => props.theme.colors.text};;
   font-size: 24px;
   text-align: center;
+  
+  @media (max-width: 800px) {
+    
+  }
 `;
 const MfaInput = styled.input`
   border: none;
@@ -54,6 +64,33 @@ const MfaInput = styled.input`
   font-size: 36px;
   line-height: 42px;
   text-align: center;
+
+  @media (max-width: 800px) {
+    font-size: 30px;
+    width: 2rem;
+  }
+`;
+interface ModifiedAuthContainerProps{
+  height: string,
+  width: string,
+  gap: string,
+  padding?: string,
+  paddingMedia?: string
+}
+const ModifiedAuthContainer = styled(AuthContainer)<ModifiedAuthContainerProps>`
+  height: ${props => props.height};
+  gap: ${props => props.gap};
+  width: ${props => props.width};
+  padding: ${props => props.padding};
+  align-items: center;
+
+  @media (max-width: 800px) {
+    width: 90vw;
+    height: fit-content;
+    gap: 1rem;
+    box-shadow: none;
+    padding: ${props => props.paddingMedia};
+  }
 `;
 
 const Login: NextPage = () => {
@@ -109,13 +146,12 @@ function Content(){
     "mfaCode": mfaCode,
     "rememberMe": rememberMe,
     "mfaMethod": mfaMethod,
-    "recoveryCode": recoveryCode
+    "mfaRecoveryCode": recoveryCode
   })
 
   
   const mfaInputHandleChange = (event: React.ChangeEvent<HTMLInputElement>,  inpsProp:any[]) => {
     const inps: any[] = inpsProp;
-
     if(event.target.value == "") {
       let c = "";
       for(let i = 0;i<inps.length;i++){
@@ -129,12 +165,13 @@ function Content(){
       event.target.value = "";
       return;
     }
-    else{
+    if(inps.length == 8){
       for(let i = 0; i < event.target.value.length;i++){
-        if((isNaN(Number(event.target.value)) || event.target.value.charAt(0) == ' ') && !(event.target.value.charAt(i).toLowerCase() !== event.target.value.charAt(i).toUpperCase())){
+        if((event.target.value.charAt(0) == ' ' ) && (event.target.value.charAt(i).toLowerCase() == event.target.value.charAt(i).toUpperCase())){
           event.target.value = "";
           return;
         }
+        else{}
       }
     }
     if(event.target.value.length > 2){
@@ -162,7 +199,7 @@ function Content(){
   switch(stage){
       case 0:
         return(
-          <AuthContainer>
+          <ModifiedAuthContainer width='' height='' gap='1rem' padding='4rem 3.5rem'>
             <LoginInput handleChange = {(event: React.ChangeEvent<HTMLInputElement>) => {setEmail(event.target.value);}} inputType = 'Email' placeHolder = {t1("email")}></LoginInput>
             <Holder2>
               <LoginInput handleChange = {(event: React.ChangeEvent<HTMLInputElement>) => {setPassword(event.target.value);}} inputType = 'Password' placeHolder = {t1("password")}></LoginInput>
@@ -182,25 +219,25 @@ function Content(){
               }).catch(() => {setLoginError(true);})}}/>
             <Button buttonType='Teriatary' handleClick={() => {router.push('/login/forgotten-password');}} text = {t2("forgotPassword")} style = {{scale: '80%'}}/>
             <Button buttonType='Solid' handleClick={() => {router.push('/create');}} text = {t2("createAccount")} style = {{scale: '80%'}}/>
-        </AuthContainer>
+        </ModifiedAuthContainer>
         )
       case 1:
         return(
-          <AuthContainer style={{width: '30rem', height: '25rem'}}>
+          <ModifiedAuthContainer width='30rem' height='25rem' gap='1rem' padding='4rem 3.5rem' paddingMedia='3rem 0.5rem'>
             <MfaText>{t2("mfa")}</MfaText>
             <Button buttonType='Secondary' disabled={!enableEmail} handleClick={() => {
               fetcher1('/account/mfa/email/send', email, password);
               setEnableTOTP(false);
-              goToPage(4);}} text = {t1("email")} style = {{width: '23rem'}}></Button>
-            <Button buttonType='Secondary' disabled={!enableTOTP} handleClick={() => {goToPage(4);}}text = 'TOTP' style = {{width: '23rem'}}></Button>
-            <Button buttonType='Teriatary' handleClick={() => {goToPage(3);}} text= {t2("recover")} style = {{width: '20rem'}}></Button>
-          </AuthContainer>
+              goToPage(4);}} text = {t1("email")} style = {{width: '23rem', maxWidth: '80vw'}}></Button>
+            <Button buttonType='Secondary' disabled={!enableTOTP} handleClick={() => {goToPage(4);}}text = 'TOTP' style = {{width: '23rem', maxWidth: '80vw'}}></Button>
+            <Button buttonType='Teriatary' handleClick={() => {goToPage(3);}} text= {t2("recover")} style = {{width: '20rem', maxWidth: '80vw'}}></Button>
+          </ModifiedAuthContainer>
         )
       case 2:{
         const inps: any[] = [inp0, inp1, inp2, inp3, inp4, inp5];
 
         return(
-          <AuthContainer style={{ width: '25.6rem', height: '20rem' }}>
+          <ModifiedAuthContainer width='26rem' height='20rem' gap='1rem' padding='1rem 3.5rem'>
             <MfaText>{t2("code")}</MfaText>
             <Holder3>
               <MfaInput id={"0"} ref={inp0} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)} />
@@ -216,28 +253,29 @@ function Content(){
               fetcher2('/account/login', email, password, code, rememberMe, method, undefined).then(() => { router.push('/'); }).catch((res) => { console.log(res.error) });
 
             }} text={t1("continue")} disabled={code.length != 6} />
-          </AuthContainer>
+          </ModifiedAuthContainer>
         )
       }
         case 3:{
           const inps: any[] = [inp10, inp11, inp12, inp13, inp14, inp15, inp16, inp17];
           return(
-            <AuthContainer style={{width: '30rem', height: '25rem'}}>
+            <ModifiedAuthContainer width='30rem' height='25rem' gap='1rem' padding='4rem 3.5rem' paddingMedia='4rem 0.5rem'>
               <MfaText>{t2("recoverText")}</MfaText>
               <Holder3>
-                <MfaInput id={"0"} ref={inp10} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}/>
-                <MfaInput id={"1"} ref={inp11} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}/>
-                <MfaInput id={"2"} ref={inp12} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}/>
-                <MfaInput id={"3"} ref={inp13} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}/>
-                <MfaInput id={"4"} ref={inp14} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}/>
-                <MfaInput id={"5"} ref={inp15} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}/>
-                <MfaInput id={"6"} ref={inp16} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}/>
-                <MfaInput id={"7"} ref={inp17} type="text" minLength={1} maxLength={6} onChange={event => mfaInputHandleChange(event, inps)}/>
+                <MfaInput id={"0"} ref={inp10} type="text" minLength={1} maxLength={8} onChange={event => mfaInputHandleChange(event, inps)}/>
+                <MfaInput id={"1"} ref={inp11} type="text" minLength={1} maxLength={8} onChange={event => mfaInputHandleChange(event, inps)}/>
+                <MfaInput id={"2"} ref={inp12} type="text" minLength={1} maxLength={8} onChange={event => mfaInputHandleChange(event, inps)}/>
+                <MfaInput id={"3"} ref={inp13} type="text" minLength={1} maxLength={8} onChange={event => mfaInputHandleChange(event, inps)}/>
+                <MfaInput id={"4"} ref={inp14} type="text" minLength={1} maxLength={8} onChange={event => mfaInputHandleChange(event, inps)}/>
+                <MfaInput id={"5"} ref={inp15} type="text" minLength={1} maxLength={8} onChange={event => mfaInputHandleChange(event, inps)}/>
+                <MfaInput id={"6"} ref={inp16} type="text" minLength={1} maxLength={8} onChange={event => mfaInputHandleChange(event, inps)}/>
+                <MfaInput id={"7"} ref={inp17} type="text" minLength={1} maxLength={8} onChange={event => mfaInputHandleChange(event, inps)}/>
               </Holder3>
               <Button buttonType='Solid' text = {t1("continue")} disabled={code.length!=8} handleClick={() => {
-              
+                console.log(code);
+                fetcher2('/account/login', email, password, undefined, rememberMe, undefined, code).then(() => { router.push('/'); }).catch((res) => { console.log(res.error) });
             }}/>
-            </AuthContainer>
+            </ModifiedAuthContainer>
           )
         }
         case 4:{

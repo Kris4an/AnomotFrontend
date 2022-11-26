@@ -27,6 +27,33 @@ const Text = styled.p`
     line-height: 37px;
     color: ${props => props.theme.colors.text};
     text-align: center;
+    margin-top: 10px;
+
+    @media (max-width: 800px) {
+      margin-top: 10px;
+  }
+`;
+interface ModifiedAuthContainerProps{
+  height: string,
+  width: string,
+  gap: string,
+  padding?: string,
+  paddingMedia?: string
+}
+const ModifiedAuthContainer = styled(AuthContainer)<ModifiedAuthContainerProps>`
+  height: ${props => props.height};
+  gap: ${props => props.gap};
+  width: ${props => props.width};
+  padding: ${props => props.padding};
+  align-items: center;
+
+  @media (max-width: 800px) {
+    width: 90vw;
+    height: fit-content;
+    gap: 1rem;
+    box-shadow: none;
+    padding: ${props => props.paddingMedia};
+  }
 `;
 
 const fetcher = (url: any, email: string) => instance.post(url, {
@@ -51,13 +78,13 @@ function Content(){
   switch(stage){
     case 0:
       return(
-          <AuthContainer style={{height: '30rem', gap: '2rem', width: '28rem'}}>
+          <ModifiedAuthContainer height='28rem' gap='2rem' width='28rem' padding='2rem 1rem'>
               <Text>{t2("enterEmail")}</Text>
-              <LoginInput inputType = 'Email' handleChange={(event: React.ChangeEvent<HTMLInputElement>) => {setEmail(event.target.value);}} placeHolder = {t1("email")} style = {{width: '20rem', height: '3.5rem', fontSize: '20px'}}></LoginInput>
+              <LoginInput inputType = 'Email' handleChange={(event: React.ChangeEvent<HTMLInputElement>) => {setEmail(event.target.value);}} placeHolder = {t1("email")} style = {{width: '20rem', height: '3.5rem', fontSize: '20px', maxWidth: '75vw'}}></LoginInput>
               <Button buttonType='Solid' handleClick={() => {
                 fetcher('/account/password/reset/new', email);
-                goToPage(1);}} disabled = {!(email.length>=3 && email.includes('@'))} text = {t1("continue")} style = {{width: '20rem', fontSize: '20px'}}></Button>
-          </AuthContainer>
+                goToPage(1);}} disabled = {!(email.length>=3 && email.includes('@'))} text = {t1("continue")} style = {{width: '20rem', fontSize: '20px', maxWidth: '75vw'}}></Button>
+          </ModifiedAuthContainer>
       )
     case 1:
       return(

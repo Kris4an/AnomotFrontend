@@ -1,26 +1,33 @@
 import Button from './Button';
 import styled from 'styled-components'
-import { useEffect } from 'react';
-import { useTranslation } from 'next-i18next';
 
 const Holder = styled.div`
     position: fixed;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     top: 0;
     left: 0;
     display: flex;
-    flex-flow: column;
+    flex-direction: column;
     align-items: center;
+    //height: 100%;
+    justify-content: center;
     gap: 5rem;
     background: #1D2440;
-    //z-index: 99999;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    
+    @media (max-width: 800px) {
+      //height: 100%;
+      //width: 100%;
+      gap: 0px;
+      justify-content: space-evenly;
+    }
 `;
 const MaskSVG = styled.svg`
-    margin-top: 10rem;
-    height: 20rem;
-    aspect-ratio: 0.72;
-
+    @media (max-width: 800px) {
+      height: 14rem;
+    }
 `;
 const Message = styled.p`
     font-family: 'Montserrat';
@@ -30,8 +37,11 @@ const Message = styled.p`
     line-height: 44px;
     text-align: center;
     max-width: 80vw;
-    color: ${props => props.theme.colors.secondaryButtonBackground};;
+    color: ${props => props.theme.colors.secondaryButtonBackground};
 
+    @media (max-width: 800px) {
+      font-size: 30px;
+    }
 `;
 type Props1 = {
   stage: boolean
@@ -39,15 +49,15 @@ type Props1 = {
   continueTxt: string
   handleClick: any
 }
-function MessageScreen({stage, text, continueTxt, handleClick}:Props1){
-    return (
-            <Holder>
-                <Mask stage = {stage}/>
-                <Message>{text}</Message>
-                <Button buttonType='Solid' handleClick={handleClick} text = {continueTxt} style = {{width: '24rem'}}></Button>
-            </Holder>
-    )
-  }
+function MessageScreen({ stage, text, continueTxt, handleClick }: Props1) {
+  return (
+    <Holder>
+      <Mask stage={stage} />
+      <Message>{text}</Message>
+      <Button buttonType='Solid' handleClick={handleClick} text={continueTxt} style={{ width: '24rem', maxWidth: '90vw' }}></Button>
+    </Holder>
+  )
+}
 type Props2 = {stage: boolean}
 function Mask({stage}:Props2){
     switch(stage){
@@ -66,10 +76,10 @@ function Mask({stage}:Props2){
         return(
           <div>
               <MaskSVG width="198" height="275" viewBox="0 0 198 275" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M0 43.5792L8.43988 40.0427C69.3165 14.5335 138.117 15.817 198 43.5792V97.1767V176C198 230.676 153.676 275 99 275C44.3238 275 0 230.676 0 176V97.1767V43.5792Z" fill="#29335C"/>
-              <rect x="136" y="101" width="29" height="18" rx="5" fill="#F10000"/>
-              <rect x="43" y="100.5" width="29" height="18" rx="5" fill="#F10000"/>
-              <path d="M172 223C172 209.209 164.256 195.982 150.472 186.23C136.688 176.479 117.993 171 98.5 171C79.0066 171 60.3116 176.479 46.5277 186.23C32.7437 195.982 25 209.209 25 223L98.5 223H172Z" fill="#F10000"/>
+                <path d="M0 43.5792L8.43988 40.0427C69.3165 14.5335 138.117 15.817 198 43.5792V97.1767V176C198 230.676 153.676 275 99 275C44.3238 275 0 230.676 0 176V97.1767V43.5792Z" fill="#29335C"/>
+                <rect x="136" y="101" width="29" height="18" rx="5" fill="#F10000"/>
+                <rect x="43" y="100.5" width="29" height="18" rx="5" fill="#F10000"/>
+                <path d="M172 223C172 209.209 164.256 195.982 150.472 186.23C136.688 176.479 117.993 171 98.5 171C79.0066 171 60.3116 176.479 46.5277 186.23C32.7437 195.982 25 209.209 25 223L98.5 223H172Z" fill="#F10000"/>
               </MaskSVG>
           </div>
         )

@@ -9,8 +9,11 @@ const Name = styled.div`
     line-height: 70px;
     text-transform: uppercase;
     user-select: none;
+    color: ${props => props.theme.colors.text};
 
-    color: #000000;
+    @media (max-width: 800px) {
+      font-size: 56px;
+    }
 `;
 const Slogan = styled.div`
     font-family: 'Montserrat';
@@ -21,8 +24,11 @@ const Slogan = styled.div`
     text-transform: lowercase;
     user-select: none;
     margin-bottom: 1.75rem;
+    color: ${props => props.theme.colors.text};
 
-    color: #000000; 
+    @media (max-width: 800px) {
+      font-size: 24px;
+    }
 `;
 
 const Container1 = styled.div`

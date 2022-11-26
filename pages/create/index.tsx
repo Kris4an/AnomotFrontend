@@ -19,7 +19,13 @@ const Holder = styled.div`
   display: flex;
   flex-flow: column;
   align-items: center;
-  gap: 15vh;
+  justify-content: space-around;
+  @media (max-width: 800px) {
+    min-height: 100%;
+    justify-content: space-evenly;
+    gap: 0.5rem;
+    padding-bottom: 5px;
+  }
 `;
 const Text = styled.p`
     font-family: 'Montserrat';
@@ -29,8 +35,33 @@ const Text = styled.p`
     line-height: 37px;
     color: ${props => props.theme.colors.text};
     text-align: center;
-`;
 
+    @media (max-width: 800px) {
+      font-size: 25px;
+      margin-top: 0px ;
+      margin-bottom: 10px;
+    }
+`;
+interface ModifiedAuthContainerProps{
+  height: string,
+  width: string,
+  gap: string,
+  padding?: string
+}
+const ModifiedAuthContainer = styled(AuthContainer)<ModifiedAuthContainerProps>`
+  height: ${props => props.height};
+  gap: ${props => props.gap};
+  width: ${props => props.width};
+  padding: ${props => props.padding};
+  align-items: center;
+  @media (max-width: 800px) {
+    width: 90vw;
+    height: fit-content;
+    gap: 2rem;
+    box-shadow: none;
+    //padding: 10px 5px;
+  }
+`;
 
 const fetcher = (url: any, email: string, password: string, username: string) => instance.post(url, {
   "email": email,
@@ -44,7 +75,7 @@ const Create: NextPage = () => {
   },[])
     return (
       <Holder>
-          <LogoSlogan style={{marginTop: '4rem'}}/>
+          <LogoSlogan style={{marginTop: '0rem'}}/>
           <Content/>
       </Holder>
     )
@@ -67,12 +98,12 @@ function Content(){
   switch(stage){
       case 0:
         return(
-            <AuthContainer style={{height: '32rem', gap: '2rem', width: '28rem'}}>
+            <ModifiedAuthContainer height={'32rem'} gap={'2rem'} width={'28rem'} padding={'2rem 2rem'}>
                 <Text>{t2("letsBegin")}</Text>
                 <LoginInput inputType = 'Email' handleChange={(event: React.ChangeEvent<HTMLInputElement>) => {setEmail(event.target.value);}} placeHolder = {t1("email")} style = {{width: '20rem', height: '3.5rem', fontSize: '20px'}}></LoginInput>
-                <Checkbox text={t2("acceptTerms")} handleChange={(event: React.ChangeEvent<HTMLInputElement>) => (setAcceptedTerms(event.target.checked))} style = {{marginBottom: '1rem'}}></Checkbox>
+                <Checkbox text={t2("acceptTerms")} handleChange={(event: React.ChangeEvent<HTMLInputElement>) => (setAcceptedTerms(event.target.checked))} style = {{marginBottom: '0.5rem', width: '20rem'}}></Checkbox>
                 <Button buttonType='Solid' handleClick={() => {goToPage(1);}} disabled = {!(acceptedTerms && email.length>=3 && email.includes('@'))} text = {t1("continue")} style = {{width: '20rem', fontSize: '20px'}}></Button>
-            </AuthContainer>
+            </ModifiedAuthContainer>
         )
       case 1:
         return(
@@ -80,14 +111,14 @@ function Content(){
         )
       case 2:
         return(
-          <AuthContainer style={{height: '32rem', gap: '3rem', width: '30rem'}}>
-            <Text style={{marginBottom: '6rem', marginTop: '0rem'}}>{t2("chooseUserName")}</Text>
+          <ModifiedAuthContainer height={'32rem'} gap={'3rem'} width={'28rem'} padding={'2rem 2rem'}>
+            <Text style={{}}>{t2("chooseUserName")}</Text>
             <LoginInput inputType={"Text"} handleChange={(event: React.ChangeEvent<HTMLInputElement>) => (setUsername(event.target.value))} maxLength={40} placeHolder={t1("userName")} style={{width: '20rem', height: '3.5rem', fontSize: '20px'}}></LoginInput>
             <Button buttonType='Solid' handleClick={() => {
                 fetcher('/account/new', email, password, username).then(() => {goToPage(3);}).catch(function (error){goToPage(3); setSuccess(false);}); 
               }} 
             text={t1("continue")} disabled={username.length == 0} style = {{width: '20rem', fontSize: '20px'}}/>
-          </AuthContainer>
+          </ModifiedAuthContainer>
         )
       case 3:
           return(

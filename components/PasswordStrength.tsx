@@ -10,6 +10,10 @@ const StrengthStage = styled.div<StyledProps>`
 
     background: ${(props) => props.color};
     transition: background 0.3s;
+
+    @media (max-width: 800px) {
+    width: 60px;
+  }
 `;
 const StrengthStage2 = styled(StrengthStage)`
     border-radius: 5px 0px 0px 5px;
@@ -20,10 +24,11 @@ const StrengthStage3 = styled(StrengthStage)`
 const Holder = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     width: fit-content;
     height: fit-content;
     gap: 13px;
+    align-self: center;
 `;
 const Holder2 = styled.div`
     display: flex;
@@ -39,6 +44,7 @@ const Text = styled.label`
     line-height: 21px;
     font-family: 'Roboto';
     color: ${props => props.theme.colors.text};
+    align-self: flex-start;
 `;
 
 type Props = {

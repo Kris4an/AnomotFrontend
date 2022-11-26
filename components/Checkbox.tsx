@@ -24,6 +24,7 @@ const Holder = styled.div`
     align-items: center;
     gap: 10px;
     width: fit-content;
+    justify-content: center;
 `;
 const Holder2 = styled.div`
     width: 36px;

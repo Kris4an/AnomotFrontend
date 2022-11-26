@@ -32,10 +32,11 @@ const Verify: NextPage = () => {
     if(router.isReady) {if(success==0) {
       const {code}:any = router.query;
       console.log(router.query);
-      fetcher('/account/email/verify', code).then(()=>{setSuccess(1);}).catch((e)=>{console.log(e);setSuccess(2)});}}
+      fetcher('/account/email/verify', code).then(()=>{setSuccess(1);}).catch((e)=>{console.log(e);setSuccess(2)});
+    }}
 
     return(
-        (success==0? <Holder></Holder>:<MessageScreen stage={success==1} text={(success==1? t2("verified"):t2("verifyFail"))} continueTxt={t1("continue")} handleClick={() => {router.push('/login')}}></MessageScreen>)
+      (success==0? <Holder></Holder>:<MessageScreen stage={success==1} text={(success==1? t2("verified"):t2("verifyFail"))} continueTxt={t1("continue")} handleClick={() => {router.push('/login')}}></MessageScreen>)
     )
 }
 

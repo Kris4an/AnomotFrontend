@@ -22,6 +22,10 @@
     "changeEmail2faMessage0": "Не успяхме да добавим 2ФА чрез имейл",
     "changeTotp2faMessage1": "Успешно добавихме 2ФА чрез TOTP",
     "changeTotp2faMessage0": "Не успяхме да добавим 2ФА чрез TOTP",
+    "removeEmail2faMessage1": "Успешно премахнахме 2ФА чрез имейл",
+    "removeEmail2faMessage0": "Не успяхме да премахнахнем 2ФА чрез имейл",
+    "removeTotp2faMessage1": "Успешно премахнахме 2ФА чрез TOTP",
+    "removeTotp2faMessage0": "Не успяхме да премахнахнем 2ФА чрез TOTP",
     "changePasswordMessage1": "Успешно променихме парола ти",
     "changePasswordMessage0": "Не успяхме да променим парола ти",
     "resendVerificationEmailMessage0": "Не успяхме да изпратим имейл",
@@ -34,5 +38,15 @@
     "errorMessage": "Неправилна парола",
     "removeEmail2fa": "Премахни 2ФА чрез имейл",
     "removeTotp2fa": "Премахни 2ФА чрез TOTP",
-    "copy": "Копиране"
+    "copy": "Копиране",
+    "recoveryCodes": "Кодове за възстановяване",
+    "generateRecoveryCodes": "Генерирай кодове за възстановяване",
+    "recoveryCodesInfo": "Кодовете за възстановяване са полезни, ако загубиш достъп до устройството си за 2ФА. След като ги генерираш, ги запиши и дръж на сигурно място",
+    "moreAboutRecoveryCodes": "Повече за кодовете за възстановяване",
+    "deleteRecoveryCodes": "Изтрий кодовете за възстановяване",
+    "loginFrom": "Вход от",
+    "on": "на",
+    "near": "около",
+    "orUseTheCode": "Или използвай по-долния код:",
+    "scan": "Сканирай кода с предпочитаното си приложение"
 }

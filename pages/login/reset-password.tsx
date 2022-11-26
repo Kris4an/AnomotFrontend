@@ -13,10 +13,14 @@ const Holder = styled.div`
   display: flex;
   flex-flow: column;
   align-items: center;
-  gap: 15vh;
+  justify-content: space-around;
+
+  @media (max-width: 800px) {
+    justify-content: space-between;
+  }
 `;
 
-const fetcher = (url: any, code: string, identifier: string, newPassword: string) => instance.put(url, {
+const fetcher = (url: any, code: any, identifier: any, newPassword: string) => instance.put(url, {
     "code": code,
     "identifier": identifier,
     "newPassword": newPassword
@@ -28,14 +32,10 @@ const ResetPassword: NextPage = () => {
     const [t1] = useTranslation("forgotten-password");
     const [password, setPassword] = useState('');
 
-    let id:any;
-    let code:any;
-    if(router.isReady) {({code, id} = router.query);}
-
     return(
         <Holder>
-          <LogoSlogan style={{marginTop: '4rem'}}/>
-          <CreatePassword handleButtonPasword = {() => {fetcher('/account/password/reset', code, id, password).then(()=>{router.push('/login')}).catch((e)=>(console.log(e)));}} updatePassword = {(newPassword: string) => (setPassword(newPassword))} title = {t1("createNewPassword")} buttonText = {t1("save")}/>
+          <LogoSlogan/>
+          <CreatePassword handleButtonPasword = {() => {fetcher('/account/password/reset', router.query.code, router.query.id, password).then(()=>{router.push('/login')}).catch(()=>{});}} updatePassword = {(newPassword: string) => (setPassword(newPassword))} title = {t1("createNewPassword")} buttonText = {t1("save")}/>
       </Holder>
     )
 }

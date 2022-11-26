@@ -13,6 +13,11 @@ const Holder2 = styled.div`
   flex-direction: row;
   gap: 1rem;
   align-items: center;
+
+  @media (max-width: 800px) {
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
 `;
 const Holder3 = styled.div`
   height: 18rem;
@@ -22,6 +27,11 @@ const Holder3 = styled.div`
   align-items: center;
   justify-content: center;
   gap: 1rem;
+
+  @media (max-width: 800px) {
+    height: fit-content;
+    margin-bottom: 5px;
+  }
 `;
 const Holder4 = styled.div`
   height: 18rem;
@@ -30,13 +40,17 @@ const Holder4 = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 1rem;
+
+  @media (max-width: 800px) {
+    //height: fit-content;
+  }
 `;
 const ErrorText = styled.span`
   color: red;
   font-family: 'Roboto';
   font-size: 16px;
 `;
-const Text = styled.p`
+const Text = styled.span`
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: 400;
@@ -44,6 +58,11 @@ const Text = styled.p`
     line-height: 37px;
     color: ${props => props.theme.colors.text};
     text-align: center;
+    margin-bottom: 10px;
+
+    @media (max-width: 800px) {
+      font-size: 25px;
+    }
 `;
 interface PassReq{
     stage: number,
@@ -55,6 +74,18 @@ type Props = {
     title: string,
     buttonText: string
 };
+const ModifiedAuthContainer = styled(AuthContainer)`
+  height: 32rem;
+  gap: 1rem;
+  width: 45rem;
+
+  @media (max-width: 800px) {
+    width: 90vw;
+    height: fit-content;
+    gap: 0rem;
+    box-shadow: none;
+  }
+`;
 function CreatePassword({handleButtonPasword, updatePassword, title, buttonText} : Props){
     const [t1] = useTranslation("common");
     const [t2] = useTranslation("create");
@@ -137,24 +168,28 @@ function CreatePassword({handleButtonPasword, updatePassword, title, buttonText}
         setPasswordsValid(validChars && validLenght && validNums && (result.score > 2));
         
       }
-
+      
     return(
-      <AuthContainer style={{ height: '32rem', gap: '1rem', width: '45rem' }}>
+      <ModifiedAuthContainer>
         <Text>{title}</Text>
+
         <Holder2>
+
           <Holder3>
             <LoginInput inputType="Password" handleChange={passwordInput} placeHolder={t1("password")} style={{ width: '17rem', height: '3.5rem' }} passwordStyle={{ height: '3.5rem' }}></LoginInput>
             <LoginInput inputType="Password" handleChange={(event: React.ChangeEvent<HTMLInputElement>) => (setPasswordRepeat(event.target.value))} placeHolder={t1("repeatPassword")} style={{ width: '17rem', height: '3.5rem' }} passwordStyle={{ height: '3.5rem' }}></LoginInput>
             {(password != passwordRepeat && passwordRepeat != "") ? <ErrorText>{t2("passwordDoesntMatch")}</ErrorText> : null}
           </Holder3>
+
           <Holder4>
             <PasswordStrength stage={passwordLevel}></PasswordStrength>
             <PasswordReqs props={passwordMessages}></PasswordReqs>
           </Holder4>
 
         </Holder2>
+
         <Button buttonType='Solid' handleClick={handleButtonPasword} disabled={!(password == passwordRepeat && passwordsValid)} text={buttonText} style={{ width: '20rem', fontSize: '20px' }} />
-      </AuthContainer>
+      </ModifiedAuthContainer>
     )
 }
 
