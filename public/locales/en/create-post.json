@@ -1,0 +1,6 @@
+{
+    "choosePostType": "Choose post type",
+    "battleInfo": "Battle - your post will be put up against another post. Whoever has the most votes wins!",
+    "postInfo": "Post - can be seen by only your followers",
+    "geopostInfo": "Geopost - can be seen by all users in a radius chosen by you from your current location"
+}
