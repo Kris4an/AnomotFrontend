@@ -1,4 +1,6 @@
 import '../styles/globals.css'
+import '../styles/tiptapStyles.scss'
+import '../styles/images.css'
 import type { AppProps } from 'next/app'
 import { ThemeProvider } from 'styled-components';
 import theme from '../components/Theme';

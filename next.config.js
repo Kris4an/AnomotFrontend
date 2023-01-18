@@ -8,6 +8,17 @@ const nextConfig = {
     styledComponents: true,
   },
   i18n,
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'www.w3schools.com',
+        port: '1',
+        pathname: '/images/lamp.jpg',
+      },
+    ],
+  },
 }
 
 module.exports = nextConfig

@@ -1,0 +1,8 @@
+.profilePic {
+    border-radius: 10px;
+    border: none;
+}
+.postImage{
+    height: 100%;
+    width: 100%;
+}

@@ -468,25 +468,51 @@ function Content() {
     const [loginsPage, setLoginsPage] = useState(0);
     const router = useRouter();
 
-    useEffect(() => {
+    const setStageUrl = (newStage: number, a?: string) => {
+        if(stage == 1 || stage == 0) {
+            console.log(stage + " <- stage | newStage -> " + newStage + " a = " + a);
+            router.push('/settings?s='+String(newStage), undefined, { shallow: true });
+        }
+        else setStage(newStage);
+    }
+
+    const changeStageOnRouterQuery = () => {
         let s = window.location.search;
         if (s.length > 1) {
             s = s.substring(3);
-            if (s == '1' || s == '5' || s=='0') setStage(Number(s));
-            else(setStage(0));
+            console.log(s + " <- url | stage -> " + stage);
+            if (s == '1' || s=='0'){
+                if(Number(s)!=stage){
+                    setStage(Number(s));
+                }
+            }
+            else {
+                if(s!="0") setStageUrl(0);
+                else setStage(0);
+            }
             return;
         }
-        setStage(0);
+        console.log(s);
+        setStageUrl(0);
+    }
+    const [flag, setFlag] = useState(true);
+    useEffect(() => {
+        console.log('useEf query');
+        changeStageOnRouterQuery();
     }, [router.query.s]);
+
+    useEffect(() => {
+        if(flag) {
+            //console.log('onMount');
+            //changeStageOnRouterQuery();
+            //setFlag(false);
+        }
+    }, []);
 
     useEffect(() => {
         setNewEmailSuccess(true);
         setChangePasswordSuccess(true);
-    }, [newEmailPassword, changePasswordP])
-
-    useEffect(() => {
-        if(stage!=2 && stage!=3 && stage!=4) router.push('/settings?s='+String(stage));
-    }, [stage]);
+    }, [newEmailPassword, changePasswordP]);
 
     switch (stage) {
         case 0: return (
@@ -498,7 +524,7 @@ function Content() {
                             <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <StyledPath d="M18 31.5C13.6742 31.5 9.82122 29.4616 7.34996 26.2937L7.63583 26.6381C10.527 30.121 14.5776 31.5 18 31.5ZM18 31.5C22.3258 31.5 26.1788 29.4616 28.6501 26.2937L28.3642 26.6381C25.473 30.121 21.4224 31.5 18 31.5ZM7.86409 24.4999L6.7119 25.4039C5.3137 23.2775 4.5 20.7331 4.5 18C4.5 10.5484 10.5484 4.5 18 4.5C25.4516 4.5 31.5 10.5484 31.5 18C31.5 20.7331 30.6863 23.2775 29.2881 25.4039L28.1359 24.4999C25.2789 22.2583 21.7605 21.0278 18.1317 20.9987C21.7946 20.9284 24.75 17.9294 24.75 14.25C24.75 10.5266 21.7234 7.5 18 7.5C14.2766 7.5 11.25 10.5266 11.25 14.25C11.25 17.9294 14.2054 20.9284 17.8683 20.9987C14.2395 21.0278 10.7211 22.2583 7.86409 24.4999Z" stroke="#1D2440" strokeWidth="3" />
                             </svg>
-                            <OptionButton onClick={() => { setStage(1) }}>{t2("profile")}</OptionButton>
+                            <OptionButton onClick={() => { setStageUrl(1) }}>{t2("profile")}</OptionButton>
                         </MiniHolder>
                         <MiniHolder>
                             <svg width="37" height="36" viewBox="0 0 37 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -623,15 +649,7 @@ function Content() {
                             <ProfileSettingsHolder isLast={false}>
                                 <ProfileSettingsHeading>{t2("verifyEmail")}</ProfileSettingsHeading>
                                 <Button buttonType={"Solid"} text={t2("resendEmail")} handleClick={() => {
-                                    fetcherPost('/account/email/verify').then(() => {
-                                        setMessage(5);
-                                        setMessageS(true);
-                                        setStage(3);
-                                    }).catch(() => {
-                                        setMessage(5);
-                                        setMessageS(false);
-                                        setStage(3);
-                                    })
+                                    
                                 }}></Button>
                             </ProfileSettingsHolder>
 
@@ -719,7 +737,7 @@ function Content() {
                         return;
                     }
 
-                    router.push('/settings?s=1');
+                    router.push('/settings?s=1', undefined, { shallow: true });
                     window.location.reload();
                     return;
                 }} ></MessageScreen>
@@ -744,7 +762,6 @@ function Content() {
             )
         }
         case 5: {
-            console.log(pastLogins)
             return (
                 <MainHolder>
                     <Title mediaMarginTop='3rem'>{t2("security")}</Title>
@@ -775,7 +792,10 @@ function Content() {
                 </MainHolder>
             )
         }
-        default: setStage(0);
+        default: {
+            setStageUrl(0);
+            console.log("default");
+        };
     }
     return <div></div>;
 }
