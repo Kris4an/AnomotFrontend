@@ -220,7 +220,7 @@ function Content(){
                     </svg>
                 </SvgButton>
                 <SvgButton style={{width: '7rem', height: '7rem'}}>
-                    <svg style={{left: '4', position: 'absolute', scale: '170%'}} xmlns="http://www.w3.org/2000/svg" height="48" width="48">
+                    <svg style={{scale: '170%'}} xmlns="http://www.w3.org/2000/svg" height="48" width="48">
                         <StyledPath  d="M24 40 8 24l2.1-2.1 12.4 12.4V8h3v26.3l12.4-12.4L40 24Z"/>
                     </svg>
                 </SvgButton>

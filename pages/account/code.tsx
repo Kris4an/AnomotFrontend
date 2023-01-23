@@ -7,7 +7,6 @@ import styled from "styled-components";
 import instance from "../../axios_instance";
 import Button from "../../components/Button";
 import NavBar from "../../components/NavBar";
-import theme from "../../components/Theme";
 
 const MainHolder = styled.div`
     width: 100%;
@@ -41,9 +40,9 @@ const Code:NextPage = () => {
         <NavBar stage = {3}>
             <MainHolder>
                 <Text fontSize="30px">{t3("codeInfo")}</Text>
-                <QRCodeSVG value={code + ""} style={{ width: '40%', height: '40%' }} />
-                <Text fontSize="24px">{code}</Text>
-                <Button buttonType={"Solid"} text={t2("copy")} handleClick={() => {navigator.clipboard.writeText(code);}} style={{width: "30rem"}}></Button>
+                <QRCodeSVG value={"http://localhost:3000/bg/account/follow?code="+code} style={{ width: '40%', height: '40%' }} />
+                <a href={"http://localhost:3000/bg/account/follow?code="+code}><Text fontSize="24px">{"http://localhost:3000/bg/account/follow?code="+code}</Text></a>
+                <Button buttonType={"Solid"} text={t2("copy")} handleClick={() => {navigator.clipboard.writeText("http://localhost:3000/bg/account/follow?code="+code);}} style={{width: "30rem"}}></Button>
             </MainHolder>
         </NavBar>
     )

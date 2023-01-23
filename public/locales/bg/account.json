@@ -1,10 +1,12 @@
 {
-    "followes": "последователи",
+    "followers": "последователи",
     "following": "последвани",
-    "customizeProfile": "Редактирай си профила",
+    "customizeProfile": "Редактирай профила си",
     "follow": "Последвай",
     "unfollow": "Спри да следваш",
     "message": "Съобщение",
     "generateCode": "Генерирай код за следване",
-    "codeInfo": "Сканирай QR кода или копирай линка"
+    "codeInfo": "Сканирай QR кода или копирай линка",
+    "successfulFollow": "Успешно последване!",
+    "unsuccessfulFollow": "Нещо се обърка!"
 }
