@@ -1,8 +1,11 @@
+import { useTranslation } from "next-i18next";
 import { useState } from "react";
 import styled from "styled-components";
 import useSWR from "swr";
 import instance from "../axios_instance";
 import Button from "./Button";
+import Image from "next/image";
+import tempPic from "../public/tempPic.jpg";
 
 const Holder = styled.div`
     display: flex;
@@ -21,6 +24,7 @@ const Holder2 = styled.div`
     align-items: flex-start;
 `;
 const Pic = styled.div`
+    position: relative;
     border: 1px solid ${props => props.theme.colors.primary};
     border-radius: 25px;
     aspect-ratio: 1;
@@ -81,37 +85,92 @@ const UserNameText = styled.span`
     letter-spacing: 0.03em;
     color: ${props => props.theme.colors.buttonHover};
 `;
+const ButtonHolder = styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+`;
 type Props = {
     type: boolean,
-    handleClickProfile?: any
+    handleClick1: any,
+    handleClick2: any
 }
 
 
 
-function ProfilePic({type,handleClickProfile}:Props){
-    const fetcher = (url:any) => instance.get(url).then((res) => res.data).catch((res) => res.error);
-    const { data: userData, error: userDataError } = useSWR('/account/user',fetcher);
-    return(
-        <Holder>
-            <Holder2>
-                <Pic></Pic>
-                <Info>
-                    <UserNameText>{userData?.username}</UserNameText>
-                    <FollowersMainContainer>
-                        <FollowersContainer>
-                            <FollowerNumberText>300</FollowerNumberText>
-                            <FollowerText>следва</FollowerText>
-                        </FollowersContainer>
-                        <FollowersContainer>
-                            <FollowerNumberText>300</FollowerNumberText>
-                            <FollowerText>последователя</FollowerText>
-                        </FollowersContainer>
-                    </FollowersMainContainer>
-                </Info>
-            </Holder2>
-            {{type}? <Button buttonType={"Secondary"} text={"Редактирай си профила"} style={{width: '30rem'}} handleClick={handleClickProfile}></Button>:<div></div>}
-        </Holder>
-    )
+function ProfilePic({type, handleClick1, handleClick2}:Props){
+    switch (type) {
+        case true: {
+            const fetcher = (url: any) => instance.get(url).then((res) => res.data).catch((res) => res.error);
+            const { data: userData, error: userDataError } = useSWR('/account/user', fetcher);
+            const { data: followesCount, error: followesCountError } = useSWR('/account/followers/count', fetcher);
+            const { data: followingCount, error: followingCountError } = useSWR('/account/followed/count', fetcher);
+            const [t2] = useTranslation("account");
+            return (
+                <Holder>
+                    <Holder2>
+                        <Pic>
+                            <Image src={tempPic} height={128} width={128} objectFit={'cover'} className={'profilePicBig'}></Image>
+                        </Pic>
+                        <Info>
+                            <UserNameText>{userData?.username}</UserNameText>
+                            <FollowersMainContainer>
+                                <FollowersContainer>
+                                    <FollowerNumberText>{followingCount?.count}</FollowerNumberText>
+                                    <FollowerText>{t2("following")}</FollowerText>
+                                </FollowersContainer>
+                                <FollowersContainer>
+                                    <FollowerNumberText>{followesCount?.count}</FollowerNumberText>
+                                    <FollowerText>{t2("followers")}</FollowerText>
+                                </FollowersContainer>
+                            </FollowersMainContainer>
+                        </Info>
+                    </Holder2>
+                    <ButtonHolder>
+                        <Button buttonType={"Solid"} text={t2("customizeProfile")} style={{ width: '30rem' }} handleClick={handleClick1}></Button>
+                        <Button buttonType={"Secondary"} text={t2("generateCode")} style={{ width: '20rem' }} handleClick={handleClick2}></Button>
+                    </ButtonHolder>
+                    
+                </Holder>
+            )
+        }
+        case false: {
+            const fetcher = (url: any) => instance.get(url).then((res) => res.data).catch((res) => res.error);
+            const { data: userData, error: userDataError } = useSWR('/account/user', fetcher);
+            const { data: followesCount, error: followesCountError } = useSWR('/account/followers/count', fetcher);
+            const { data: followingCount, error: followingCountError } = useSWR('/account/followed/count', fetcher);
+            const [t2] = useTranslation("account");
+            return (
+                <Holder style={{width: 'auto'}}>
+                    <Holder2>
+                        <Pic>
+                            <Image src={tempPic} height={128} width={128} objectFit={'cover'} className={'profilePicBig'}></Image>
+                        </Pic>
+                        <Info>
+                            <UserNameText>{userData?.username}</UserNameText>
+                            <FollowersMainContainer>
+                                <FollowersContainer>
+                                    <FollowerNumberText>{followingCount?.count}</FollowerNumberText>
+                                    <FollowerText>{t2("following")}</FollowerText>
+                                </FollowersContainer>
+                                <FollowersContainer>
+                                    <FollowerNumberText>{followesCount?.count}</FollowerNumberText>
+                                    <FollowerText>{t2("followers")}</FollowerText>
+                                </FollowersContainer>
+                            </FollowersMainContainer>
+                        </Info>
+                    </Holder2>
+                    <ButtonHolder>
+                        <Button buttonType={"Solid"} text={t2("follow")} style={{ width: '30rem' }} handleClick={handleClick1}></Button>
+                        <Button buttonType={"Secondary"} text={t2("message")} style={{ width: '20rem' }} handleClick={handleClick2}></Button>
+                    </ButtonHolder>
+                    
+                </Holder>
+            )
+        }
+        
+    }
+    
 }
 
 

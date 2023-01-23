@@ -218,7 +218,7 @@ function Content(){
                 //console.log(res.data.mfaMethods);
               }).catch(() => {setLoginError(true);})}}/>
             <Button buttonType='Teriatary' handleClick={() => {router.push('/login/forgotten-password');}} text = {t2("forgotPassword")} style = {{scale: '80%'}}/>
-            <Button buttonType='Solid' handleClick={() => {router.push('/create-account');}} text = {t2("createAccount")} style = {{scale: '80%'}}/>
+            <Button buttonType='Solid' handleClick={() => {router.push('/account/create');}} text = {t2("createAccount")} style = {{scale: '80%'}}/>
         </ModifiedAuthContainer>
         )
       case 1:

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import MiniProfilePic from "./MiniProfilePic";
+import MiniPostHeader from "./MiniPostHeader";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import tempPic from "../public/tempPic.jpg";
@@ -92,7 +92,7 @@ function Content({name, date, title, content, imageSrc}:Props){
     },[])
     return (
         <MainHolder>
-            <MiniProfilePic name={name} date={date}></MiniProfilePic>
+            <MiniPostHeader name={name} date={date} src={""}></MiniPostHeader>
             <Text fontSize={"22px"} fontWeight={"500"}>{title}</Text>
             {content!=null? <Text2 title={"Click to expand"} fontSize={"18px"} fontWeight={"400"} isExpandable={true} isExpanded={isExpanded} onClick={() => {
                 setIsExpanded(!isExpanded);

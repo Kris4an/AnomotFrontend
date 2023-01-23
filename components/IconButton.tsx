@@ -55,9 +55,10 @@ const NotificationText = styled.div`
 
 type Props = {
     icon: string,
-    handleClick: any
+    handleClick: any,
+    style?: any
 }
-function IconButton({icon, handleClick}:Props){
+function IconButton({icon, handleClick, style}:Props){
     switch(icon){
         case 'Settings': return(
             <Button onClick={handleClick}>
@@ -67,7 +68,7 @@ function IconButton({icon, handleClick}:Props){
             </Button>
         )
         case 'Notifications': return(
-            <div>
+            <div style={style}>
                 <Button onClick={handleClick}>
                     <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <StyledPath d="M14.3 26.2V27C14.3 29.0463 15.9537 30.7 18 30.7C20.0463 30.7 21.7 29.0463 21.7 27V26.2H25.2C26.7423 26.2 28 24.9423 28 23.4C28 22.2097 27.2509 21.189 26.2 20.785V16.2C26.2 12.6533 23.9356 9.66595 20.8 8.51836V8.1C20.8 6.55771 19.5423 5.3 18 5.3C16.4577 5.3 15.2 6.55771 15.2 8.1V8.51836C12.0644 9.66595 9.8 12.6533 9.8 16.2V20.785C8.74911 21.189 8 22.2097 8 23.4C8 24.9423 9.25772 26.2 10.8 26.2H14.3ZM1 18C1 8.61628 8.61628 1 18 1C27.3837 1 35 8.61628 35 18C35 27.3837 27.3837 35 18 35C8.61628 35 1 27.3837 1 18Z" stroke="#29335C" stroke-width="2" />
@@ -91,7 +92,7 @@ function IconButton({icon, handleClick}:Props){
             </Button>
         )
     }
-    return(<div>{':('}</div>)
+    return(<></>)
 }
 
 export default IconButton

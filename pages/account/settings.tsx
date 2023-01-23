@@ -6,12 +6,12 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import useSWR from "swr";
-import instance from "../axios_instance";
-import Button from "../components/Button";
-import CreatePassword from "../components/CreatePassword";
-import LoginInput from "../components/LoginInput";
-import MessageScreen from "../components/MessageScreen";
-import NavBar from "../components/NavBar";
+import instance from "../../axios_instance";
+import Button from "../../components/Button";
+import CreatePassword from "../../components/CreatePassword";
+import LoginInput from "../../components/LoginInput";
+import MessageScreen from "../../components/MessageScreen";
+import NavBar from "../../components/NavBar";
 import { QRCodeSVG } from 'qrcode.react';
 
 const MainHolder = styled.div`
@@ -471,7 +471,7 @@ function Content() {
     const setStageUrl = (newStage: number, a?: string) => {
         if(stage == 1 || stage == 0) {
             console.log(stage + " <- stage | newStage -> " + newStage + " a = " + a);
-            router.push('/settings?s='+String(newStage), undefined, { shallow: true });
+            router.push('/account/settings?s='+String(newStage), undefined, { shallow: true });
         }
         else setStage(newStage);
     }
@@ -495,19 +495,12 @@ function Content() {
         console.log(s);
         setStageUrl(0);
     }
-    const [flag, setFlag] = useState(true);
+
     useEffect(() => {
         console.log('useEf query');
         changeStageOnRouterQuery();
     }, [router.query.s]);
 
-    useEffect(() => {
-        if(flag) {
-            //console.log('onMount');
-            //changeStageOnRouterQuery();
-            //setFlag(false);
-        }
-    }, []);
 
     useEffect(() => {
         setNewEmailSuccess(true);
@@ -533,15 +526,15 @@ function Content() {
                             <ChooseLanguage defaultValue={i18n.language} onChange={(event: any) => {
                                 switch (event.target.value) {
                                     case 'bg': {
-                                        router.push('/settings', '/settings', { locale: 'bg' });
+                                        router.push('/account/settings', '/account/settings', { locale: 'bg' });
                                         break;
                                     }
                                     case 'en': {
-                                        router.push('/settings', '/settings', { locale: 'en' });
+                                        router.push('/account/settings', '/account/settings', { locale: 'en' });
                                         break;
                                     }
                                     default: {
-                                        router.push('/settings', '/settings', { locale: 'en' });
+                                        router.push('/account/settings', '/account/settings', { locale: 'en' });
                                         break;
                                     }
                                 }
@@ -737,7 +730,7 @@ function Content() {
                         return;
                     }
 
-                    router.push('/settings?s=1', undefined, { shallow: true });
+                    router.push('/account/settings?s=1', undefined, { shallow: true });
                     window.location.reload();
                     return;
                 }} ></MessageScreen>

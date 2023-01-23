@@ -194,11 +194,11 @@ const MenuBar = ({editor}: any) => {
         </StyledSvg>
       </Button>
 
-      <Button onClick={addImage} disabled={false}>
+      {/* <Button onClick={addImage} disabled={false}>
         <StyledSvg width="27" height="28" viewBox="0 0 27 28" fill="none" xmlns="http://www.w3.org/2000/svg">
           <StyledPath d="M27 24.5V3.5C27 1.85 25.65 0.5 24 0.5H3C1.35 0.5 0 1.85 0 3.5V24.5C0 26.15 1.35 27.5 3 27.5H24C25.65 27.5 27 26.15 27 24.5ZM8.85 16.97L12 20.765L16.65 14.78C16.95 14.39 17.55 14.39 17.85 14.795L23.115 21.815C23.1986 21.9264 23.2495 22.0589 23.262 22.1976C23.2745 22.3364 23.2481 22.4758 23.1858 22.6004C23.1235 22.725 23.0278 22.8298 22.9093 22.903C22.7908 22.9762 22.6543 23.015 22.515 23.015H4.53C3.9 23.015 3.555 22.295 3.945 21.8L7.68 17C7.965 16.61 8.535 16.595 8.85 16.97Z" fill="#29335C" />
         </StyledSvg>
-      </Button>
+      </Button> */}
 
       <Button onClick={editor.isActive('link')? () => editor.chain().focus().unsetLink().run(): setLink} isActive={editor.isActive('link')} disabled={!editor.can().chain().focus().toggleLink().run()}>
         <StyledSvg width="31" height="16" viewBox="0 0 31 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -208,17 +208,22 @@ const MenuBar = ({editor}: any) => {
     </MenuHolder>
   )   
 }
-
-const Tiptap = () => {
+interface Props {
+  getText: any
+}
+const Tiptap = ({getText}: Props) => {
   const [t1] = useTranslation("create-post");
   const editor = useEditor({
+    onUpdate({ editor }) {
+      getText(editor.getHTML());
+    },
     extensions: [
       StarterKit, Underline, Subscript, Superscript, CodeBlockLowlight.configure({
         lowlight,
       }), Image, Link.configure({
         //openOnClick: false,
       }), Placeholder.configure({
-        placeholder: 'zdasti'
+        placeholder: 'Type here'
       })
     ],
     content: '<div spellcheck="false"></div>',

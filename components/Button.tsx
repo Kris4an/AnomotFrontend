@@ -131,19 +131,20 @@ type Props = {
     text: string,
     style?: CSSProperties,
     ref?: any,
-    handleClick?: any
+    handleClick: any,
+    title?: string
 }
-function Button({disabled, buttonType, text, style, ref, handleClick}: Props){
+function Button({disabled, buttonType, text, style, ref, handleClick, title}: Props){
 
     switch (buttonType) {
         case "Default":
-            return(<DefaultButton onClick={handleClick} ref={ref} disabled = {disabled} style = {style}>{text}</DefaultButton>);
+            return(<DefaultButton onClick={handleClick} ref={ref} disabled = {disabled} style = {style} title={title}>{text}</DefaultButton>);
         case "Solid":
-            return(<SolidButton onClick={handleClick} ref={ref} disabled = {disabled} style = {style}>{text}</SolidButton>);
+            return(<SolidButton onClick={handleClick} ref={ref} disabled = {disabled} style = {style} title={title}>{text}</SolidButton>);
         case "Secondary":
-            return(<SecondaryButton onClick={handleClick} ref={ref} disabled = {disabled} style = {style}>{text}</SecondaryButton>);
+            return(<SecondaryButton onClick={handleClick} ref={ref} disabled = {disabled} style = {style} title={title}>{text}</SecondaryButton>);
         case "Teriatary":
-            return(<TeriataryButton onClick={handleClick} ref={ref} disabled = {disabled} style = {style}>{text}</TeriataryButton>);  
+            return(<TeriataryButton onClick={handleClick} ref={ref} disabled = {disabled} style = {style} title={title}>{text}</TeriataryButton>);  
     }
     return <button disabled = {disabled}>{text}</button>;
 ;

@@ -103,6 +103,7 @@ function Content(){
                 <LoginInput inputType = 'Email' handleChange={(event: React.ChangeEvent<HTMLInputElement>) => {setEmail(event.target.value);}} placeHolder = {t1("email")} style = {{width: '20rem', height: '3.5rem', fontSize: '20px'}}></LoginInput>
                 <Checkbox text={t2("acceptTerms")} handleChange={(event: React.ChangeEvent<HTMLInputElement>) => (setAcceptedTerms(event.target.checked))} style = {{marginBottom: '0.5rem', width: '20rem'}}></Checkbox>
                 <Button buttonType='Solid' handleClick={() => {goToPage(1);}} disabled = {!(acceptedTerms && email.length>=3 && email.includes('@'))} text = {t1("continue")} style = {{width: '20rem', fontSize: '20px'}}></Button>
+                <Button buttonType='Teriatary' handleClick={() => {goToPage(1);}} text = {t2("alrearyHaveAnAccount")} style = {{width: '18rem', fontSize: '18px'}}></Button>
             </ModifiedAuthContainer>
         )
       case 1:
@@ -129,7 +130,7 @@ function Content(){
             <MessageScreen handleClick={() => {router.push('/login');}} stage = {true} text = {t2("weSentEmail")} continueTxt = {t1("continue")}></MessageScreen>
         )
     }
-    return <div>ERROR refresh the page</div>
+    return <div>refresh the page</div>
 }
 
 export async function getStaticProps({ locale }:any) {

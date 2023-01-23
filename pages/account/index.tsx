@@ -1,12 +1,13 @@
 import { NextPage } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import router, { Router } from "next/router";
 import { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import useSWR from "swr";
-import instance from "../axios_instance";
-import IconButton from "../components/IconButton";
-import NavBar from "../components/NavBar";
-import ProfilePic from "../components/ProfilePic";
+import instance from "../../axios_instance";
+import IconButton from "../../components/IconButton";
+import NavBar from "../../components/NavBar";
+import ProfilePic from "../../components/ProfilePic";
 
 const MainHolder = styled.div`
     width: 100%;
@@ -76,9 +77,9 @@ const Account:NextPage = () => {
         <NavBar stage={3}>
             <MainHolder>
                 <UpperHolder>
-                    <ProfilePic type={true} handleClickProfile={() => {router.push('/settings?s=1')}}></ProfilePic>
+                    <ProfilePic type={true} handleClick1={() => { router.push('/account/settings?s=1'); } } handleClick2={() => {router.push('/account/code')}}></ProfilePic>
                     <IconButtonHolder>
-                        <IconButton icon={'Settings'} handleClick={() => { router.push('/settings?s=0') }} ></IconButton>
+                        <IconButton icon={'Settings'} handleClick={() => { router.push('/account/settings?s=0') }} ></IconButton>
                         <IconButton icon={'Votes'} handleClick={() => { console.log('as') }} ></IconButton>
                         <IconButton icon={'Notifications'} handleClick={() => { console.log('as') }} ></IconButton>
                     </IconButtonHolder>
@@ -98,6 +99,14 @@ const Account:NextPage = () => {
             </MainHolder>
         </NavBar>
     )
+}
+
+export async function getStaticProps({ locale }: any) {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale, ['account'])),
+        },
+    };
 }
 
 export default Account;

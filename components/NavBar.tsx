@@ -9,7 +9,7 @@ const Holder = styled.div`
     border-right: 1px solid ${props => props.theme.colors.primary};
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
     height: 100vh;
-    width: fit-content;
+    width: 48px;
     padding: 10px 5px;
     
     @media (max-width: 800px) {
@@ -45,7 +45,7 @@ function NavBar({children, stage}: Props) {
     return(
         <MainHolder>
             <Holder>
-                <Link href='/'>
+                <Link href='/battles'>
                     <a>
                         <StyledSVG width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M21.75 26.25L4.5 9V4.5H9L26.25 21.75M19.5 28.5L28.5 19.5M24 24L30 30M28.5 31.5L31.5 28.5M21.75 9.75L27 4.5H31.5V9L26.25 14.25M7.5 21L13.5 27M10.5 25.5L6 30M4.5 28.5L7.5 31.5" stroke={stage == 0 ? '#29335C' : '#69708D'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
