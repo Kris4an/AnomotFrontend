@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import router, { Router } from "next/router";
 import { useEffect, useState } from "react";
@@ -6,6 +7,7 @@ import styled, { keyframes } from "styled-components";
 import useSWR from "swr";
 import instance from "../../axios_instance";
 import IconButton from "../../components/IconButton";
+import MiniProfile from "../../components/MiniProfile";
 import NavBar from "../../components/NavBar";
 import ProfilePic from "../../components/ProfilePic";
 
@@ -66,18 +68,22 @@ const StyledPathFill = styled.path<PostButtonProps>`
     transition: all ease-in-out 300ms;
 `;
 
+
+
 const Account:NextPage = () => {
-    const fetcher = (url:any) => instance.get(url).then((res) => {console.log(res);res.data;}).catch((res) => {console.log('e'); res.error;});
-    const { data: userData, error: userDataError } = useSWR('/account/user',fetcher);
     const [postSelection, setPostSelection] = useState(true);
-    useEffect(() => {
-        fetcher('/account/user').catch(()=>{console.log('e1');});
-    },[])
+    const [overlay, setOverlay] = useState(0);
+    const fetcher = (url: any) => instance.get(url).then((res) => res.data).catch((res) => res.error);
+    const { data: userData, error: userDataError } = useSWR('/account/user', fetcher);
+    const { data: followesCount, error: followesCountError } = useSWR('/account/followers/count', fetcher);
+    const { data: followingCount, error: followingCountError } = useSWR('/account/followed/count', fetcher);
+    
     return(
         <NavBar stage={3}>
+            {overlay!=0? <Overlay buttonSelected={overlay == 1} close={() => { setOverlay(0); } } followingCount={followingCount.count} followersCount={followesCount.count}></Overlay>:<></>}
             <MainHolder>
                 <UpperHolder>
-                    <ProfilePic type={true} handleClick1={() => { router.push('/account/settings?s=1'); } } handleClick2={() => {router.push('/account/code')}}></ProfilePic>
+                    <ProfilePic src={userData?.avatarId} type={true} handleClick1={() => { router.push('/account/settings?s=1'); } } handleClick2={() => { router.push('/account/code'); } } handleClickFollowers={() => { setOverlay(1); } } handleClickFollowing={() => { setOverlay(2); } } followingCount={followingCount?.count} followersCount={followesCount?.count} username={userData?.username}></ProfilePic>
                     <IconButtonHolder>
                         <IconButton icon={'Settings'} handleClick={() => { router.push('/account/settings?s=0') }} ></IconButton>
                         <IconButton icon={'Votes'} handleClick={() => { console.log('as') }} ></IconButton>
@@ -98,6 +104,131 @@ const Account:NextPage = () => {
                 </ButtonHolder>
             </MainHolder>
         </NavBar>
+    )
+}
+
+const OverlayMainHolder = styled.div`
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    padding-top: 10vh;
+    //align-items: center;
+    justify-content: center;
+    background-color: #29335c50;//${props => props.theme.colors.primary};
+    z-index: 1;  
+`;
+const Holder = styled.div`
+    width: 40rem;
+    height: fit-content;
+    max-height: 80%;
+    min-height: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    background-color: ${props => props.theme.colors.authContainerBackground};
+    border-radius: 1rem;
+`;
+const OverlayPostButton = styled(PostButton)`
+    font-family: 'Roboto';
+    font-size: 20px;
+    line-height: 22px;
+    color: ${(props) => (props.isSelected ? props => props.theme.colors.primary : props => props.theme.colors.navBarSecondary)};
+    transition: all ease-in-out 300ms;
+`;
+
+
+interface Follower{
+    username: string,
+    id: string,
+    avatarId?: string
+}
+interface OverlayProps {
+    buttonSelected: boolean,
+    followingCount: number,
+    followersCount: number,
+    close: any,
+}
+function Overlay({buttonSelected, close, followingCount, followersCount}:OverlayProps){
+    const fetcherGetFollwers = (url: string, page: number) => instance.get(url, { params: { page: page } });
+    const [pageFollowers, setPageFollowers] = useState(0);
+    const [pageFollowing, setPageFollowing] = useState(0);
+    const [followers, setFollowers] = useState<Follower[]>([]);
+    const [following, setFollowing] = useState<Follower[]>([]);
+    useEffect(() => {
+        //fetcher('/account/user').catch(()=>{console.log('e1');});
+        fetcherGetFollwers('/account/followers', pageFollowers).then((res: any) => {setFollowers(res?.data); console.log(res?.data);}).catch((e)=>{console.log(e);});
+        fetcherGetFollwers('/account/followed', 0).then((res: any) => {setFollowing(res?.data); console.log(res?.data);}).catch((e)=>{console.log(e);});
+    },[])
+    const [isSelected, setIsSelected] = useState(buttonSelected);
+    
+    const [t2] = useTranslation("account");
+
+    const displayAnons = (cnt: number) => {
+        const anons: any = [];
+        for(let i = 0; i < cnt; i++){
+            anons.push(<MiniProfile anon={true} src={""}></MiniProfile>);
+        }
+        return anons;
+    }
+    return(
+        <OverlayMainHolder onClick={close}>
+            <Holder onClick={(e: any) => {
+                    e.stopPropagation();
+                    e.cancelBubble = true;
+                }} onScroll={(e: any) => {
+                    const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+                    if (bottom) {
+                        if(isSelected){
+                            if(followers.length % 30 != 0) return;
+                            fetcherGetFollwers('/account/followers', pageFollowers+1).then((res) => {
+                                let arr = [];
+                                arr = followers;
+                                arr = arr.concat(res?.data);
+                                setFollowers(arr);
+                            })
+                            setPageFollowers(pageFollowers+1);
+                        }
+                        else{
+                            if(following.length % 30 != 0) return;
+                            fetcherGetFollwers('/account/followed', pageFollowing+1).then((res) => {
+                                let arr = [];
+                                arr = following;
+                                arr = arr.concat(res?.data);
+                                setFollowing(arr);
+                            })
+                            setPageFollowing(pageFollowing+1);
+                        }
+                    }
+                }}>
+                <ButtonHolder>
+                    <OverlayPostButton isSelected={!isSelected} onClick={()=>{setIsSelected(false);}}>{t2("following2")}</OverlayPostButton>
+                    <OverlayPostButton isSelected={isSelected} onClick={()=>{setIsSelected(true);}}>{t2("followers2")}</OverlayPostButton>
+                </ButtonHolder>
+                {isSelected?
+                    <>
+                        {followers?.map((f: any, key: number) => {
+                            return(<MiniProfile src={f.avatarId} name={f.username} anon={false} key={key} handleClick={() => { router.push({
+                                pathname: '/user/[username]',
+                                query: { username: f.username, id: f.id },
+                              });}}></MiniProfile>)
+                        })}
+                        {displayAnons(followersCount-followers.length)}
+                    </>
+                    :
+                    <>
+                        {following.map((f: any, key: number) => {
+                            return (<MiniProfile src={f.avatarId} name={f.username} anon={false} key={key} handleClick={() => { router.push({
+                                pathname: '/user/[username]',
+                                query: { username: f.username, id: f.id },
+                              });}}></MiniProfile>)
+                        })}
+                        {displayAnons(followingCount-following.length)}
+                    </>
+                }
+            </Holder>
+        </OverlayMainHolder>
     )
 }
 

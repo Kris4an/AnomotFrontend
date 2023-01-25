@@ -44,12 +44,18 @@ const FollowersMainContainer = styled.div`
     padding: 0px;
     gap: 4rem;
 `;
-const FollowersContainer = styled.div`
+interface ContainerProps {
+    typeP: boolean
+}
+const FollowersContainer = styled.button<ContainerProps>`
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 5px;
+    background-color: transparent;
+    border: none;
+    cursor: ${props => props.typeP? 'pointer':'default'};
 `;
 const FollowerNumberText = styled.span`
     font-family: 'Roboto';
@@ -93,34 +99,49 @@ const ButtonHolder = styled.div`
 type Props = {
     type: boolean,
     handleClick1: any,
-    handleClick2: any
+    handleClick2: any,
+    handleClickFollowers?: any,
+    handleClickFollowing?: any,
+    followingCount: any,
+    followersCount: any,
+    username: string,
+    src: any
 }
+const StyledSvg = styled.svg`
+    position: absolute;
+    top: 0px;
+    left: 4px;
+`;
 
 
-
-function ProfilePic({type, handleClick1, handleClick2}:Props){
+function ProfilePic({type, handleClick1, handleClick2, handleClickFollowing, handleClickFollowers, followingCount, followersCount, username, src}:Props){
+    const [t2] = useTranslation("account");
     switch (type) {
         case true: {
-            const fetcher = (url: any) => instance.get(url).then((res) => res.data).catch((res) => res.error);
-            const { data: userData, error: userDataError } = useSWR('/account/user', fetcher);
-            const { data: followesCount, error: followesCountError } = useSWR('/account/followers/count', fetcher);
-            const { data: followingCount, error: followingCountError } = useSWR('/account/followed/count', fetcher);
-            const [t2] = useTranslation("account");
             return (
                 <Holder>
                     <Holder2>
                         <Pic>
-                            <Image src={tempPic} height={128} width={128} objectFit={'cover'} className={'profilePicBig'}></Image>
+                            {src!=null? 
+                                <Image src={process.env.NEXT_PUBLIC_SERVERURL + src} height={128} width={128} objectFit={'cover'} className={'profilePicBig'}></Image>
+                            :
+                                <StyledSvg width="120" height="120" viewBox="0 0 198 275" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0 43.5792L8.43988 40.0427C69.3165 14.5335 138.117 15.817 198 43.5792V97.1767V176C198 230.676 153.676 275 99 275C44.3238 275 0 230.676 0 176V97.1767V43.5792Z" fill="#29335C" />
+                                    <rect x="136" y="101" width="29" height="18" rx="5" fill="#F3A712" />
+                                    <rect x="43" y="100.5" width="29" height="18" rx="5" fill="#F3A712" />
+                                    <path d="M26 185C26 198.791 33.7437 212.018 47.5276 221.77C61.3116 231.521 80.0066 237 99.5 237C118.993 237 137.688 231.521 151.472 221.77C165.256 212.018 173 198.791 173 185L99.5 185L26 185Z" fill="#F3A712" />
+                                </StyledSvg>
+                            }
                         </Pic>
                         <Info>
-                            <UserNameText>{userData?.username}</UserNameText>
+                            <UserNameText>{username}</UserNameText>
                             <FollowersMainContainer>
-                                <FollowersContainer>
-                                    <FollowerNumberText>{followingCount?.count}</FollowerNumberText>
+                                <FollowersContainer typeP={true} onClick={handleClickFollowing}>
+                                    <FollowerNumberText>{followingCount}</FollowerNumberText>
                                     <FollowerText>{t2("following")}</FollowerText>
                                 </FollowersContainer>
-                                <FollowersContainer>
-                                    <FollowerNumberText>{followesCount?.count}</FollowerNumberText>
+                                <FollowersContainer typeP={true} onClick={handleClickFollowers}>
+                                    <FollowerNumberText>{followersCount}</FollowerNumberText>
                                     <FollowerText>{t2("followers")}</FollowerText>
                                 </FollowersContainer>
                             </FollowersMainContainer>
@@ -135,11 +156,6 @@ function ProfilePic({type, handleClick1, handleClick2}:Props){
             )
         }
         case false: {
-            const fetcher = (url: any) => instance.get(url).then((res) => res.data).catch((res) => res.error);
-            const { data: userData, error: userDataError } = useSWR('/account/user', fetcher);
-            const { data: followesCount, error: followesCountError } = useSWR('/account/followers/count', fetcher);
-            const { data: followingCount, error: followingCountError } = useSWR('/account/followed/count', fetcher);
-            const [t2] = useTranslation("account");
             return (
                 <Holder style={{width: 'auto'}}>
                     <Holder2>
@@ -147,14 +163,14 @@ function ProfilePic({type, handleClick1, handleClick2}:Props){
                             <Image src={tempPic} height={128} width={128} objectFit={'cover'} className={'profilePicBig'}></Image>
                         </Pic>
                         <Info>
-                            <UserNameText>{userData?.username}</UserNameText>
+                            <UserNameText>{username}</UserNameText>
                             <FollowersMainContainer>
-                                <FollowersContainer>
-                                    <FollowerNumberText>{followingCount?.count}</FollowerNumberText>
+                                <FollowersContainer typeP={false} onClick={handleClickFollowing}>
+                                    <FollowerNumberText>{followingCount}</FollowerNumberText>
                                     <FollowerText>{t2("following")}</FollowerText>
                                 </FollowersContainer>
-                                <FollowersContainer>
-                                    <FollowerNumberText>{followesCount?.count}</FollowerNumberText>
+                                <FollowersContainer typeP={false} onClick={handleClickFollowers}>
+                                    <FollowerNumberText>{followersCount}</FollowerNumberText>
                                     <FollowerText>{t2("followers")}</FollowerText>
                                 </FollowersContainer>
                             </FollowersMainContainer>

@@ -7,6 +7,7 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 import MiniProfilePic from "./MiniProfilePic";
 import Link from "next/link";
+import router from "next/router";
 
 const MainHolder = styled.div`
     position: relative;
@@ -196,14 +197,36 @@ const PostVoteButtons = styled.div`
 
     animation: 0.5s cubic-bezier(0.215, 0.610, 0.355, 1) 0s 1 ${slideInFromBottom};
 `;
-const ProfileHolder = styled.div`
+const ProfileHolder = styled.button`
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 5px;
     cursor: pointer;
+    background-color: transparent;
+    border: none;
 `;
-function Content(){
+interface MediaPost{
+    id: string,
+    type: string
+}
+interface NonSelfUser{
+    username: string,
+    id: string,
+    avatarId?: string
+}
+interface Post {
+    id: string,
+    type: string,
+    text?: string,
+    media?: MediaPost,
+    user: NonSelfUser
+}
+interface Props {
+    goldPost?: Post,
+    redPost?: Post
+}
+function Content({goldPost, redPost}:Props){
     const [t2] = useTranslation("battle");
     const [isExpanded1, setIsExpanded1] = useState(false);
     const [isExpanded2, setIsExpanded2] = useState(false);
@@ -224,12 +247,14 @@ function Content(){
                         <StyledPath  d="M24 40 8 24l2.1-2.1 12.4 12.4V8h3v26.3l12.4-12.4L40 24Z"/>
                     </svg>
                 </SvgButton>
-                <Link href='/account'>
-                    <ProfileHolder title="Gosho">
-                        <MiniProfilePic src={""} title={'Gosho'}></MiniProfilePic>
-                        <BoldText>Gosho</BoldText>
-                    </ProfileHolder>
-                </Link>
+                <ProfileHolder title="Gosho" onClick={() => {router.push({
+                                pathname: '/user/[username]',
+                                query: { username: "nz", id: "zn" },
+                              });}}>
+                    <MiniProfilePic src={""} title={'Gosho'} anon={false}></MiniProfilePic>
+                    <BoldText>Gosho</BoldText>
+                </ProfileHolder>
+                
                 
             </PostVoteButtons>:<></>}
             <HalfHolder isLeft={true} isReady={isGold==1}>

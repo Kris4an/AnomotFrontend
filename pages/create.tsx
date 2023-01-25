@@ -166,7 +166,6 @@ function Content(){
     const [overlay, setOverlay] =  useState(false);
     const [overlayStage, setOverlayStage] =  useState(0);
     const fileUpload: any = React.createRef();
-    const form: any = React.createRef();
     const [selectedFile, setSelectedFile] = useState();
     const [preview, setPreview] = useState<string>();
     const [postType, setPostType] = useState("");
@@ -268,7 +267,7 @@ function Content(){
                             {
                                 selectedPostType ?
                                     <UploadImageHolder>
-                                        <form method="post" ref={form}>
+                                        <form method="post">
                                             <CustomUpload onChange={(e: any) => {
                                                 if (!e.target.files || e.target.files.length === 0) {
                                                     setSelectedFile(undefined)

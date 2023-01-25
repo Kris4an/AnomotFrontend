@@ -8,5 +8,8 @@
     "generateCode": "Генерирай код за следване",
     "codeInfo": "Сканирай QR кода или копирай линка",
     "successfulFollow": "Успешно последване!",
-    "unsuccessfulFollow": "Нещо се обърка!"
+    "unsuccessfulFollow": "Нещо се обърка!",
+    "followers2": "Последователи",
+    "following2": "Последвани",
+    "anon": "Анонимен"
 }

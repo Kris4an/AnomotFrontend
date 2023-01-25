@@ -130,7 +130,7 @@ function Content(){
             <MessageScreen handleClick={() => {router.push('/login');}} stage = {true} text = {t2("weSentEmail")} continueTxt = {t1("continue")}></MessageScreen>
         )
     }
-    return <div>refresh the page</div>
+    return <></>
 }
 
 export async function getStaticProps({ locale }:any) {

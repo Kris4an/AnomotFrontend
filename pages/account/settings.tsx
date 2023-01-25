@@ -13,6 +13,7 @@ import LoginInput from "../../components/LoginInput";
 import MessageScreen from "../../components/MessageScreen";
 import NavBar from "../../components/NavBar";
 import { QRCodeSVG } from 'qrcode.react';
+import Image from "next/image";
 
 const MainHolder = styled.div`
     width: 100%;
@@ -218,7 +219,7 @@ const ProfileSettingsHolder = styled.div<PSHolderSettings>`
     width: 100%;
     display: flex;
     flex-direction: column;
-    //align-items: flex-start;
+    //align-items: center;
     padding: 0px 20px 30px;
     gap: 0.8rem;
     border-bottom: ${(props) => (props.isLast ? 'none' : '1px solid')};
@@ -229,7 +230,7 @@ const ProfileSettingsHeading = styled.p`
     font-style: normal;
     font-weight: 400;
     font-size: 24px;
-    line-height: 28px; 
+    line-height: 28px;
     ${props => props.theme.colors.text};
 `;
 const ProfileSettingsMainHolder = styled.div`
@@ -412,7 +413,6 @@ const SecurityText = styled.span<TextProps>`
 function Content() {
     const fetcherGetUser = (url: any) => instance.get(url).then((res) => res.data).catch((res) => res.error);
     const { data: userData, error: userDataError } = useSWR('/account/user', fetcherGetUser);
-
     const fetcherGetLogins = (page: number) => instance.get('/account/security/logins', { params: { page: page } });
     const fecherChangeUsername = (url: any, username: string) => instance.put(url, {
         "username": username
@@ -425,8 +425,8 @@ function Content() {
     const fetcherMfa = (url: any, isMfaEnabled: boolean) => instance.put(url, {
         "isMfaEnabled": isMfaEnabled
     });
-    const fetcherGetMfaStatus = (password: string) => instance.post('/account/mfa/status', {
-        'email': userData?.email,
+    const fetcherGetMfaStatus = (password: string, email: any) => instance.post('/account/mfa/status', {
+        'email': email,
         'password': password
     });
     const fetcherChangePassword = (oldPassword: string, newPassword: string) => instance.put("/account/password", {
@@ -440,6 +440,11 @@ function Content() {
             'password': password
         }
     });
+    const uploadFileFetcher = (url:string, formData: any) => instance.post(url, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+          },
+    }).then((res:any) => {console.log(res)}).catch((e:any) => {console.log(e)});
 
 
     const [t1] = useTranslation("common");
@@ -459,6 +464,8 @@ function Content() {
     const [recoveryCodes, setRecoveryCodes] = useState<string[]>();
     const [deleteAccPassword, setDeleteAccPassword] = useState('');
     const { t, i18n } = useTranslation();
+    const [resendP, setResendP] = useState("");
+    const [resendS, setResendS] = useState(true);
     interface TotpRes {
         "secret": string,
         "uri": string
@@ -467,10 +474,12 @@ function Content() {
     const [pastLogins, setPastLogins] = useState([]);
     const [loginsPage, setLoginsPage] = useState(0);
     const router = useRouter();
+    //const fileUpload: any = React.createRef();
+    const [selectedFile, setSelectedFile] = useState();
+    const [preview, setPreview] = useState<string>();
 
     const setStageUrl = (newStage: number, a?: string) => {
         if(stage == 1 || stage == 0) {
-            console.log(stage + " <- stage | newStage -> " + newStage + " a = " + a);
             router.push('/account/settings?s='+String(newStage), undefined, { shallow: true });
         }
         else setStage(newStage);
@@ -480,7 +489,6 @@ function Content() {
         let s = window.location.search;
         if (s.length > 1) {
             s = s.substring(3);
-            console.log(s + " <- url | stage -> " + stage);
             if (s == '1' || s=='0'){
                 if(Number(s)!=stage){
                     setStage(Number(s));
@@ -492,12 +500,10 @@ function Content() {
             }
             return;
         }
-        console.log(s);
         setStageUrl(0);
     }
 
     useEffect(() => {
-        console.log('useEf query');
         changeStageOnRouterQuery();
     }, [router.query.s]);
 
@@ -506,6 +512,18 @@ function Content() {
         setNewEmailSuccess(true);
         setChangePasswordSuccess(true);
     }, [newEmailPassword, changePasswordP]);
+
+    useEffect(() => {
+        if (!selectedFile) {
+            setPreview(undefined)
+            return
+        }
+
+        const objectUrl = URL.createObjectURL(selectedFile)
+        setPreview(objectUrl)
+
+        return () => URL.revokeObjectURL(objectUrl)
+    }, [selectedFile])
 
     switch (stage) {
         case 0: return (
@@ -583,7 +601,7 @@ function Content() {
                         </MiniHolder>
                     </Options>
                     <Others>
-                        <Button buttonType={"Teriatary"} text={t2("terms")} handleClick={() => { fetcherGetLogins(0).then((res: any) => { console.log(res?.data) }) }} style={{ width: 'fit-content', padding: '0px', height: 'fit-content' }}></Button>
+                        <Button buttonType={"Teriatary"} text={t2("terms")} handleClick={() => { }} style={{ width: 'fit-content', padding: '0px', height: 'fit-content' }}></Button>
                         <Button buttonType={"Teriatary"} text={t2("policy")} handleClick={() => { }} style={{ width: 'fit-content', padding: '0px', height: 'fit-content' }}></Button>
                         <Button buttonType={"Teriatary"} text={t2("openSource")} handleClick={() => { }} style={{ width: 'fit-content', padding: '0px', height: 'fit-content' }}></Button>
                         <Version>{t2("version")} 0.0.0</Version>
@@ -592,11 +610,63 @@ function Content() {
             </MainHolder>
         )
         case 1: {
+            const UploadFileButtonText = styled.span`
+                font-size: 20px;
+                font-family: 'Roboto';
+                color: ${props => props.theme.colors.secondary};
+            `;
+            const CustomUpload = styled.label`
+                align-self: center;
+                width: 10rem;
+                height: 10rem;
+                position: relative;
+                display: flex;
+                flex-direction: row;
+                gap: 1rem;
+                align-items: center;
+                cursor: pointer;
+
+                &:hover ${UploadFileButtonText}{
+                    text-decoration: underline;
+                }
+            `;
+
             return (
                 <MainHolder>
                     <Title mediaMarginTop='3rem'>{t2("profile")}</Title>
                     <ScrollHolder>
                         <ProfileSettingsMainHolder>
+                            <ProfileSettingsHolder isLast={false}>
+                                <ProfileSettingsHeading>{t2("profilePic")}</ProfileSettingsHeading>
+                                <form method="post" style={{display: 'flex', justifyContent: 'center'}}>
+                                    <CustomUpload onChange={(e: any) => {
+                                        console.log(selectedFile);
+                                        if (!e.target.files || e.target.files.length === 0) {
+                                            setSelectedFile(undefined)
+                                            return;
+                                        }
+
+                                        setSelectedFile(e.target.files[0])
+                                    }}>
+                                        {<div style={{ display: !selectedFile ? 'flex' : 'none', flexDirection: 'column', gap: '3rem', alignItems: 'center' }}>
+                                            <input type="file" name="file" style={{ display: 'none' }} accept={"image/png, image/jpeg, image/webp, image/heif, image/heic"} />
+                                            <svg style={{ scale: '200%' }} xmlns="http://www.w3.org/2000/svg" height="48" width="48">
+                                                <path d="M9 42q-1.25 0-2.125-.875T6 39V9q0-1.25.875-2.125T9 6h20.45v3H9v30h30V18.6h3V39q0 1.25-.875 2.125T39 42Zm26-24.9v-4.05h-4.05v-3H35V6h3v4.05h4.05v3H38v4.05ZM12 33.9h24l-7.2-9.6-6.35 8.35-4.7-6.2ZM9 9v30V9Z" />
+                                            </svg>
+                                            <UploadFileButtonText>{t2("uploadFile")}</UploadFileButtonText>
+                                        </div>}
+
+                                        {selectedFile && <Image src={preview!} objectFit={'contain'} layout={'fill'} />}
+                                    </CustomUpload>
+                                </form>
+                                <Button disabled={!selectedFile} buttonType={"Solid"} text={t1("save")} handleClick={() => {
+                                    // let file = fileUpload.current.files[0];
+                                    // const formData = new FormData();
+                                    // formData.append('file', file, file.name);
+                                    // uploadFileFetcher('/account/avatar', formData);
+                                }}></Button>
+                            </ProfileSettingsHolder>
+
                             <ProfileSettingsHolder isLast={false}>
                                 <ProfileSettingsHeading>{t2("username")}</ProfileSettingsHeading>
                                 <LoginInput inputType={"Text"} placeHolder={t2("newUsername")} style={{ width: '100%', height: '3.5rem', fontSize: '20px' }} handleChange={(event: React.ChangeEvent<HTMLInputElement>) => { setNewUsername(event.currentTarget.value) }}></LoginInput>
@@ -623,8 +693,6 @@ function Content() {
                                         setMessageS(true);
                                         setStage(3);
                                     }).catch((e) => {
-                                        console.log(e);
-                                        console.log(newEmail + " " + newEmailPassword)
                                         setNewEmailSuccess(false);
                                     })
                                 }}></Button>
@@ -635,15 +703,20 @@ function Content() {
                                 <ProfileSettingsHeading>{t1("password")}</ProfileSettingsHeading>
                                 <ProfileSettingsText>{t2("changePasswordText")}</ProfileSettingsText>
                                 <LoginInput inputType={"Password"} placeHolder={t1("password")} handleChange={(event: React.ChangeEvent<HTMLInputElement>) => { setChangePasswordP(event.currentTarget.value) }} style={{ width: '100%', height: '3.5rem', fontSize: '20px' }} passwordStyle={{ height: '3.5rem' }}></LoginInput>
-                                <Button buttonType={"Solid"} disabled={changePasswordP.length < 1} text={t1("continue")} handleClick={() => { fetcherGetMfaStatus(changePasswordP).then(() => { setStage(2) }).catch(() => { setChangePasswordSuccess(false); }) }}></Button>
+                                <Button buttonType={"Solid"} disabled={changePasswordP.length < 1} text={t1("continue")} handleClick={() => { fetcherGetMfaStatus(changePasswordP, userData?.email).then(() => { setStage(2) }).catch(() => { setChangePasswordSuccess(false); }) }}></Button>
                                 {changePasswordSuccess ? null : <ErrorMessage>{t2("errorMessage")}</ErrorMessage>}
                             </ProfileSettingsHolder>
 
                             <ProfileSettingsHolder isLast={false}>
                                 <ProfileSettingsHeading>{t2("verifyEmail")}</ProfileSettingsHeading>
-                                <Button buttonType={"Solid"} text={t2("resendEmail")} handleClick={() => {
-                                    
+                                <LoginInput inputType={"Password"} placeHolder={t1("password")} handleChange={(event: React.ChangeEvent<HTMLInputElement>) => { setResendP(event.currentTarget.value) }} style={{ width: '100%', height: '3.5rem', fontSize: '20px' }} passwordStyle={{ height: '3.5rem' }}></LoginInput>
+                                <Button buttonType={"Solid"} text={t2("resendEmail")} disabled={resendP.length<1} handleClick={() => {
+                                    fetcherGetMfaStatus(resendP, userData?.email).then(() => { 
+                                        setMessage(5);
+                                        setMessageS(true);
+                                        setStage(3) }).catch((e) => { setResendS(false); console.log(e) })
                                 }}></Button>
+                                {resendS ? null : <ErrorMessage>{t2("errorMessage")}</ErrorMessage>}    
                             </ProfileSettingsHolder>
 
                             <ProfileSettingsHolder isLast={false}>
@@ -787,7 +860,6 @@ function Content() {
         }
         default: {
             setStageUrl(0);
-            console.log("default");
         };
     }
     return <div></div>;

@@ -8,5 +8,8 @@
     "generateCode": "Generate follow code",
     "codeInfo": "Scan the QR code or copy the link",
     "successfulFollow": "Succseful follow!",
-    "unsuccessfulFollow": "Something went wrong!"
+    "unsuccessfulFollow": "Something went wrong!",
+    "followes2": "Followes",
+    "following2": "Following",
+    "anon": "Anonymous"
 }

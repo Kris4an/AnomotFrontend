@@ -38,7 +38,7 @@ const Code:NextPage = () => {
 
     return(
         <NavBar stage = {3}>
-            <MainHolder>
+            <MainHolder>    
                 <Text fontSize="30px">{t3("codeInfo")}</Text>
                 <QRCodeSVG value={"http://localhost:3000/bg/account/follow?code="+code} style={{ width: '40%', height: '40%' }} />
                 <a href={"http://localhost:3000/bg/account/follow?code="+code}><Text fontSize="24px">{"http://localhost:3000/bg/account/follow?code="+code}</Text></a>
