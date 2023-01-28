@@ -37,13 +37,13 @@ const Holder2 = styled.div`
 interface Props{
     name: string,
     date: string,
-    src: string
+    src: string | null
 }
 function Content({name, date, src}:Props){
     const { t, i18n } = useTranslation();
     return(
         <MainHolder>
-            <MiniProfilePic src={src}></MiniProfilePic>
+            <MiniProfilePic src={src} anon={false}></MiniProfilePic>
             <Holder2>
                 <Text fontSize={"14px"}>{new Intl.DateTimeFormat(i18n.language, { timeStyle: 'short', dateStyle: 'medium' }).format(new Date(date))}</Text>
                 <Text fontSize={"18px"}>{name}</Text>

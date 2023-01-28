@@ -77,6 +77,10 @@ const Account:NextPage = () => {
     const { data: userData, error: userDataError } = useSWR('/account/user', fetcher);
     const { data: followesCount, error: followesCountError } = useSWR('/account/followers/count', fetcher);
     const { data: followingCount, error: followingCountError } = useSWR('/account/followed/count', fetcher);
+
+    useEffect(() => {
+        console.log(userData?.avatarId)
+    },[])
     
     return(
         <NavBar stage={3}>
@@ -177,31 +181,31 @@ function Overlay({buttonSelected, close, followingCount, followersCount}:Overlay
             <Holder onClick={(e: any) => {
                     e.stopPropagation();
                     e.cancelBubble = true;
-                }} onScroll={(e: any) => {
-                    const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-                    if (bottom) {
-                        if(isSelected){
-                            if(followers.length % 30 != 0) return;
-                            fetcherGetFollwers('/account/followers', pageFollowers+1).then((res) => {
-                                let arr = [];
-                                arr = followers;
-                                arr = arr.concat(res?.data);
-                                setFollowers(arr);
-                            })
-                            setPageFollowers(pageFollowers+1);
-                        }
-                        else{
-                            if(following.length % 30 != 0) return;
-                            fetcherGetFollwers('/account/followed', pageFollowing+1).then((res) => {
-                                let arr = [];
-                                arr = following;
-                                arr = arr.concat(res?.data);
-                                setFollowing(arr);
-                            })
-                            setPageFollowing(pageFollowing+1);
-                        }
+            }} onScroll={(e: any) => {
+                const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+                if (bottom) {
+                    if (isSelected) {
+                        if (followers.length % 30 != 0) return;
+                        fetcherGetFollwers('/account/followers', pageFollowers + 1).then((res) => {
+                            let arr = [];
+                            arr = followers;
+                            arr = arr.concat(res?.data);
+                            setFollowers(arr);
+                            setPageFollowers(pageFollowers + 1);
+                        })
                     }
-                }}>
+                    else {
+                        if (following.length % 30 != 0) return;
+                        fetcherGetFollwers('/account/followed', pageFollowing + 1).then((res) => {
+                            let arr = [];
+                            arr = following;
+                            arr = arr.concat(res?.data);
+                            setFollowing(arr);
+                            setPageFollowing(pageFollowing + 1);
+                        }) 
+                    }
+                }
+            }}>
                 <ButtonHolder>
                     <OverlayPostButton isSelected={!isSelected} onClick={()=>{setIsSelected(false);}}>{t2("following2")}</OverlayPostButton>
                     <OverlayPostButton isSelected={isSelected} onClick={()=>{setIsSelected(true);}}>{t2("followers2")}</OverlayPostButton>

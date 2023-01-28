@@ -12,10 +12,8 @@ const nextConfig = {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'www.w3schools.com',
-        port: '1',
-        pathname: '/images/lamp.jpg',
+        protocol: 'http',
+        hostname: 'localhost',
       },
     ],
   },

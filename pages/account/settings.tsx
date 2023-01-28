@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import router, { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import useSWR from "swr";
@@ -14,6 +14,8 @@ import MessageScreen from "../../components/MessageScreen";
 import NavBar from "../../components/NavBar";
 import { QRCodeSVG } from 'qrcode.react';
 import Image from "next/image";
+import ReactCrop, { Crop } from "react-image-crop";
+import 'react-image-crop/dist/ReactCrop.css'
 
 const MainHolder = styled.div`
     width: 100%;
@@ -440,10 +442,15 @@ function Content() {
             'password': password
         }
     });
-    const uploadFileFetcher = (url:string, formData: any) => instance.post(url, formData, {
+    const uploadFileFetcher = (url:string, formData: any, left: number, top: number, cropSize: number) => instance.post(url, formData, {
         headers: {
             "Content-Type": "multipart/form-data",
           },
+        params: {
+            left: Math.floor(left),
+            top: Math.floor(top),
+            cropSize: Math.floor(cropSize)
+        }
     }).then((res:any) => {console.log(res)}).catch((e:any) => {console.log(e)});
 
 
@@ -474,11 +481,19 @@ function Content() {
     const [pastLogins, setPastLogins] = useState([]);
     const [loginsPage, setLoginsPage] = useState(0);
     const router = useRouter();
-    //const fileUpload: any = React.createRef();
     const [selectedFile, setSelectedFile] = useState();
     const [preview, setPreview] = useState<string>();
+    const [fileState, setFileState] = useState<File>();
+    const [crop, setCrop] = useState<Crop>({
+        unit: 'px', // Can be 'px' or '%'
+        x: 0,
+        y: 0,
+        width: 225,
+        height: 225
+    })
+    const imgRef = useRef<any>()
 
-    const setStageUrl = (newStage: number, a?: string) => {
+    const setStageUrl = (newStage: number) => {
         if(stage == 1 || stage == 0) {
             router.push('/account/settings?s='+String(newStage), undefined, { shallow: true });
         }
@@ -617,12 +632,13 @@ function Content() {
             `;
             const CustomUpload = styled.label`
                 align-self: center;
-                width: 10rem;
-                height: 10rem;
+                width: 3rem;
+                //height: fit-content;
                 position: relative;
                 display: flex;
                 flex-direction: row;
-                gap: 1rem;
+                justify-content: center;
+                //gap: 1rem;
                 align-items: center;
                 cursor: pointer;
 
@@ -630,6 +646,9 @@ function Content() {
                     text-decoration: underline;
                 }
             `;
+            const StyledPath = styled.path`
+                fill: ${props => props.theme.colors.primary};
+            `
 
             return (
                 <MainHolder>
@@ -640,7 +659,6 @@ function Content() {
                                 <ProfileSettingsHeading>{t2("profilePic")}</ProfileSettingsHeading>
                                 <form method="post" style={{display: 'flex', justifyContent: 'center'}}>
                                     <CustomUpload onChange={(e: any) => {
-                                        console.log(selectedFile);
                                         if (!e.target.files || e.target.files.length === 0) {
                                             setSelectedFile(undefined)
                                             return;
@@ -648,22 +666,35 @@ function Content() {
 
                                         setSelectedFile(e.target.files[0])
                                     }}>
-                                        {<div style={{ display: !selectedFile ? 'flex' : 'none', flexDirection: 'column', gap: '3rem', alignItems: 'center' }}>
-                                            <input type="file" name="file" style={{ display: 'none' }} accept={"image/png, image/jpeg, image/webp, image/heif, image/heic"} />
+                                        {<div style={{ display: !selectedFile ? 'flex' : 'none', flexDirection: 'column', gap: '1.5rem', alignItems: 'center' }}>
+                                            <input type="file" name="file" style={{ display: 'none' }} onChange={(e) => {if(e.target.files!=null) setFileState(e.target.files[0])}} accept={"image/png, image/jpeg, image/webp, image/heif, image/heic"} />
                                             <svg style={{ scale: '200%' }} xmlns="http://www.w3.org/2000/svg" height="48" width="48">
-                                                <path d="M9 42q-1.25 0-2.125-.875T6 39V9q0-1.25.875-2.125T9 6h20.45v3H9v30h30V18.6h3V39q0 1.25-.875 2.125T39 42Zm26-24.9v-4.05h-4.05v-3H35V6h3v4.05h4.05v3H38v4.05ZM12 33.9h24l-7.2-9.6-6.35 8.35-4.7-6.2ZM9 9v30V9Z" />
+                                                <StyledPath d="M9 42q-1.25 0-2.125-.875T6 39V9q0-1.25.875-2.125T9 6h20.45v3H9v30h30V18.6h3V39q0 1.25-.875 2.125T39 42Zm26-24.9v-4.05h-4.05v-3H35V6h3v4.05h4.05v3H38v4.05ZM12 33.9h24l-7.2-9.6-6.35 8.35-4.7-6.2ZM9 9v30V9Z" />
                                             </svg>
                                             <UploadFileButtonText>{t2("uploadFile")}</UploadFileButtonText>
                                         </div>}
 
-                                        {selectedFile && <Image src={preview!} objectFit={'contain'} layout={'fill'} />}
+                                        
                                     </CustomUpload>
+                                    {selectedFile && <ReactCrop style={{maxWidth: '30rem', maxHeight: '30rem', position: 'relative'}} aspect={1} minWidth={225} crop={crop} onChange={(_, percentCrop) => setCrop(percentCrop)}>
+                                            <img ref={imgRef} src={preview!}/>
+                                        </ReactCrop>}
                                 </form>
                                 <Button disabled={!selectedFile} buttonType={"Solid"} text={t1("save")} handleClick={() => {
-                                    // let file = fileUpload.current.files[0];
-                                    // const formData = new FormData();
-                                    // formData.append('file', file, file.name);
-                                    // uploadFileFetcher('/account/avatar', formData);
+                                    
+                                     let file = fileState;
+                                     const formData = new FormData();
+                                     if(file!=null) {formData.append('file', file, file.name);
+                                     uploadFileFetcher('/account/avatar', formData, (crop.x / 100) * imgRef.current.naturalWidth, (crop.y / 100) * imgRef.current.naturalWidth, (crop.width / 100) * imgRef.current.naturalWidth)
+                                     .then(() => {
+                                        setMessage(8);
+                                        setMessageS(true);
+                                        setStage(3);
+                                     }).catch(() => {
+                                        setMessage(8);
+                                        setMessageS(false);
+                                        setStage(3);
+                                     });}
                                 }}></Button>
                             </ProfileSettingsHolder>
 
@@ -794,8 +825,8 @@ function Content() {
             </MainHolder>
         )
         case 3: {
-            const messagesT = [t2("changeUsernameMessage1"), t2("changeEmailMessage1"), t2("changeEmail2faMessage1"), t2("changeTotp2faMessage1"), t2("changePasswordMessage1"), t3("weSentEmail"), t2("removeEmail2faMessage1"), t2("removeTotp2faMessage1")];
-            const messagesF = [t2("changeUsernameMessage0"), t2("changeEmailMessage0"), t2("changeEmail2faMessage0"), t2("changeTotp2faMessage0"), t2("changePasswordMessage0"), t2("resendVerificationEmailMessage0"), t2("removeEmail2faMessage0"), t2("removeTotp2faMessage1")];
+            const messagesT = [t2("changeUsernameMessage1"), t2("changeEmailMessage1"), t2("changeEmail2faMessage1"), t2("changeTotp2faMessage1"), t2("changePasswordMessage1"), t3("weSentEmail")                    , t2("removeEmail2faMessage1"), t2("removeTotp2faMessage1"), t2("profilePicMessage1")];
+            const messagesF = [t2("changeUsernameMessage0"), t2("changeEmailMessage0"), t2("changeEmail2faMessage0"), t2("changeTotp2faMessage0"), t2("changePasswordMessage0"), t2("resendVerificationEmailMessage0"), t2("removeEmail2faMessage0"), t2("removeTotp2faMessage1"), t2("profilePicMessage0")];
             return (
                 <MessageScreen stage={messageS} text={messageS ? messagesT[message] : messagesF[message]} continueTxt={t1("continue")} handleClick={() => {
                     if (message == 3 && messageS) {
@@ -840,8 +871,8 @@ function Content() {
                                 arr = pastLogins;
                                 arr = arr.concat(res?.data);
                                 setPastLogins(arr);
-                            });
-                            setLoginsPage(loginsPage + 1);
+                                setLoginsPage(loginsPage + 1);
+                            });    
                         }
                     }}>
                         {pastLogins?.map((log: any, key: number) =>

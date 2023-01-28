@@ -1,11 +1,7 @@
 import { useTranslation } from "next-i18next";
-import { useState } from "react";
 import styled from "styled-components";
-import useSWR from "swr";
-import instance from "../axios_instance";
 import Button from "./Button";
 import Image from "next/image";
-import tempPic from "../public/tempPic.jpg";
 
 const Holder = styled.div`
     display: flex;
@@ -99,13 +95,14 @@ const ButtonHolder = styled.div`
 type Props = {
     type: boolean,
     handleClick1: any,
-    handleClick2: any,
+    handleClick2?: any,
     handleClickFollowers?: any,
     handleClickFollowing?: any,
     followingCount: any,
     followersCount: any,
     username: string,
-    src: any
+    src: any,
+    followed?: boolean
 }
 const StyledSvg = styled.svg`
     position: absolute;
@@ -114,7 +111,7 @@ const StyledSvg = styled.svg`
 `;
 
 
-function ProfilePic({type, handleClick1, handleClick2, handleClickFollowing, handleClickFollowers, followingCount, followersCount, username, src}:Props){
+function ProfilePic({type, handleClick1, handleClick2, handleClickFollowing, handleClickFollowers, followingCount, followersCount, username, src, followed}:Props){
     const [t2] = useTranslation("account");
     switch (type) {
         case true: {
@@ -123,7 +120,7 @@ function ProfilePic({type, handleClick1, handleClick2, handleClickFollowing, han
                     <Holder2>
                         <Pic>
                             {src!=null? 
-                                <Image src={process.env.NEXT_PUBLIC_SERVERURL + src} height={128} width={128} objectFit={'cover'} className={'profilePicBig'}></Image>
+                                <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + src} height={128} width={128} objectFit={'cover'} className={'profilePicBig'}></Image>
                             :
                                 <StyledSvg width="120" height="120" viewBox="0 0 198 275" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M0 43.5792L8.43988 40.0427C69.3165 14.5335 138.117 15.817 198 43.5792V97.1767V176C198 230.676 153.676 275 99 275C44.3238 275 0 230.676 0 176V97.1767V43.5792Z" fill="#29335C" />
@@ -160,7 +157,7 @@ function ProfilePic({type, handleClick1, handleClick2, handleClickFollowing, han
                 <Holder style={{width: 'auto'}}>
                     <Holder2>
                         <Pic>
-                            <Image src={tempPic} height={128} width={128} objectFit={'cover'} className={'profilePicBig'}></Image>
+                            <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + src} height={128} width={128} objectFit={'cover'} className={'profilePicBig'}></Image>
                         </Pic>
                         <Info>
                             <UserNameText>{username}</UserNameText>
@@ -177,8 +174,8 @@ function ProfilePic({type, handleClick1, handleClick2, handleClickFollowing, han
                         </Info>
                     </Holder2>
                     <ButtonHolder>
-                        <Button buttonType={"Solid"} text={t2("follow")} style={{ width: '30rem' }} handleClick={handleClick1}></Button>
-                        <Button buttonType={"Secondary"} text={t2("message")} style={{ width: '20rem' }} handleClick={handleClick2}></Button>
+                        <Button buttonType={followed? "Secondary":"Solid"} text={followed? t2("unfollow"):t2("follow")} style={{ width: '30rem' }} handleClick={handleClick1}></Button>
+                        {/* <Button buttonType={"Secondary"} text={t2("message")} style={{ width: '20rem' }} handleClick={handleClick2}></Button> */}
                     </ButtonHolder>
                     
                 </Holder>

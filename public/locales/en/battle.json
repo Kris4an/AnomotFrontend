@@ -3,5 +3,6 @@
     "report": "Report",
     "deletePost": "Delete post",
     "checkAccount": "Check account",
-    "ban": "Ban"
+    "ban": "Ban",
+    "lookingForBattle":"Looking for battle…"
 }
