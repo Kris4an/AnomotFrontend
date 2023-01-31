@@ -1,4 +1,4 @@
-import { useEditor, EditorContent } from '@tiptap/react'
+import { useEditor, EditorContent, Editor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import styled from 'styled-components'
@@ -24,14 +24,9 @@ lowlight.registerLanguage('ts', ts)
 const Holder = styled.div`
   width: 100%;
   height: 100%;
-  flex-grow: 2;
   display: flex;
   flex-direction: column;
-  //overflow-y: scroll;
-
-  & >div {
-    height: 100%;
-  }
+  position: relative;
 `;
 const MenuHolder = styled.div`
   width: 100%;
@@ -42,9 +37,10 @@ const MenuHolder = styled.div`
   justify-content: center;
   gap: 1rem;
   border-top: 1px solid ${props => props.theme.colors.secondary};
-  //border-bottom: 1px solid ${props => props.theme.colors.secondary};
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+  position: relative;
+  bottom: 0;
 `;
 
 interface ButtonProps{
@@ -55,7 +51,7 @@ const StyledSvg = styled.svg`
 `;
 const StyledPath = styled.path<ButtonProps>`
   fill: ${props => props.isActive? props => props.theme.colors.textInverted: props => props.theme.colors.primary};
-  transition: all 300ms linear;
+  transition: all 100ms linear;
 `;
 const Button = styled.button<ButtonProps>`
   height: 36px;
@@ -67,6 +63,7 @@ const Button = styled.button<ButtonProps>`
   background-color: ${props => props.isActive? props => props.theme.colors.primary: 'transparent'};
   aspect-ratio: 1;
   border-radius: 5px;
+  cursor: pointer;
 
   transition: all 400ms ease-in-out;
 
@@ -77,6 +74,11 @@ const Button = styled.button<ButtonProps>`
     fill: ${props => props.theme.colors.buttonDisabled};
   }
 `;
+
+const StyledEditorContent = styled(EditorContent)`
+  height: 100%;
+  overflow: auto;
+`
 
 
 const MenuBar = ({editor}: any) => {
@@ -209,13 +211,13 @@ const MenuBar = ({editor}: any) => {
   )   
 }
 interface Props {
-  getText: any
+  getText: (html: string, text: string) => void
 }
 const Tiptap = ({getText}: Props) => {
   const [t1] = useTranslation("create-post");
   const editor = useEditor({
     onUpdate({ editor }) {
-      getText(editor.getHTML());
+      getText(editor.getHTML(), editor.getText());
     },
     extensions: [
       StarterKit, Underline, Subscript, Superscript, CodeBlockLowlight.configure({
@@ -223,7 +225,7 @@ const Tiptap = ({getText}: Props) => {
       }), Image, Link.configure({
         //openOnClick: false,
       }), Placeholder.configure({
-        placeholder: 'Type here'
+        placeholder: t1("typeHere")
       })
     ],
     content: '<div spellcheck="false"></div>',
@@ -231,7 +233,7 @@ const Tiptap = ({getText}: Props) => {
 
   return (
     <Holder>
-        <EditorContent editor={editor} />
+        <StyledEditorContent editor={editor} />
         <MenuBar editor={editor} />
     </Holder>
   )
