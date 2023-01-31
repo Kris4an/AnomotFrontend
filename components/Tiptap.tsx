@@ -34,13 +34,15 @@ const MenuHolder = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-items: center;
   gap: 1rem;
   border-top: 1px solid ${props => props.theme.colors.secondary};
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   position: relative;
   bottom: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
 `;
 
 interface ButtonProps{
@@ -77,7 +79,6 @@ const Button = styled.button<ButtonProps>`
 
 const StyledEditorContent = styled(EditorContent)`
   height: 100%;
-  overflow: auto;
 `
 
 
