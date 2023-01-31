@@ -4,23 +4,30 @@ const regex = new RegExp("^(" + process.env.NEXT_PUBLIC_URL_REGEX! + ")$", "i");
 
 const hook = (node: Element, data: DOMPurify.HookEvent, config: DOMPurify.Config) => {
     if (node.tagName.toLowerCase() == "a") {
-        for (let i = 0; i < node.attributes.length; i++) {
-            const attr = node.attributes[i]
-            if (attr.name.toLowerCase() === "href") {
-                if (!regex.test(attr.value)) {
-                    node.removeAttribute(attr.name)
-                }
-            }
-            if (attr.name.toLowerCase() === "target") {
-                if (attr.value !== "_blank") {
-                    node.removeAttribute(attr.name)
-                }
-            }
-            if (attr.name.toLowerCase() === "rel") {
-                if (attr.value !== "noopener noreferrer nofollow") {
-                    node.removeAttribute(attr.name)
-                }
-            }
+        const href = node.getAttribute("href")
+        const target = node.getAttribute("target")
+        const rel = node.getAttribute("rel")
+
+        // Remove any invalid values
+        if (href !== null && !regex.test(href)) {
+            node.removeAttribute("href")
+        }
+        if (target !== null && target !== "_blank") {
+            node.removeAttribute("target")
+        }
+
+        if (rel !== null && rel !== "noopener noreferrer nofollow") {
+            node.removeAttribute("rel")
+        }
+
+        // Set target and rel if they are null
+        // The href doesn't matter, since if it's not set, the <a> tag will display as normal non-clickable text
+        if (node.getAttribute("target") === null) {
+            node.setAttribute("target", "_blank")
+        }
+
+        if (node.getAttribute("rel") === null) {
+            node.setAttribute("rel", "noopener noreferrer nofollow")
         }
     } else {
         node.removeAttribute("href")
