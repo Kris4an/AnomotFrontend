@@ -1,5 +1,5 @@
 {
-    "followes": "followes",
+    "followes": "followers",
     "following": "following",
     "customizeProfile": "Customize your profile",
     "follow": "Follow",
@@ -7,9 +7,9 @@
     "message": "Message",
     "generateCode": "Generate follow code",
     "codeInfo": "Scan the QR code or copy the link",
-    "successfulFollow": "Succseful follow!",
+    "successfulFollow": "Successful follow!",
     "unsuccessfulFollow": "Something went wrong!",
-    "followes2": "Followes",
+    "followes2": "Followers",
     "following2": "Following",
     "anon": "Anonymous"
 }

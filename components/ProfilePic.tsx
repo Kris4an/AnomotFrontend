@@ -119,7 +119,7 @@ function ProfilePic({type, handleClick1, handleClick2, handleClickFollowing, han
                 <Holder>
                     <Holder2>
                         <Pic>
-                            {src!=null? 
+                            {src!="null" && src != null? 
                                 <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + src} height={128} width={128} objectFit={'cover'} className={'profilePicBig'}></Image>
                             :
                                 <StyledSvg width="120" height="120" viewBox="0 0 198 275" fill="none" xmlns="http://www.w3.org/2000/svg">
