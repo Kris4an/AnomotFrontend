@@ -6,7 +6,7 @@
     "battleOverlayInfo": "It is forbidden to show follow codes or any form of connection to the poster outside of Anomot",
     "geopostOverlayInfo1": "The post will be shown in",
     "geopostOverlayInfo2": "metre radius from your current location",
-    "uploadFile": "Upload file",
+    "uploadFile": "Upload file (.png, .jpeg, .jpg, .webp, .heic, .heif, .mp4, .mkv, .mov)",
     "textPostReq": "Text post must be at least 50 symbols",
     "successMessageP": "Success! Expect to see your post any second!",
     "successMessageB": "Success! Be aware, the battle will begin at any moment!",

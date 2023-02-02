@@ -1,6 +1,6 @@
 {
     "login": "Login",
-    "forgotPassword": "Forgot password?",
+    "forgotPassword": "Forgotten password?",
     "createAccount": "Create account",
     "errorMessage": "Your email or password are incorrect",
     "mfa": "It looks like 2-factor authentication is activated. Choose your desired method:",

@@ -70,7 +70,7 @@ const SelectionButtonMainHolder = styled.div`
 `;
 const SelectionButtonText = styled.span`
     font-family: 'Montserrat';
-    font-size: 36px;
+    font-size: 30px;
     line-height: 36px;
     color: ${props => props.theme.colors.secondary};
     text-align: center;
@@ -164,6 +164,22 @@ const CustomUpload = styled.label`
         text-decoration: underline;
     }
 `;
+
+const VideoWrapper = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`
+
+const StyledVideo = styled.video`
+    height: 100%;
+`
+
 interface MessageScreenI {
     success: boolean,
     messsage: string
@@ -178,7 +194,7 @@ function Content() {
     const [overlay, setOverlay] = useState(false);
     const [overlayStage, setOverlayStage] = useState(0);
     const fileUpload: any = React.createRef();
-    const [selectedFile, setSelectedFile] = useState();
+    const [selectedFile, setSelectedFile] = useState<File>();
     const [preview, setPreview] = useState<string>();
     const [postType, setPostType] = useState("");
     const [html, setHtml] = useState("");
@@ -294,14 +310,18 @@ function Content() {
                                                 setSelectedFile(e.target.files[0])
                                             }}>
                                                 {<div style={{ display: 'flex', flexDirection: 'column', gap: '3rem', alignItems: 'center' }}>
-                                                    <input type="file" name="file" style={{ display: 'none' }} ref={fileUpload} accept={"image/png, image/jpeg, image/webp, image/heif, image/heic, video/mp4, video/quicktime, video/x-matroska"} />
+                                                    <input type="file" name="file" style={{ display: 'none' }} ref={fileUpload} accept={".png, .jpeg, .jpg, .webp, .heic, .heif, .mp4, .mkv, .mov"} />
                                                     <svg style={{ scale: '200%' }} xmlns="http://www.w3.org/2000/svg" height="48" width="48">
                                                         <PostTypePath isSelected={true} d="M9 42q-1.25 0-2.125-.875T6 39V9q0-1.25.875-2.125T9 6h20.45v3H9v30h30V18.6h3V39q0 1.25-.875 2.125T39 42Zm26-24.9v-4.05h-4.05v-3H35V6h3v4.05h4.05v3H38v4.05ZM12 33.9h24l-7.2-9.6-6.35 8.35-4.7-6.2ZM9 9v30V9Z" />
                                                     </svg>
                                                     <UploadFileButtonText>{t2("uploadFile")}</UploadFileButtonText>
                                                 </div>}
-
-                                                {selectedFile && <Image src={preview!} objectFit={'contain'} layout={'fill'} />}
+                                                {selectedFile && 
+                                                (selectedFile.name.match(new RegExp("^(.*\.(mkv|mov|mp4))$", "i")) ? 
+                                                 <VideoWrapper><StyledVideo controls={true}>
+                                                    <source src={preview!} />
+                                                 </StyledVideo></VideoWrapper>:
+                                                 <Image src={preview!} objectFit={'contain'} layout={'fill'} />)}
                                             </CustomUpload>
                                         </form>
                                     </UploadImageHolder>
