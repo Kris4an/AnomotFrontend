@@ -316,12 +316,12 @@ function Content() {
                                                     </svg>
                                                     <UploadFileButtonText>{t2("uploadFile")}</UploadFileButtonText>
                                                 </div>}
-                                                {selectedFile && 
+                                                {(selectedFile && preview) &&
                                                 (selectedFile.name.match(new RegExp("^(.*\.(mkv|mov|mp4))$", "i")) ? 
                                                  <VideoWrapper><StyledVideo controls={true}>
-                                                    <source src={preview!} />
+                                                    <source src={preview} />
                                                  </StyledVideo></VideoWrapper>:
-                                                 <Image src={preview!} objectFit={'contain'} layout={'fill'} />)}
+                                                 <Image src={preview} objectFit={'contain'} layout={'fill'} />)}
                                             </CustomUpload>
                                         </form>
                                     </UploadImageHolder>
