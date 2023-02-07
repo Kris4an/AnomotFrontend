@@ -4,5 +4,6 @@
     "deletePost": "Delete post",
     "checkAccount": "Check account",
     "ban": "Ban",
-    "lookingForBattle":"Looking for a battle…"
+    "lookingForBattle":"Looking for a battle…",
+    "comments": "Comments"
 }

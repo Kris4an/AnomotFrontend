@@ -70,11 +70,11 @@ const Account:NextPage = () => {
                 <ProfilePic src={user?.avatarId} type={false} handleClick1={() => {
                     if(isFollowed!=undefined) switch(isFollowed){
                         case true: {
-                            fetcherPost('/unfollow', user?.id).then(() => {setIsFollowed(false)}).catch((e) => {console.log(user?.id); console.log(e)});
+                            fetcherPost('/unfollow', user?.id).then(() => {setIsFollowed(false); setFollowersCount(followersCount-1)}).catch((e) => {console.log(user?.id); console.log(e)});
                             break;
                         }
                         case false: {
-                            fetcherPost('/follow', user?.id).then(() => {setIsFollowed(true)}).catch((e) => {console.log(user?.id); console.log(e)});
+                            fetcherPost('/follow', user?.id).then(() => {setIsFollowed(true); setFollowersCount(followersCount+1)}).catch((e) => {console.log(user?.id); console.log(e)});
                             break;
                         }
                     }

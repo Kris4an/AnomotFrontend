@@ -4,5 +4,6 @@
     "deletePost": "Изтрий публикация",
     "checkAccount": "Виж профил",
     "ban": "Ограничи достъп",
-    "lookingForBattle":"Tърсим битка…"
+    "lookingForBattle":"Tърсим битка…",
+    "comments": "Коментари"
 }

@@ -4,12 +4,12 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import router, { Router } from "next/router";
 import { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import useSWR from "swr";
 import instance from "../../axios_instance";
 import IconButton from "../../components/IconButton";
 import MiniProfile from "../../components/MiniProfile";
 import NavBar from "../../components/NavBar";
 import ProfilePic from "../../components/ProfilePic";
+import useUser from "../../components/useUser";
 
 const MainHolder = styled.div`
     width: 100%;
@@ -68,26 +68,25 @@ const StyledPathFill = styled.path<PostButtonProps>`
     transition: all ease-in-out 300ms;
 `;
 
-
-
 const Account:NextPage = () => {
     const [postSelection, setPostSelection] = useState(true);
     const [overlay, setOverlay] = useState(0);
     const fetcher = (url: any) => instance.get(url).then((res) => res.data).catch((res) => res.error);
-    const { data: userData, error: userDataError } = useSWR('/account/user', fetcher);
-    const { data: followesCount, error: followesCountError } = useSWR('/account/followers/count', fetcher);
-    const { data: followingCount, error: followingCountError } = useSWR('/account/followed/count', fetcher);
-
+    const { user: userData, isError: userDataError } = useUser();
+    const [followersCount, setFollowersCount] = useState(0);
+    const [followingCount, setFollowingCount] = useState(0);
     useEffect(() => {
-        console.log(userData?.avatarId)
+        fetcher('/account/followers/count').then((res: any) => {setFollowersCount(res?.count); console.log(res?.data);}).catch((e)=>{console.log(e);});
+        fetcher('/account/followed/count').then((res: any) => {setFollowingCount(res?.count); console.log(res?.data);}).catch((e)=>{console.log(e);});
+        console.log(followersCount);
     },[])
     
     return(
         <NavBar stage={3}>
-            {overlay!=0? <Overlay buttonSelected={overlay == 1} close={() => { setOverlay(0); } } followingCount={followingCount.count} followersCount={followesCount.count}></Overlay>:<></>}
+            {overlay!=0? <Overlay buttonSelected={overlay == 1} close={() => { setOverlay(0); } } followingCount={followingCount} followersCount={followersCount}></Overlay>:<></>}
             <MainHolder>
                 <UpperHolder>
-                    <ProfilePic src={userData?.avatarId} type={true} handleClick1={() => { router.push('/account/settings?s=1'); } } handleClick2={() => { router.push('/account/code'); } } handleClickFollowers={() => { setOverlay(1); } } handleClickFollowing={() => { setOverlay(2); } } followingCount={followingCount?.count} followersCount={followesCount?.count} username={userData?.username}></ProfilePic>
+                    <ProfilePic src={userData?.avatarId} type={true} handleClick1={() => { router.push('/account/settings?s=1'); } } handleClick2={() => { router.push('/account/code'); } } handleClickFollowers={() => { setOverlay(1); } } handleClickFollowing={() => { setOverlay(2); } } followingCount={followingCount} followersCount={followersCount} username={userData?.username}></ProfilePic>
                     <IconButtonHolder>
                         <IconButton icon={'Settings'} handleClick={() => { router.push('/account/settings?s=0') }} ></IconButton>
                         <IconButton icon={'Votes'} handleClick={() => { console.log('as') }} ></IconButton>
@@ -161,9 +160,8 @@ function Overlay({buttonSelected, close, followingCount, followersCount}:Overlay
     const [followers, setFollowers] = useState<Follower[]>([]);
     const [following, setFollowing] = useState<Follower[]>([]);
     useEffect(() => {
-        //fetcher('/account/user').catch(()=>{console.log('e1');});
         fetcherGetFollwers('/account/followers', pageFollowers).then((res: any) => {setFollowers(res?.data); console.log(res?.data);}).catch((e)=>{console.log(e);});
-        fetcherGetFollwers('/account/followed', 0).then((res: any) => {setFollowing(res?.data); console.log(res?.data);}).catch((e)=>{console.log(e);});
+        fetcherGetFollwers('/account/followed', pageFollowing).then((res: any) => {setFollowing(res?.data); console.log(res?.data);}).catch((e)=>{console.log(e);});
     },[])
     const [isSelected, setIsSelected] = useState(buttonSelected);
     
@@ -176,6 +174,7 @@ function Overlay({buttonSelected, close, followingCount, followersCount}:Overlay
         }
         return anons;
     }
+    // TODO: Warning / Възможен проблем при визуализацията на повече от 30 профила
     return(
         <OverlayMainHolder onClick={close}>
             <Holder onClick={(e: any) => {
@@ -218,6 +217,7 @@ function Overlay({buttonSelected, close, followingCount, followersCount}:Overlay
                                 query: { username: f.username, id: f.id },
                               });}}></MiniProfile>)
                         })}
+                        {/* Възможен проблем при визуализацията на повече от 30 профила */}
                         {displayAnons(followersCount-followers.length)}
                     </>
                     :

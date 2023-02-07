@@ -2,9 +2,24 @@ import styled from "styled-components";
 import MiniPostHeader from "./MiniPostHeader";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import tempPic from "../public/tempPic.jpg";
-import tempPic2 from "../public/tempPic2.webp";
 import instance from "../axios_instance";
+import { sanitizeHtml } from "../sanitize";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Subscript from '@tiptap/extension-subscript';
+import Superscript from '@tiptap/extension-superscript';
+import { lowlight } from 'lowlight/lib/core'
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import css from 'highlight.js/lib/languages/css'
+import js from 'highlight.js/lib/languages/javascript'
+import ts from 'highlight.js/lib/languages/typescript'
+import html from 'highlight.js/lib/languages/xml'
+import Underline from "@tiptap/extension-underline";
+
+lowlight.registerLanguage('html', html)
+lowlight.registerLanguage('css', css)
+lowlight.registerLanguage('js', js)
+lowlight.registerLanguage('ts', ts)
 
 const MainHolder = styled.div`
     width: 40rem;
@@ -69,7 +84,15 @@ const Likes = styled.span`
     &:hover {
         text-decoration: underline;
     }
-`
+`;
+const StyledVideo = styled.video`
+    width: 100%;
+`;
+const VideoHolder = styled.div`
+    position: relative;
+    width: 100%;
+    height: fit-content;
+`;
 interface MediaPost{
     id: string,
     type: string
@@ -95,16 +118,38 @@ interface Props {
 function Content({post}:Props){
     const fetcherPost = (url: string, id: any) => instance.post(url, null, { params: { id: id } });
     const [liked, setLiked] = useState(post.hasUserLiked);
-    useEffect(() => {
-        console.log(post);
-        console.log(post.id+ ": " +liked);
-    },[])
+    let textHTML = "";
+    if(post.type == "TEXT" && post.text != null){
+        textHTML = sanitizeHtml(post?.text);
+    }
+    const editor = useEditor({
+        extensions: [
+          StarterKit, Underline, Subscript, Superscript, CodeBlockLowlight.configure({
+            lowlight,
+          })
+        ],
+        content: textHTML,
+      })
     return (
         <MainHolder>
             <MiniPostHeader name={post?.poster?.username + ""} date={post.creationDate} src={post.poster?.avatarId != undefined ? post.poster?.avatarId : null}></MiniPostHeader>
-            <ImageHolder>
-                <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + post?.media?.id} objectFit={"contain"} layout={"fill"}></Image>
-            </ImageHolder>
+            {
+                post.type == "MEDIA"?
+                        post.media?.type=="IMAGE"?
+                            <ImageHolder>
+                                <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + post?.media?.id} objectFit={"contain"} layout={"fill"}></Image>
+                            </ImageHolder>
+                            :
+                            <VideoHolder>
+                               <StyledVideo controls={true}>
+                                <source src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + post?.media?.id} />
+                                </StyledVideo> 
+                            </VideoHolder> 
+                :
+                // <div dangerouslySetInnerHTML={{__html: textHTML}} />
+                <EditorContent editor={editor} readOnly={true}/>
+            }
+            
             <ButtonHolder>
                 <SVGButton onClick={() => {
                     console.log(liked);

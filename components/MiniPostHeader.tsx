@@ -37,16 +37,18 @@ const Holder2 = styled.div`
 interface Props{
     name: string,
     date: string,
-    src: string | null
+    src: string | null,
+    anon?: boolean
 }
-function Content({name, date, src}:Props){
+function Content({name, date, src, anon}:Props){
     const { t, i18n } = useTranslation();
+    const [t2] = useTranslation("account");
     return(
         <MainHolder>
-            <MiniProfilePic src={src} anon={false}></MiniProfilePic>
+            <MiniProfilePic src={src} anon={anon !== undefined? anon:false}></MiniProfilePic>
             <Holder2>
                 <Text fontSize={"14px"}>{new Intl.DateTimeFormat(i18n.language, { timeStyle: 'short', dateStyle: 'medium' }).format(new Date(date))}</Text>
-                <Text fontSize={"18px"}>{name}</Text>
+                <Text fontSize={"18px"}>{anon? t2("anon"):name}</Text>
             </Holder2>
         </MainHolder>
     )

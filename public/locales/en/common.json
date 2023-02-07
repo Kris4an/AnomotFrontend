@@ -6,5 +6,8 @@
     "userName": "User name",
     "skip": "Skip",
     "settings": "Settings",
-    "save": "Save"
+    "save": "Save",
+    "edited": "Edited",
+    "deleted": "Deleted",
+    "typeSomething": "Type something…"
 }

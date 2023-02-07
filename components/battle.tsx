@@ -10,6 +10,10 @@ import Link from "next/link";
 import router from "next/router";
 import instance from "../axios_instance";
 import next from "next";
+import EComment from "./EComment";
+import Comment from "./Comment";
+import CommentInput from "./CommentInput";
+import useUser from "./useUser";
 
 const MainHolder = styled.div`
     position: relative;
@@ -47,18 +51,18 @@ const HalfHolder = styled.div<ButtonProps>`
     width: 100%;
     padding-bottom: 4.5rem;
     border-left: 1px solid;
-    border-color: ${props => props.isLeft? 'transparent':props => props.theme.colors.primary};
+    border-color: ${props => props.isLeft ? 'transparent' : props => props.theme.colors.primary};
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     
-    animation-duration: 1s;// ${props => props.isReady? '1s':'0s'};
-    animation-name:  ${props => props.isLeft? shadowFlashGold:shadowFlashRed}; ;
+    animation-duration: 1s;// ${props => props.isReady ? '1s' : '0s'};
+    animation-name:  ${props => props.isLeft ? shadowFlashGold : shadowFlashRed}; ;
     animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1);
     animation-delay: 0s;
     animation-iteration-count: 1;
-    animation-play-state: ${props => props.isReady? 'running':'paused'};;
+    animation-play-state: ${props => props.isReady ? 'running' : 'paused'};;
 `;
 interface ButtonProps {
     isExpanded?: boolean,
@@ -69,7 +73,7 @@ const ButtonHolder = styled.div<ButtonProps>`
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: ${props => props.isExpanded? '10rem':'4.5rem'};
+    height: ${props => props.isExpanded ? '10rem' : '4.5rem'};
     box-shadow: 7px 0px 15px ${props => props.theme.colors.authContainerShadow};
     background-color: ${props => props.theme.colors.secondaryButtonBackground};
     transition: all 0.4s ease-in-out;
@@ -78,7 +82,7 @@ const ButtonHolder = styled.div<ButtonProps>`
     align-items: flex-start;
     justify-content: center;
     padding-top: 0.5rem;
-    border-radius: ${props => props.isLeft? '10px 0px 0px 0px;':'0px 10px 0px 0px;'};
+    border-radius: ${props => props.isLeft ? '10px 0px 0px 0px;' : '0px 10px 0px 0px;'};
 `;
 const BoldText = styled.span`
     font-family: 'Roboto';
@@ -109,10 +113,10 @@ const VoteButton = styled.button<ButtonProps>`
         fill: ${props => props.theme.colors.secondary};
     }
     &:active ${BoldText}{
-        color: ${props => props.isLeft? '#F3A712;':'red'};
+        color: ${props => props.isLeft ? '#F3A712;' : 'red'};
     }
     &:active ${StyledPath}{
-        fill: ${props => props.isLeft? '#F3A712;':'red'};
+        fill: ${props => props.isLeft ? '#F3A712;' : 'red'};
     }
     &:disabled ${BoldText}{
         color: ${props => props.theme.colors.buttonDisabled};
@@ -129,7 +133,7 @@ const ExpandButton = styled.button<ButtonProps>`
     position: absolute;
     left: 1.5rem;   
     transition: transform 0.3s ease-in;
-    transform: ${props => props.isExpanded? 'rotate(180deg)':'rotate(0deg)'};
+    transform: ${props => props.isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'};
 `;
 const ExpandedHolder = styled.div`
     display: flex;
@@ -209,15 +213,67 @@ const ProfileHolder = styled.button`
     border: none;
 `;
 const ImageHolder = styled.div`
-position: relative;
+    position: relative;
     width: 100%;
     height: 100%;
 `;
-interface MediaPost{
+const slideInFromBottomComments = keyframes`
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(0%);
+    }
+`;
+const CommentsMainHolder = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: ${props => props.theme.colors.secondaryButtonBackground};
+    padding-top: 5px;
+    z-index: 2;
+    animation: 0.7s cubic-bezier(0.215, 0.610, 0.355, 1) 0s 1 ${slideInFromBottomComments};
+`;
+const UpperCommentHolder = styled.div`
+    padding-left: 10px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+`;
+const CommentHeader = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+`;
+const CommentTitle = styled.span`
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 36px;
+    line-height: 42px;
+    display: flex;
+    align-items: flex-end;
+    text-indent: 14px;
+
+    color: ${props => props.theme.colors.inputPlaceholder};
+`;
+const CommentsHolder = styled.div`
+    width: 100%;
+    height: 100%;
+    padding-left: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+`;
+interface MediaPost {
     id: string,
     type: string
 }
-interface NonSelfUser{
+interface NonSelfUser {
     username: string,
     id: string,
     avatarId: string | null
@@ -233,13 +289,17 @@ interface Props {
     goldPost: Post,
     redPost: Post,
     jwt: string,
+    id: string,
     nextBattle: () => void
 }
-function Content({goldPost, redPost, jwt, nextBattle}:Props){
+function Content({ goldPost, redPost, jwt, id, nextBattle }: Props) {
     const [t2] = useTranslation("battle");
     const [isExpanded1, setIsExpanded1] = useState(false);
     const [isExpanded2, setIsExpanded2] = useState(false);
     const [isGold, setIsGold] = useState(0);
+    const [showComments, setShowComments] = useState(false);
+    //only for new user comments
+    const [userComments, setUserComments] = useState<any>();
     const [votedUser, setVotedUser] = useState<NonSelfUser>({
         "id": '',
         "username": '',
@@ -249,69 +309,130 @@ function Content({goldPost, redPost, jwt, nextBattle}:Props){
         "jwt": jwt,
         "forId": forId
     }).then((res) => res.data).catch((res) => res.error);
-
-    return(
+    const fetcher = (url: any, page: number) => instance.get(url, { params: { page: page, id: id } }).then((res) => res.data).catch((res) => res.error);
+    const [comments, setComments] = useState<any>();
+    const [page, setPage] = useState(0);
+    const { user: userData, isError: userDataError } = useUser();
+    return (
         <MainHolder>
-            {isGold!=0? <PostVoteButtons>
-                <SvgButton>
+            {
+                (showComments && votedUser)
+                &&
+                <CommentsMainHolder>
+                    <UpperCommentHolder>
+                        <CommentHeader>
+                            <SvgButton style={{ width: '4rem', height: '4rem' }} onClick={() => { setShowComments(false) }}>
+                                <svg style={{ transform: 'rotate(90deg)' }} xmlns="http://www.w3.org/2000/svg" height="48" width="48">
+                                    <StyledPath d="M24 40 8 24l2.1-2.1 12.4 12.4V8h3v26.3l12.4-12.4L40 24Z" />
+                                </svg>
+                            </SvgButton>
+                            <CommentTitle>{t2("comments")}</CommentTitle>
+                        </CommentHeader>
+                        <CommentsHolder>
+                            {
+                                userComments != null && userComments !== undefined &&
+                                userComments.map((comment: EComment, key: number) => {
+                                    return (
+                                        <Comment comment={comment} key={key}></Comment>
+                                    )
+                                })
+                            }
+                            {
+                                comments != null && comments !== undefined &&
+                                comments.map((comment: EComment, key: number) => {
+                                    return (
+                                        <Comment comment={comment} key={key}></Comment>
+                                    )
+                                })
+                            }
+                        </CommentsHolder>
+                    </UpperCommentHolder>
+                    <CommentInput id={id} userComment={function (text: string, date: string): void {
+                        const comment: EComment = {
+                            text: text,
+                            commenter: {
+                                username: userData.username,
+                                id: "",
+                                avatarId: userData?.avatarId
+                            },
+                            isEdited: false,
+                            responseCount: 0,
+                            likes: 0,
+                            hasUserLiked: false,
+                            lastChangeDate: date,
+                            id: ""
+                        }
+                        console.log(comment);
+                        let arr = [];
+                        if (userComments != null && userComments !== undefined) arr = userComments;
+                        arr.push(comment);
+                        setUserComments(arr);
+                    }} />
+                </CommentsMainHolder>
+            }
+            {isGold != 0 && <PostVoteButtons>
+                <SvgButton onClick={() => {
+                    setShowComments(true);
+                    if (comments == null || comments == undefined) fetcher('/battle/comment', page).then((res) => { setComments(res); console.log(res) }).catch((e) => e.error);
+                }}>
                     <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <StyledPath d="m 6,3 h 24 c 1.65,0 3,1.35 3,3 V 33 L 27,27 H 6 C 4.35,27 3,25.65 3,24 V 6 C 3,4.35 4.35,3 6,3 Z m 0,21 h 21 l 3,3 V 6 H 6 Z"/>
+                        <StyledPath d="m 6,3 h 24 c 1.65,0 3,1.35 3,3 V 33 L 27,27 H 6 C 4.35,27 3,25.65 3,24 V 6 C 3,4.35 4.35,3 6,3 Z m 0,21 h 21 l 3,3 V 6 H 6 Z" />
                     </svg>
                 </SvgButton>
-                <SvgButton style={{width: '7rem', height: '7rem'}} onClick={nextBattle}>
-                    <svg style={{scale: '170%'}} xmlns="http://www.w3.org/2000/svg" height="48" width="48">
-                        <StyledPath  d="M24 40 8 24l2.1-2.1 12.4 12.4V8h3v26.3l12.4-12.4L40 24Z"/>
+                <SvgButton style={{ width: '7rem', height: '7rem' }} onClick={nextBattle}>
+                    <svg style={{ scale: '170%' }} xmlns="http://www.w3.org/2000/svg" height="48" width="48">
+                        <StyledPath d="M24 40 8 24l2.1-2.1 12.4 12.4V8h3v26.3l12.4-12.4L40 24Z" />
                     </svg>
                 </SvgButton>
-                <ProfileHolder title={votedUser.username} onClick={() => {router.push({
-                                pathname: '/user/[username]',
-                                query: { username: votedUser.username, id: votedUser.id },
-                              });}}>
+                <ProfileHolder title={votedUser.username} onClick={() => {
+                    router.push({
+                        pathname: '/user/[username]',
+                        query: { username: votedUser.username, id: votedUser.id },
+                    });
+                }}>
                     <MiniProfilePic src={votedUser.avatarId} title={votedUser.username} anon={false}></MiniProfilePic>
                     <BoldText>{votedUser.username}</BoldText>
                 </ProfileHolder>
-                
-                
-            </PostVoteButtons>:<></>}
-            <HalfHolder isLeft={true} isReady={isGold==1}>
+            </PostVoteButtons>}
+            <HalfHolder isLeft={true} isReady={isGold == 1}>
                 <ImageHolder>
                     <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + goldPost.media?.id} objectFit={'contain'} alt={'gold image'} layout='fill'></Image>
                 </ImageHolder>
                 <ButtonHolder isExpanded={isExpanded1} isLeft={true}>
-                    <ExpandButton isLeft={true} isExpanded={isExpanded1} onClick={() => {setIsExpanded1(!isExpanded1)}}>
+                    <ExpandButton isLeft={true} isExpanded={isExpanded1} onClick={() => { setIsExpanded1(!isExpanded1) }}>
                         <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <StyledPath d="M2.115 0.88501L9 7.75501L15.885 0.88501L18 3.00001L9 12L0 3.00001L2.115 0.88501Z"/>
+                            <StyledPath d="M2.115 0.88501L9 7.75501L15.885 0.88501L18 3.00001L9 12L0 3.00001L2.115 0.88501Z" />
                         </svg>
                     </ExpandButton>
                     <ExpandedHolder>
-                        <VoteButton isLeft={true} onClick={() => {fetcherVote(goldPost.id).then((res) => {console.log(res); setVotedUser(res.votedPost.poster); setIsGold(1)}).catch((e) => {console.log(e)})}} disabled={isGold!=0}>
+                        <VoteButton isLeft={true} onClick={() => { fetcherVote(goldPost.id).then((res) => { console.log(res); setVotedUser(res.votedPost.poster); setIsGold(1) }).catch((e) => { console.log(e) }) }} disabled={isGold != 0}>
                             <svg width="49" height="54" viewBox="0 0 49 54" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <StyledPath d="M40.5 29.3369H38.6867L33.3533 34.6702H38.4467L43.1667 40.0036H5.83333L10.58 34.6702H16.0467L10.7133 29.3369H8.5L0.5 37.3369V48.0036C0.5 50.9369 2.87333 53.3369 5.80667 53.3369H43.1667C44.5812 53.3369 45.9377 52.775 46.9379 51.7748C47.9381 50.7746 48.5 49.4181 48.5 48.0036V37.3369L40.5 29.3369ZM43.1667 48.0036H5.83333V45.3369H43.1667V48.0036ZM22.74 34.7236C23.78 35.7636 25.46 35.7636 26.5 34.7236L43.46 17.7636C43.7072 17.5169 43.9033 17.2238 44.0372 16.9012C44.171 16.5786 44.2399 16.2328 44.2399 15.8836C44.2399 15.5343 44.171 15.1885 44.0372 14.8659C43.9033 14.5433 43.7072 14.2503 43.46 14.0036L30.26 0.803579C30.0194 0.55185 29.7307 0.351014 29.411 0.212986C29.0913 0.0749589 28.7472 0.00255349 28.399 6.63299e-05C28.0508 -0.00242083 27.7056 0.065061 27.384 0.198508C27.0624 0.331954 26.7708 0.528646 26.5267 0.776912L9.54 17.7636C9.29279 18.0103 9.09666 18.3033 8.96285 18.6259C8.82903 18.9485 8.76015 19.2943 8.76015 19.6436C8.76015 19.9928 8.82903 20.3386 8.96285 20.6612C9.09666 20.9838 9.29279 21.2769 9.54 21.5236L22.74 34.7236ZM28.3933 6.43025L37.8333 15.8702L24.6333 29.0702L15.1933 19.6302L28.3933 6.43025Z" />
                             </svg>
                             <BoldText>{t2("vote")}</BoldText>
                         </VoteButton>
-                        {isExpanded1? <ExpandedButton>{t2("report")}</ExpandedButton>:<></>}
+                        {isExpanded1 ? <ExpandedButton>{t2("report")}</ExpandedButton> : <></>}
                     </ExpandedHolder>
                 </ButtonHolder>
             </HalfHolder>
-            <HalfHolder isLeft={false} isReady={isGold==2}>
+            <HalfHolder isLeft={false} isReady={isGold == 2}>
                 <ImageHolder>
                     <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + redPost.media?.id} objectFit={'contain'} alt={'red image'} layout='fill'></Image>
                 </ImageHolder>
                 <ButtonHolder isExpanded={isExpanded2} isLeft={false}>
-                    <ExpandButton isLeft={false} isExpanded={isExpanded2} onClick={() => {setIsExpanded2(!isExpanded2)}}>
+                    <ExpandButton isLeft={false} isExpanded={isExpanded2} onClick={() => { setIsExpanded2(!isExpanded2) }}>
                         <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <StyledPath d="M2.115 0.88501L9 7.75501L15.885 0.88501L18 3.00001L9 12L0 3.00001L2.115 0.88501Z"/>
+                            <StyledPath d="M2.115 0.88501L9 7.75501L15.885 0.88501L18 3.00001L9 12L0 3.00001L2.115 0.88501Z" />
                         </svg>
                     </ExpandButton>
                     <ExpandedHolder>
-                        <VoteButton isLeft={false} onClick={() => {fetcherVote(redPost.id).then((res) => {console.log(res); setVotedUser(res.votedPost.poster); setIsGold(2); console.log("alo")}).catch((e) => {console.log(e)})}} disabled={isGold!=0}>
+                        <VoteButton isLeft={false} onClick={() => { fetcherVote(redPost.id).then((res) => { console.log(res); setVotedUser(res.votedPost.poster); setIsGold(2); console.log("alo") }).catch((e) => { console.log(e) }) }} disabled={isGold != 0}>
                             <svg width="49" height="54" viewBox="0 0 49 54" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <StyledPath d="M40.5 29.3369H38.6867L33.3533 34.6702H38.4467L43.1667 40.0036H5.83333L10.58 34.6702H16.0467L10.7133 29.3369H8.5L0.5 37.3369V48.0036C0.5 50.9369 2.87333 53.3369 5.80667 53.3369H43.1667C44.5812 53.3369 45.9377 52.775 46.9379 51.7748C47.9381 50.7746 48.5 49.4181 48.5 48.0036V37.3369L40.5 29.3369ZM43.1667 48.0036H5.83333V45.3369H43.1667V48.0036ZM22.74 34.7236C23.78 35.7636 25.46 35.7636 26.5 34.7236L43.46 17.7636C43.7072 17.5169 43.9033 17.2238 44.0372 16.9012C44.171 16.5786 44.2399 16.2328 44.2399 15.8836C44.2399 15.5343 44.171 15.1885 44.0372 14.8659C43.9033 14.5433 43.7072 14.2503 43.46 14.0036L30.26 0.803579C30.0194 0.55185 29.7307 0.351014 29.411 0.212986C29.0913 0.0749589 28.7472 0.00255349 28.399 6.63299e-05C28.0508 -0.00242083 27.7056 0.065061 27.384 0.198508C27.0624 0.331954 26.7708 0.528646 26.5267 0.776912L9.54 17.7636C9.29279 18.0103 9.09666 18.3033 8.96285 18.6259C8.82903 18.9485 8.76015 19.2943 8.76015 19.6436C8.76015 19.9928 8.82903 20.3386 8.96285 20.6612C9.09666 20.9838 9.29279 21.2769 9.54 21.5236L22.74 34.7236ZM28.3933 6.43025L37.8333 15.8702L24.6333 29.0702L15.1933 19.6302L28.3933 6.43025Z" />
                             </svg>
                             <BoldText>{t2("vote")}</BoldText>
                         </VoteButton>
-                        {isExpanded2? <ExpandedButton>{t2("report")}</ExpandedButton>:<></>}
+                        {isExpanded2 ? <ExpandedButton>{t2("report")}</ExpandedButton> : <></>}
                     </ExpandedHolder>
                 </ButtonHolder>
             </HalfHolder>

@@ -67,6 +67,7 @@ const Battles:NextPage = () => {
     const [goldPost, setGoldPost] = useState<Post>();
     const [redPost, setRedPost] = useState<Post>();
     const [jwt, setJwt] = useState("");
+    const [battleId, setBattleId] = useState("");
     const [isReady, setIsReady] = useState(false);
     const [battleNum, setBattleNum] = useState(0);
     const [t2] = useTranslation("battle");
@@ -76,9 +77,7 @@ const Battles:NextPage = () => {
             setGoldPost(res.goldPost);
             setRedPost(res.redPost);
             setJwt(res.voteJWT);
-            console.log("res:")
-            console.log(res.redPost)
-            console.log(res)
+            setBattleId(res.id)
             setIsReady(true);
             setBattleNum(battleNum+1);
         }).catch((e) => {console.log(e)});
@@ -94,8 +93,8 @@ const Battles:NextPage = () => {
                     (isReady && redPost?.media != undefined && goldPost?.media != undefined) ?
                         <Battle goldPost={goldPost!} redPost={redPost!} jwt={jwt} nextBattle={() => {
                             BattleGetter();
-                            setIsReady(false)
-                        }}></Battle>
+                            setIsReady(false);
+                        } } id={battleId}></Battle>
                         :
                         <PlaceHolder>
                             <LogoHolder>
@@ -112,7 +111,7 @@ const Battles:NextPage = () => {
 export async function getStaticProps({ locale }: any) {
     return {
         props: {
-            ...(await serverSideTranslations(locale, ['battle'])),
+            ...(await serverSideTranslations(locale, ['battle', 'account','common'])),
         },
     };
 }

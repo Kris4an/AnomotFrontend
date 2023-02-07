@@ -16,6 +16,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import Image from "next/image";
 import ReactCrop, { Crop } from "react-image-crop";
 import 'react-image-crop/dist/ReactCrop.css'
+import useUser from "../../components/useUser";
 
 const MainHolder = styled.div`
     width: 100%;
@@ -413,8 +414,7 @@ const SecurityText = styled.span<TextProps>`
 
 
 function Content() {
-    const fetcherGetUser = (url: any) => instance.get(url).then((res) => res.data).catch((res) => res.error);
-    const { data: userData, error: userDataError } = useSWR('/account/user', fetcherGetUser);
+    const { user: userData, isError: userDataError } = useUser();
     const fetcherGetLogins = (page: number) => instance.get('/account/security/logins', { params: { page: page } });
     const fecherChangeUsername = (url: any, username: string) => instance.put(url, {
         "username": username
