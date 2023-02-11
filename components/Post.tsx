@@ -117,6 +117,7 @@ function Content({post, disableComments}:Props){
         if(post.type == "TEXT" && post.text != null && editor != null){
             editor.commands.setContent(sanitizeHtml(post?.text))
         }
+        editor?.setEditable(false)
     },[editor])
     
     return (
