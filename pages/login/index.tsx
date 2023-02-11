@@ -10,18 +10,16 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React, { useEffect, useState } from 'react';
 import MessageScreen from '../../components/MessageScreen';
 import instance from '../../axios_instance';
-import useSWR, { useSWRConfig } from 'swr';
 import Checkbox from '../../components/Checkbox';
 
 const Holder = styled.div`
   height: 100vh;
   display: flex;
   flex-direction: row;
-  gap: 25vw;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
 
-  @media (max-width: 800px) {
+  @media (max-width: 822px) {
     flex-direction: column;
     gap: 0px;
     justify-content: space-around;
@@ -95,10 +93,6 @@ const ModifiedAuthContainer = styled(AuthContainer)<ModifiedAuthContainerProps>`
 
 const Login: NextPage = () => {
   
-  useEffect(() => {
-    document.title = "Anomot - Login";
-    document.body.style.backgroundColor = "#ffffff" 
-  },[])
   return (
     <Holder>
       <LogoSlogan/>

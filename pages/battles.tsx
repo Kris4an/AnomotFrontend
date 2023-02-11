@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import Logo from "../components/Logo";
+import { EBattlePost } from "../components/Intefaces";
 
 const MainHolder = styled.div`
    display: flex;
@@ -45,27 +46,11 @@ const LogoHolder = styled.div`
     position: absolute;
     animation: ${LogoAnim} 1.3s ease-in-out 0s infinite alternate;
 `;
-interface MediaPost{
-    id: string,
-    type: string
-}
-interface NonSelfUser{
-    username: string,
-    id: string,
-    avatarId: string | null
-}
-interface Post {
-    id: string,
-    type: string,
-    text: string | null,
-    media: MediaPost | null,
-    user: NonSelfUser
-}
 
 const Battles:NextPage = () => { 
     const fetcher = (url: any, page: number) => instance.get(url, { params: { page: page } }).then((res) => res.data).catch((res) => res.error);
-    const [goldPost, setGoldPost] = useState<Post>();
-    const [redPost, setRedPost] = useState<Post>();
+    const [goldPost, setGoldPost] = useState<EBattlePost>();
+    const [redPost, setRedPost] = useState<EBattlePost>();
     const [jwt, setJwt] = useState("");
     const [battleId, setBattleId] = useState("");
     const [isReady, setIsReady] = useState(false);
@@ -80,6 +65,7 @@ const Battles:NextPage = () => {
             setBattleId(res.id)
             setIsReady(true);
             setBattleNum(battleNum+1);
+            console.log(res)
         }).catch((e) => {console.log(e)});
     }
     useEffect(() => {
@@ -90,11 +76,11 @@ const Battles:NextPage = () => {
         <NavBar stage={0} >
             <MainHolder>
                 {
-                    (isReady && redPost?.media != undefined && goldPost?.media != undefined) ?
+                    (isReady && redPost != undefined && goldPost != undefined) ?
                         <Battle goldPost={goldPost!} redPost={redPost!} jwt={jwt} nextBattle={() => {
                             BattleGetter();
                             setIsReady(false);
-                        } } id={battleId}></Battle>
+                        } } id={battleId} selfBattle={false}></Battle>
                         :
                         <PlaceHolder>
                             <LogoHolder>

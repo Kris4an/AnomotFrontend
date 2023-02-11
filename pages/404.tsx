@@ -17,14 +17,14 @@ const Text = styled.p`
   color: ${props => props.theme.colors.secondaryButtonBackground};
 `;
 const Holder = styled.div`
-  //height: 100%;
-  position: relative;
-  top: 15vh;
+  height: 100vh;
+  width: 100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 5rem;
   justify-content: center;
+  background-color: ${props => props.theme.colors.secondary};
 `;
 const Holder2 = styled.div`
   height: 23rem;
@@ -45,17 +45,12 @@ const NotFound404:NextPage = () => {
   const [clicks, setClicks] = useState(0);
   const handleClick = () => {
     setClicks(clicks+1);
-    if(clicks>=100) setStage(false);
+    if(clicks>=15) setStage(false);
   }
   const handleButtonClick = () => {
-    document.body.style.backgroundColor = "#ffffff" 
     router.push('/');
   }
   const [t1] = useTranslation("404");
-    useEffect(() => {
-        document.title = "Anomot - Page not found";
-        document.body.style.backgroundColor = "#1D2440" 
-      },[])
     return(
         <Holder>
           <Holder2 onClick={handleClick}><Mask stage={stage}/></Holder2>

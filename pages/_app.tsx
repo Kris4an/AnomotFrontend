@@ -18,7 +18,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     //document.body.style.backgroundColor = "#1D2440"
     document.title = "Anomot";
   },[])
-  return <ThemeProvider theme = {theme}> 
+  return <ThemeProvider theme = {theme}>
   <Component {...pageProps} /> 
   </ThemeProvider>
 }

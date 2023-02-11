@@ -177,7 +177,8 @@ const VideoWrapper = styled.div`
 `
 
 const StyledVideo = styled.video`
-    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
 `
 
 interface MessageScreenI {
@@ -208,10 +209,10 @@ function Content() {
         headers: {
             "Content-Type": "multipart/form-data",
         },
-    }).then((res: any) => { console.log(res); }).catch((e: any) => { console.log(e) });
+    });
     const uploadTextFetcher = (url: string, text: any) => instance.post(url, {
         "text": text
-    }).then((res: any) => { console.log(res) }).catch((e: any) => { console.log(e) });
+    });
 
     useEffect(() => {
         router.push('/create?s=0');
@@ -243,10 +244,16 @@ function Content() {
         }
     }, [router.query.s]);
 
+    useEffect(() => {
+        if(stage != 1){
+            setSelectedFile(undefined);
+        }
+    },[stage])
+
     switch (stage) {
         case 0: {
             const text = [t2("choosePostType"), t2("battleInfo"), t2("postInfo"), t2("geopostInfo")];
-
+            
             const updateUrlOverlay = (stage: number) => {
                 setOverlayStage(stage);
                 setOverlay(true);
@@ -304,7 +311,7 @@ function Content() {
                                             <CustomUpload onChange={(e: any) => {
                                                 if (!e.target.files || e.target.files.length === 0) {
                                                     setSelectedFile(undefined)
-                                                    return
+                                                    return;
                                                 }
 
                                                 setSelectedFile(e.target.files[0])
@@ -314,7 +321,7 @@ function Content() {
                                                     <svg style={{ scale: '200%' }} xmlns="http://www.w3.org/2000/svg" height="48" width="48">
                                                         <PostTypePath isSelected={true} d="M9 42q-1.25 0-2.125-.875T6 39V9q0-1.25.875-2.125T9 6h20.45v3H9v30h30V18.6h3V39q0 1.25-.875 2.125T39 42Zm26-24.9v-4.05h-4.05v-3H35V6h3v4.05h4.05v3H38v4.05ZM12 33.9h24l-7.2-9.6-6.35 8.35-4.7-6.2ZM9 9v30V9Z" />
                                                     </svg>
-                                                    <UploadFileButtonText>{t2("uploadFile")}</UploadFileButtonText>
+                                                    <UploadFileButtonText>{!selectedFile? t2("uploadFile"):""}</UploadFileButtonText>
                                                 </div>}
                                                 {(selectedFile && preview) &&
                                                 (selectedFile.name.match(new RegExp("^(.*\.(mkv|mov|mp4))$", "i")) ? 
@@ -361,13 +368,13 @@ function Content() {
                                                 return;
                                             }
                                             case "battle": {
-                                                uploadFileFetcher('/account/battle/media', formData).then(() => {
+                                                uploadFileFetcher('/account/battle/media', formData).then((res: any) => {
                                                     setMessageScr({
                                                         "success": true,
                                                         "messsage": t2("successMessageB")
                                                     })
                                                     setStage(3);
-                                                }).catch(() => {
+                                                }).catch((e) => {
                                                     setMessageScr({
                                                         "success": false,
                                                         "messsage": t2("failMessage")

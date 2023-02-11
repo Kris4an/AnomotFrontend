@@ -1,8 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import Image from "next/image";
-import tempPic from "../public/tempPic.jpg";
-import tempPic2 from "../public/tempPic2.webp";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import MiniProfilePic from "./MiniProfilePic";
@@ -10,15 +8,32 @@ import Link from "next/link";
 import router from "next/router";
 import instance from "../axios_instance";
 import next from "next";
-import EComment from "./EComment";
+import { EBattlePost, EComment, ENonSelfUser } from "./Intefaces";
 import Comment from "./Comment";
 import CommentInput from "./CommentInput";
 import useUser from "./useUser";
+import { sanitizeHtml } from "../sanitize";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Subscript from '@tiptap/extension-subscript';
+import Superscript from '@tiptap/extension-superscript';
+import { lowlight } from 'lowlight/lib/core'
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import css from 'highlight.js/lib/languages/css'
+import js from 'highlight.js/lib/languages/javascript'
+import ts from 'highlight.js/lib/languages/typescript'
+import html from 'highlight.js/lib/languages/xml'
+import Underline from "@tiptap/extension-underline";
+
+lowlight.registerLanguage('html', html)
+lowlight.registerLanguage('css', css)
+lowlight.registerLanguage('js', js)
+lowlight.registerLanguage('ts', ts)
 
 const MainHolder = styled.div`
     position: relative;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     display: flex;
     flex-direction: row;
     overflow: hidden;
@@ -233,7 +248,7 @@ const CommentsMainHolder = styled.div`
     flex-direction: column;
     background-color: ${props => props.theme.colors.secondaryButtonBackground};
     padding-top: 5px;
-    z-index: 2;
+    z-index: 3;
     animation: 0.7s cubic-bezier(0.215, 0.610, 0.355, 1) 0s 1 ${slideInFromBottomComments};
 `;
 const UpperCommentHolder = styled.div`
@@ -243,6 +258,7 @@ const UpperCommentHolder = styled.div`
     display: flex;
     flex-direction: column;
     gap: 4rem;
+    max-height: calc(100vh - 5px - 3.5rem);
 `;
 const CommentHeader = styled.div`
     display: flex;
@@ -268,39 +284,39 @@ const CommentsHolder = styled.div`
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    overflow-y: scroll;
 `;
-interface MediaPost {
-    id: string,
-    type: string
-}
-interface NonSelfUser {
-    username: string,
-    id: string,
-    avatarId: string | null
-}
-interface Post {
-    id: string,
-    type: string,
-    text: string | null,
-    media: MediaPost | null,
-    user: NonSelfUser
-}
+const StyledVideo = styled.video`
+    max-width: 100%;
+    max-height: 100%;
+`;
+const VideoHolder = styled.div`
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: fit-content;
+`;
 interface Props {
-    goldPost: Post,
-    redPost: Post,
+    goldPost: EBattlePost,
+    redPost: EBattlePost,
     jwt: string,
     id: string,
+    selfBattle: boolean,
+    selfVotes?: number,
+    otherVotes?: number,
     nextBattle: () => void
 }
-function Content({ goldPost, redPost, jwt, id, nextBattle }: Props) {
+function Content({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes, nextBattle }: Props) {
     const [t2] = useTranslation("battle");
     const [isExpanded1, setIsExpanded1] = useState(false);
     const [isExpanded2, setIsExpanded2] = useState(false);
     const [isGold, setIsGold] = useState(0);
     const [showComments, setShowComments] = useState(false);
     //only for new user comments
-    const [userComments, setUserComments] = useState<any>();
-    const [votedUser, setVotedUser] = useState<NonSelfUser>({
+    const [userComments, setUserComments] = useState<EComment[]>();
+    const [votedUser, setVotedUser] = useState<ENonSelfUser>({
         "id": '',
         "username": '',
         "avatarId": ''
@@ -308,11 +324,38 @@ function Content({ goldPost, redPost, jwt, id, nextBattle }: Props) {
     const fetcherVote = (forId: string) => instance.post('/vote', {
         "jwt": jwt,
         "forId": forId
-    }).then((res) => res.data).catch((res) => res.error);
-    const fetcher = (url: any, page: number) => instance.get(url, { params: { page: page, id: id } }).then((res) => res.data).catch((res) => res.error);
+    })
+    const fetcher = (url: any, page: number) => instance.get(url, { params: { page: page, id: id } })
     const [comments, setComments] = useState<any>();
     const [page, setPage] = useState(0);
     const { user: userData, isError: userDataError } = useUser();
+    
+    const editorGold = useEditor({
+        extensions: [
+          StarterKit, Underline, Subscript, Superscript, CodeBlockLowlight.configure({
+            lowlight,
+          })
+        ],
+        content: "",
+      })
+      const editorRed = useEditor({
+        extensions: [
+          StarterKit, Underline, Subscript, Superscript, CodeBlockLowlight.configure({
+            lowlight,
+          })
+        ],
+        content: "",
+      })
+      useEffect(() => {
+        if(goldPost.type == "TEXT" && goldPost.text != null && editorGold != null){
+            editorGold.commands.setContent(sanitizeHtml(goldPost?.text));
+        }
+    },[editorGold])
+    useEffect(() => {
+        if(redPost.type == "TEXT" && redPost.text != null && editorRed != null){
+            editorRed.commands.setContent(sanitizeHtml(redPost?.text));
+        }
+    },[editorRed])
     return (
         <MainHolder>
             {
@@ -328,52 +371,62 @@ function Content({ goldPost, redPost, jwt, id, nextBattle }: Props) {
                             </SvgButton>
                             <CommentTitle>{t2("comments")}</CommentTitle>
                         </CommentHeader>
-                        <CommentsHolder>
+                        <CommentsHolder onScroll={(e: any) => {
+                            const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+                            if (bottom && comments !== undefined) {
+                                if (comments.length % 10 != 0) return;
+                                fetcher('/battle/comment', page + 1).then((res: any) => {
+                                    let arr = [];
+                                    arr = comments;
+                                    arr = arr.concat(res.data);
+                                    setComments(arr);
+                                    setPage(page + 1);
+                                });
+                            }
+                        }}>
                             {
                                 userComments != null && userComments !== undefined &&
-                                userComments.map((comment: EComment, key: number) => {
-                                    return (
-                                        <Comment comment={comment} key={key}></Comment>
-                                    )
-                                })
+                                userComments.map((comment: EComment, key: number) =>
+                                    <Comment comment={comment} key={key}></Comment>
+                                )
                             }
                             {
                                 comments != null && comments !== undefined &&
-                                comments.map((comment: EComment, key: number) => {
-                                    return (
-                                        <Comment comment={comment} key={key}></Comment>
-                                    )
-                                })
+                                comments.map((comment: EComment) =>
+                                    <Comment comment={comment} key={comment?.id}></Comment>
+                                )
                             }
                         </CommentsHolder>
                     </UpperCommentHolder>
                     <CommentInput id={id} userComment={function (text: string, date: string): void {
-                        const comment: EComment = {
-                            text: text,
-                            commenter: {
-                                username: userData.username,
-                                id: "",
-                                avatarId: userData?.avatarId
-                            },
-                            isEdited: false,
-                            responseCount: 0,
-                            likes: 0,
-                            hasUserLiked: false,
-                            lastChangeDate: date,
-                            id: ""
-                        }
-                        console.log(comment);
-                        let arr = [];
-                        if (userComments != null && userComments !== undefined) arr = userComments;
-                        arr.push(comment);
-                        setUserComments(arr);
-                    }} />
+                            const comment: EComment = {
+                                text: text,
+                                commenter: {
+                                    username: userData.username,
+                                    id: "",
+                                    avatarId: userData?.avatarId
+                                },
+                                isEdited: false,
+                                responseCount: 0,
+                                likes: 0,
+                                hasUserLiked: false,
+                                lastChangeDate: date,
+                                id: userData.id+""
+                            };
+                            let arr = [];
+                            arr.push(comment);
+                            if (userComments != null && userComments !== undefined) {
+                                arr = arr.concat(userComments);
+                            }
+                            setUserComments(arr);
+                        } } typeP={"BATTLE"} />
                 </CommentsMainHolder>
             }
-            {isGold != 0 && <PostVoteButtons>
+            {
+            isGold != 0 && <PostVoteButtons>
                 <SvgButton onClick={() => {
                     setShowComments(true);
-                    if (comments == null || comments == undefined) fetcher('/battle/comment', page).then((res) => { setComments(res); console.log(res) }).catch((e) => e.error);
+                    if (comments == null || comments == undefined) fetcher('/battle/comment', page).then((res: any) => { setComments(res.data); }).catch((e) => e.error);
                 }}>
                     <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <StyledPath d="m 6,3 h 24 c 1.65,0 3,1.35 3,3 V 33 L 27,27 H 6 C 4.35,27 3,25.65 3,24 V 6 C 3,4.35 4.35,3 6,3 Z m 0,21 h 21 l 3,3 V 6 H 6 Z" />
@@ -393,11 +446,36 @@ function Content({ goldPost, redPost, jwt, id, nextBattle }: Props) {
                     <MiniProfilePic src={votedUser.avatarId} title={votedUser.username} anon={false}></MiniProfilePic>
                     <BoldText>{votedUser.username}</BoldText>
                 </ProfileHolder>
-            </PostVoteButtons>}
+            </PostVoteButtons>
+            }
+            {
+                selfBattle &&
+                <SvgButton style={{position: 'absolute', width: '12rem', bottom: '3.5rem', left: 'calc(50% - 6rem)', zIndex: '2'}} onClick={() => {
+                    setShowComments(true);
+                    if (comments == null || comments == undefined) fetcher('/battle/comment', page).then((res: any) => { setComments(res.data); }).catch((e) => e.error);
+                }}>
+                    <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <StyledPath d="m 6,3 h 24 c 1.65,0 3,1.35 3,3 V 33 L 27,27 H 6 C 4.35,27 3,25.65 3,24 V 6 C 3,4.35 4.35,3 6,3 Z m 0,21 h 21 l 3,3 V 6 H 6 Z" />
+                    </svg>
+                </SvgButton>
+            }
             <HalfHolder isLeft={true} isReady={isGold == 1}>
-                <ImageHolder>
-                    <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + goldPost.media?.id} objectFit={'contain'} alt={'gold image'} layout='fill'></Image>
-                </ImageHolder>
+                {
+                    goldPost.type == "MEDIA" ?
+                        goldPost.media?.type == "IMAGE" ?
+                            <ImageHolder>
+                                <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + goldPost.media?.id} objectFit={'contain'} alt={'gold image'} layout='fill'></Image>
+                            </ImageHolder>
+                            :
+                            <VideoHolder>
+                                <StyledVideo controls={true}>
+                                    <source src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + goldPost?.media?.id} />
+                                </StyledVideo>
+                            </VideoHolder>
+                        :
+                        // <div dangerouslySetInnerHTML={{__html: textHTML}} />
+                        <EditorContent editor={editorGold} readOnly={true} />
+                }
                 <ButtonHolder isExpanded={isExpanded1} isLeft={true}>
                     <ExpandButton isLeft={true} isExpanded={isExpanded1} onClick={() => { setIsExpanded1(!isExpanded1) }}>
                         <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -405,20 +483,33 @@ function Content({ goldPost, redPost, jwt, id, nextBattle }: Props) {
                         </svg>
                     </ExpandButton>
                     <ExpandedHolder>
-                        <VoteButton isLeft={true} onClick={() => { fetcherVote(goldPost.id).then((res) => { console.log(res); setVotedUser(res.votedPost.poster); setIsGold(1) }).catch((e) => { console.log(e) }) }} disabled={isGold != 0}>
+                        <VoteButton isLeft={true} onClick={() => { fetcherVote(goldPost.id).then((res: any) => { setVotedUser(res.data.votedPost.poster); setIsGold(1) }).catch((e) => { console.log(e) }) }} disabled={isGold != 0 || selfBattle}>
                             <svg width="49" height="54" viewBox="0 0 49 54" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <StyledPath d="M40.5 29.3369H38.6867L33.3533 34.6702H38.4467L43.1667 40.0036H5.83333L10.58 34.6702H16.0467L10.7133 29.3369H8.5L0.5 37.3369V48.0036C0.5 50.9369 2.87333 53.3369 5.80667 53.3369H43.1667C44.5812 53.3369 45.9377 52.775 46.9379 51.7748C47.9381 50.7746 48.5 49.4181 48.5 48.0036V37.3369L40.5 29.3369ZM43.1667 48.0036H5.83333V45.3369H43.1667V48.0036ZM22.74 34.7236C23.78 35.7636 25.46 35.7636 26.5 34.7236L43.46 17.7636C43.7072 17.5169 43.9033 17.2238 44.0372 16.9012C44.171 16.5786 44.2399 16.2328 44.2399 15.8836C44.2399 15.5343 44.171 15.1885 44.0372 14.8659C43.9033 14.5433 43.7072 14.2503 43.46 14.0036L30.26 0.803579C30.0194 0.55185 29.7307 0.351014 29.411 0.212986C29.0913 0.0749589 28.7472 0.00255349 28.399 6.63299e-05C28.0508 -0.00242083 27.7056 0.065061 27.384 0.198508C27.0624 0.331954 26.7708 0.528646 26.5267 0.776912L9.54 17.7636C9.29279 18.0103 9.09666 18.3033 8.96285 18.6259C8.82903 18.9485 8.76015 19.2943 8.76015 19.6436C8.76015 19.9928 8.82903 20.3386 8.96285 20.6612C9.09666 20.9838 9.29279 21.2769 9.54 21.5236L22.74 34.7236ZM28.3933 6.43025L37.8333 15.8702L24.6333 29.0702L15.1933 19.6302L28.3933 6.43025Z" />
                             </svg>
-                            <BoldText>{t2("vote")}</BoldText>
+                            <BoldText>{selfBattle? t2("votes") + " " + selfVotes:t2("vote")}</BoldText>
                         </VoteButton>
                         {isExpanded1 ? <ExpandedButton>{t2("report")}</ExpandedButton> : <></>}
                     </ExpandedHolder>
                 </ButtonHolder>
             </HalfHolder>
             <HalfHolder isLeft={false} isReady={isGold == 2}>
-                <ImageHolder>
-                    <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + redPost.media?.id} objectFit={'contain'} alt={'red image'} layout='fill'></Image>
-                </ImageHolder>
+                {
+                    redPost.type == "MEDIA" ?
+                        redPost.media?.type == "IMAGE" ?
+                            <ImageHolder>
+                                <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + redPost.media?.id} objectFit={'contain'} alt={'red image'} layout='fill'></Image>
+                            </ImageHolder>
+                            :
+                            <VideoHolder>
+                                <StyledVideo controls={true}>
+                                    <source src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + redPost?.media?.id} />
+                                </StyledVideo>
+                            </VideoHolder>
+                        :
+                        // <div dangerouslySetInnerHTML={{__html: textHTML}} />
+                        <EditorContent editor={editorRed} readOnly={true} />
+                }
                 <ButtonHolder isExpanded={isExpanded2} isLeft={false}>
                     <ExpandButton isLeft={false} isExpanded={isExpanded2} onClick={() => { setIsExpanded2(!isExpanded2) }}>
                         <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -426,11 +517,11 @@ function Content({ goldPost, redPost, jwt, id, nextBattle }: Props) {
                         </svg>
                     </ExpandButton>
                     <ExpandedHolder>
-                        <VoteButton isLeft={false} onClick={() => { fetcherVote(redPost.id).then((res) => { console.log(res); setVotedUser(res.votedPost.poster); setIsGold(2); console.log("alo") }).catch((e) => { console.log(e) }) }} disabled={isGold != 0}>
+                        <VoteButton isLeft={false} onClick={() => { fetcherVote(redPost.id).then((res: any) => { console.log(res); setVotedUser(res.data.votedPost.poster); setIsGold(2); }).catch((e) => { console.log(e) }) }} disabled={isGold != 0 || selfBattle}>
                             <svg width="49" height="54" viewBox="0 0 49 54" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <StyledPath d="M40.5 29.3369H38.6867L33.3533 34.6702H38.4467L43.1667 40.0036H5.83333L10.58 34.6702H16.0467L10.7133 29.3369H8.5L0.5 37.3369V48.0036C0.5 50.9369 2.87333 53.3369 5.80667 53.3369H43.1667C44.5812 53.3369 45.9377 52.775 46.9379 51.7748C47.9381 50.7746 48.5 49.4181 48.5 48.0036V37.3369L40.5 29.3369ZM43.1667 48.0036H5.83333V45.3369H43.1667V48.0036ZM22.74 34.7236C23.78 35.7636 25.46 35.7636 26.5 34.7236L43.46 17.7636C43.7072 17.5169 43.9033 17.2238 44.0372 16.9012C44.171 16.5786 44.2399 16.2328 44.2399 15.8836C44.2399 15.5343 44.171 15.1885 44.0372 14.8659C43.9033 14.5433 43.7072 14.2503 43.46 14.0036L30.26 0.803579C30.0194 0.55185 29.7307 0.351014 29.411 0.212986C29.0913 0.0749589 28.7472 0.00255349 28.399 6.63299e-05C28.0508 -0.00242083 27.7056 0.065061 27.384 0.198508C27.0624 0.331954 26.7708 0.528646 26.5267 0.776912L9.54 17.7636C9.29279 18.0103 9.09666 18.3033 8.96285 18.6259C8.82903 18.9485 8.76015 19.2943 8.76015 19.6436C8.76015 19.9928 8.82903 20.3386 8.96285 20.6612C9.09666 20.9838 9.29279 21.2769 9.54 21.5236L22.74 34.7236ZM28.3933 6.43025L37.8333 15.8702L24.6333 29.0702L15.1933 19.6302L28.3933 6.43025Z" />
                             </svg>
-                            <BoldText>{t2("vote")}</BoldText>
+                            <BoldText>{selfBattle? t2("votes") + " " + otherVotes:t2("vote")}</BoldText>
                         </VoteButton>
                         {isExpanded2 ? <ExpandedButton>{t2("report")}</ExpandedButton> : <></>}
                     </ExpandedHolder>

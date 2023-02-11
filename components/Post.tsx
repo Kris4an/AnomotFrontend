@@ -15,6 +15,8 @@ import js from 'highlight.js/lib/languages/javascript'
 import ts from 'highlight.js/lib/languages/typescript'
 import html from 'highlight.js/lib/languages/xml'
 import Underline from "@tiptap/extension-underline";
+import { EPost, ENonSelfUser } from "./Intefaces";
+import router from "next/router";
 
 lowlight.registerLanguage('html', html)
 lowlight.registerLanguage('css', css)
@@ -86,53 +88,40 @@ const Likes = styled.span`
     }
 `;
 const StyledVideo = styled.video`
-    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
 `;
 const VideoHolder = styled.div`
     position: relative;
     width: 100%;
     height: fit-content;
 `;
-interface MediaPost{
-    id: string,
-    type: string
-}
-interface NonSelfUser{
-    username: string,
-    id: string,
-    avatarId: string
-}
-interface Post {
-    type: string,
-    text: string | null,
-    media: MediaPost | null,
-    poster: NonSelfUser | null,
-    likes: number | null,
-    hasUserLiked: boolean | null,
-    creationDate: string,
-    id: string
-}
+
 interface Props {
-    post: Post
+    post: EPost,
+    disableComments?: boolean
 }
-function Content({post}:Props){
+function Content({post, disableComments}:Props){
     const fetcherPost = (url: string, id: any) => instance.post(url, null, { params: { id: id } });
     const [liked, setLiked] = useState(post.hasUserLiked);
-    let textHTML = "";
-    if(post.type == "TEXT" && post.text != null){
-        textHTML = sanitizeHtml(post?.text);
-    }
+
     const editor = useEditor({
         extensions: [
           StarterKit, Underline, Subscript, Superscript, CodeBlockLowlight.configure({
             lowlight,
           })
         ],
-        content: textHTML,
+        content: "",
       })
+    useEffect(() => {
+        if(post.type == "TEXT" && post.text != null && editor != null){
+            editor.commands.setContent(sanitizeHtml(post?.text))
+        }
+    },[editor])
+    
     return (
         <MainHolder>
-            <MiniPostHeader name={post?.poster?.username + ""} date={post.creationDate} src={post.poster?.avatarId != undefined ? post.poster?.avatarId : null}></MiniPostHeader>
+            <MiniPostHeader name={post?.poster?.username + ""} date={post.creationDate} src={post.poster?.avatarId != undefined ? post.poster?.avatarId : null} id={post.id}></MiniPostHeader>
             {
                 post.type == "MEDIA"?
                         post.media?.type=="IMAGE"?
@@ -152,14 +141,13 @@ function Content({post}:Props){
             
             <ButtonHolder>
                 <SVGButton onClick={() => {
-                    console.log(liked);
                     switch (liked) {
                         case true: {
-                            fetcherPost('/unlike', post.id).then(() => { setLiked(false); console.log("unlike") })
+                            fetcherPost('/unlike', post.id).then(() => { setLiked(false); })
                             break;
                         }
                         case false: {
-                            fetcherPost('/like', post.id).then(() => { setLiked(true); console.log("like") })
+                            fetcherPost('/like', post.id).then(() => { setLiked(true); })
                             break;
                         }
                     }
@@ -174,7 +162,12 @@ function Content({post}:Props){
                         }
                     </StyledSVG>
                 </SVGButton>
-                <SVGButton onClick={undefined}>
+                <SVGButton onClick={() => {
+                    router.push({
+                        pathname: '/post/[id]',
+                        query: { id: post.id},
+                    });
+                }} disabled={disableComments}>
                     <StyledSVG width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <StyledPath1 d="m 6,3 h 24 c 1.65,0 3,1.35 3,3 V 33 L 27,27 H 6 C 4.35,27 3,25.65 3,24 V 6 C 3,4.35 4.35,3 6,3 Z m 0,21 h 21 l 3,3 V 6 H 6 Z" />
                     </StyledSVG>

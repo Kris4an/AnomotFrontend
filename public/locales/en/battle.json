@@ -5,5 +5,10 @@
     "checkAccount": "Check account",
     "ban": "Ban",
     "lookingForBattle":"Looking for a battle…",
-    "comments": "Comments"
+    "comments": "Comments",
+    "votes": "Votes:",
+    "battleWon": "Congratulations! You won the battle!",
+    "vs": "vs",
+    "battleLost": "What a pity… You lost the battle but there's always next time!",
+    "battleDraw": "What do we do now? The result is equal… somehow."
 }

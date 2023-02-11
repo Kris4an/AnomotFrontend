@@ -1,7 +1,5 @@
 import styled from "styled-components";
-import Image from 'next/image'
-import tempPic from "../public/tempPic.jpg";
-import { title } from "process";
+import Image from 'next/image';
 
 const PicHolder = styled.div`
     position: relative;

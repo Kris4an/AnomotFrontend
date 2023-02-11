@@ -504,9 +504,14 @@ function Content() {
         let s = window.location.search;
         if (s.length > 1) {
             s = s.substring(3);
-            if (s == '1' || s=='0'){
+            if (s == '1' || s=='0' || s=='5'){
                 if(Number(s)!=stage){
                     setStage(Number(s));
+                    if(s == '5'){
+                        fetcherGetLogins(0).then((res: any) => {
+                            setPastLogins(res?.data);
+                        })
+                    }
                 }
             }
             else {
@@ -872,7 +877,7 @@ function Content() {
                                 arr = arr.concat(res?.data);
                                 setPastLogins(arr);
                                 setLoginsPage(loginsPage + 1);
-                            });    
+                            }).catch((e) => {console.log(e)});    
                         }
                     }}>
                         {pastLogins?.map((log: any, key: number) =>

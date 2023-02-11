@@ -11,5 +11,11 @@
     "unsuccessfulFollow": "Something went wrong!",
     "followers2": "Followers",
     "following2": "Following",
-    "anon": "Anonymous"
+    "anon": "Anonymous",
+    "finished": "Finished",
+    "willFinish": "Will finish",
+    "notifications": "Notifications",
+    "notiBattleBegin": "The battle began!",
+    "notiBattleEnd": "The battle ended. But who won?",
+    "notiNewLogin": "New login"
 }

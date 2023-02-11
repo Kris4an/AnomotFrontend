@@ -11,5 +11,11 @@
     "unsuccessfulFollow": "Нещо се обърка!",
     "followers2": "Последователи",
     "following2": "Последвани",
-    "anon": "Анонимен"
+    "anon": "Анонимен",
+    "finished": "Приключила",
+    "willFinish": "Ще приключи",
+    "notifications": "Известия",
+    "notiBattleBegin": "Битката започна!",
+    "notiBattleEnd": "Битката прикличи. Но кой е победителя?",
+    "notiNewLogin": "Ново влизане в профила"
 }

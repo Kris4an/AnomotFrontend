@@ -1,11 +1,12 @@
 import { useTranslation } from "next-i18next";
 import styled from "styled-components";
-import EComment from "./EComment";
+import { EComment } from "./Intefaces";
 import MiniPostHeader from "./MiniPostHeader";
 
 
 const MainHolder = styled.div`
-    width: 35rem;
+    max-width: 50rem;
+    width: 100%;
     display: flex;
     flex-direction: column;
     padding-left: 10px;
@@ -35,13 +36,14 @@ interface Props {
 }
 function Comment({comment}:Props){
     const [t1] = useTranslation("common");
+    if(comment === undefined) return(<></>);
     return(
         <MainHolder>
             {   
                 comment.text!=null && comment.commenter!=null? 
-                <MiniPostHeader name={comment.commenter!.username} date={comment.lastChangeDate!} src={comment.commenter!.avatarId!}></MiniPostHeader>
+                <MiniPostHeader name={comment.commenter!.username} date={comment.lastChangeDate!} src={comment.commenter!.avatarId!} id={comment.commenter.id}></MiniPostHeader>
                 :
-                <MiniPostHeader anon={true} name={""} date={comment.lastChangeDate!} src={null}></MiniPostHeader>
+                <MiniPostHeader anon={true} name={""} date={comment.lastChangeDate!} src={null} id={""}></MiniPostHeader>
             }
             <InfoHolder>
                 {comment.isEdited && <InfoText>{t1("edited")}</InfoText>}

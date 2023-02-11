@@ -6,7 +6,7 @@ import theme from '../components/Theme'
 
 describe('Home', () => {
   it('renders a heading', () => {
-    render(<ThemeProvider theme = {theme}> <Button buttonType='Default' text='anomot'/> </ThemeProvider>)
+    render(<ThemeProvider theme = {theme}> <Button buttonType='Default' text='anomot' handleClick={undefined}/> </ThemeProvider>)
 
     const heading = screen.getByRole('button', {
       name: "anomot",
@@ -18,7 +18,7 @@ describe('Home', () => {
 
 describe('Home', () => {
   it('renders a heading', () => {
-    render(<ThemeProvider theme = {theme}> <Button buttonType='Solid' text='anomot'/> </ThemeProvider>)
+    render(<ThemeProvider theme = {theme}> <Button buttonType='Solid' text='anomot' handleClick={undefined}/> </ThemeProvider>)
 
     const heading = screen.getByRole('button', {
       name: "anomot",
@@ -30,7 +30,7 @@ describe('Home', () => {
 
 describe('Home', () => {
   it('renders a heading', () => {
-    render(<ThemeProvider theme = {theme}> <Button buttonType='Secondary' text='anomot'/> </ThemeProvider>)
+    render(<ThemeProvider theme = {theme}> <Button buttonType='Secondary' text='anomot' handleClick={undefined}/> </ThemeProvider>)
 
     const heading = screen.getByRole('button', {
       name: "anomot",
@@ -42,7 +42,7 @@ describe('Home', () => {
 
 describe('Home', () => {
   it('renders a heading', () => {
-    render(<ThemeProvider theme = {theme}> <Button buttonType='Teriatary' text='anomot'/> </ThemeProvider>)
+    render(<ThemeProvider theme = {theme}> <Button buttonType='Teriatary' text='anomot' handleClick={undefined}/> </ThemeProvider>)
 
     const heading = screen.getByRole('button', {
       name: "anomot",
