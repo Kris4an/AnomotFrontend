@@ -12,7 +12,6 @@ import Tiptap from "../components/Tiptap";
 import Image from "next/image";
 import instance from "../axios_instance";
 import MessageScreen from "../components/MessageScreen";
-import { sanitizeHtml } from "../sanitize";
 import { EMediaPost } from "../components/Intefaces";
 
 const Create: NextPage = () => {
