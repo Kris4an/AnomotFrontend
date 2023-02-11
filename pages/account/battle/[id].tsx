@@ -29,15 +29,15 @@ const SelfBattle: NextPage = () => {
                 setEndM(res.data.isFinished);
                 if(res.data.isFinished){
                     if(res.data.selfVotes>res.data.otherVotes){
-                        setMessage(t2("battleWon")) + "\n " + res.data.selfVotes + " " + t2("vs") + " " + res.data.otherVotes;
+                        setMessage(t2("battleWon") + "\n " + res.data.selfVotes + " " + t2("vs") + " " + res.data.otherVotes);
                         return;
                     }
                     if(res.data.selfVotes<res.data.otherVotes){
-                        setMessage(t2("battleLost")) + "\n " + res.data.selfVotes + " " + t2("vs") + " " + res.data.otherVotes;
+                        setMessage(t2("battleLost") + "\n " + res.data.selfVotes + " " + t2("vs") + " " + res.data.otherVotes);
                         return;
                     }
                     else{
-                        setMessage(t2("battleDraw")) + "\n " + res.data.selfVotes + " " + t2("vs") + " " + res.data.otherVotes;
+                        setMessage(t2("battleDraw") + "\n " + res.data.selfVotes + " " + t2("vs") + " " + res.data.otherVotes);
                         return;
                     }
                 }
@@ -50,7 +50,7 @@ const SelfBattle: NextPage = () => {
             {battle != undefined &&
                 <>
                     {showEndM ?
-                        <MessageScreen stage={battle.selfVotes>=battle.otherVotes} text={""} continueTxt={t1("continue")} handleClick={() => {setEndM(false)}}></MessageScreen>
+                        <MessageScreen stage={battle.selfVotes>=battle.otherVotes} text={message} continueTxt={t1("continue")} handleClick={() => {setEndM(false)}}></MessageScreen>
                         :
                         <Battle goldPost={{
                             id: battle.selfPost.id,

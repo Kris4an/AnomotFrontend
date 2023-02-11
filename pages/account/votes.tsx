@@ -1,5 +1,6 @@
 import { NextPage } from "next";
 import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import instance from "../../axios_instance";
@@ -94,6 +95,14 @@ const Votes: NextPage = () => {
             </MianHolder>
         </NavBar>
     )
+}
+
+export async function getStaticProps({ locale }: any) {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale, ['votes', 'battle'])),
+        },
+    };
 }
 
 export default Votes;

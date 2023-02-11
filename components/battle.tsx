@@ -426,7 +426,7 @@ function Content({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes
             isGold != 0 && <PostVoteButtons>
                 <SvgButton onClick={() => {
                     setShowComments(true);
-                    if (comments == null || comments == undefined) fetcher('/battle/comment', page).then((res: any) => { setComments(res.data); }).catch((e) => e.error);
+                    if (comments == null || comments == undefined) fetcher('/battle/comment', page).then((res: any) => { setComments(res.data); console.log(res.data)}).catch((e) => e.error);
                 }}>
                     <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <StyledPath d="m 6,3 h 24 c 1.65,0 3,1.35 3,3 V 33 L 27,27 H 6 C 4.35,27 3,25.65 3,24 V 6 C 3,4.35 4.35,3 6,3 Z m 0,21 h 21 l 3,3 V 6 H 6 Z" />

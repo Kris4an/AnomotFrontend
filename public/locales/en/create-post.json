@@ -11,5 +11,10 @@
     "successMessageP": "Success! Expect to see your post any second!",
     "successMessageB": "Success! Be aware, the battle will begin at any moment!",
     "failMessage": "Something went wrong",
-    "typeHere": "Type here"
+    "typeHere": "Type here",
+    "unsupportedMediaType": "Unsupported media type",
+    "similarPost": "Similar post already exists",
+    "nsfwFound": "NSFW content detected",
+    "appealNsfwInfo": "If you think that your post is wrongly marked as NSFW, you can appeal to an admin.",
+    "appeal": "Appeal"
 }

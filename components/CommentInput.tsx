@@ -48,14 +48,14 @@ function CommentInput({id, userComment, typeP, style}:Props){
     const fetcher = (url: string, text: any) => instance.post(url, {
         "id": id,
         "text": text
-    }).then((res: any) => { console.log(res) }).catch((e: any) => { console.log(e) });
+    }).then((res: any) => { }).catch((e: any) => { console.log(e) });
     const inp: any = React.createRef();
 
     return(
         <MainHolder style={style}>
             <StyledInput type={'text'} placeholder={t1("typeSomething")} maxLength={2000} ref={inp}/>
             <SvgButton onClick={() => {
-                if (inp.current.value != null && inp.current.value != "" && inp.current.value.lenght <= 2000){
+                if (inp.current.value != null && inp.current.value != "" && inp.current.value.length <= 2000){
                     let url: string = "";
                     switch(typeP){
                         case 'BATTLE': {
