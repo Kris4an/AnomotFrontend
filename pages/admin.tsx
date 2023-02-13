@@ -3,6 +3,7 @@ import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useState } from "react";
 import styled from "styled-components";
+import { EAdminAppeal, EReportTicket } from "../components/Intefaces";
 import NavBar from "../components/NavBar";
 
 const MainHolder = styled.div`
@@ -43,6 +44,9 @@ const ContentHolder = styled.div`
 const Admin: NextPage = () => {
     const [t2] = useTranslation("admin");
     const [selType, setSelType] = useState(0);
+    const [appeals, setAppeals] = useState<EAdminAppeal[]>();
+    const [tickets, setTickets] = useState<EReportTicket[]>();
+    
     return(
         <NavBar stage={9}>
             <MainHolder>
