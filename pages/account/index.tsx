@@ -169,7 +169,11 @@ const NotiHolder = styled.div`
 const Account: NextPage = () => {
     const [postSelection, setPostSelection] = useState(true);
     const [overlay, setOverlay] = useState(0);
-    const fetcher = (url: any) => instance.get(url).then((res) => res.data).catch((res) => res.error);
+    const fetcher = (url: any) => instance.get(url)
+    const fetcherReadNotis = (notificationIds: string[], isRead: boolean) => instance.post('/account/notifications/mark', {
+        "notificationIds": notificationIds,
+        "isRead": isRead
+    })
     const fetcherGetPage = (url: string, page: number) => instance.get(url, { params: { page: page } });
     const { user: userData, isError: userDataError } = useUser();
     const [followersCount, setFollowersCount] = useState(0);
@@ -185,12 +189,11 @@ const Account: NextPage = () => {
     const [notiPage, setNotiPage] = useState(0);
     const [ureadNotis, setUnreadNotis] = useState(0);
     useEffect(() => {
-        fetcher('/account/followers/count').then((res: any) => { setFollowersCount(res?.count); }).catch((e) => { console.log(e); });
-        fetcher('/account/followed/count').then((res: any) => { setFollowingCount(res?.count); }).catch((e) => { console.log(e); });
+        fetcher('/account/followers/count').then((res: any) => { setFollowersCount(res.data.count); }).catch((e) => { console.log(e); });
+        fetcher('/account/followed/count').then((res: any) => { setFollowingCount(res.data.count); }).catch((e) => { console.log(e); });
         fetcherGetPage('/account/posts', pageP).then((res) => { setPosts(res.data) }).catch((e) => { console.log(e); });
         fetcherGetPage('/account/battles', pageB).then((res) => { setBattles(res.data); }).catch((e) => { console.log(e); });
         fetcherGetPage('/account/notifications', notiPage).then((res) => {
-            console.table(res.data);
             setNotis(res.data);
             let cnt = 0;
             let arr: ENotification[] = res.data;
@@ -212,7 +215,14 @@ const Account: NextPage = () => {
                             <IconButtonHolder>
                                 <IconButton icon={'Settings'} handleClick={() => { router.push('/account/settings?s=0') }} ></IconButton>
                                 <IconButton icon={'Votes'} handleClick={() => { router.push('/account/votes') }} ></IconButton>
-                                <IconButton icon={'Notifications'} notis={ureadNotis} handleClick={() => { setStage(1); }} ></IconButton>
+                                <IconButton icon={'Notifications'} notis={ureadNotis} handleClick={() => {
+                                    setStage(1);
+                                    let arr: string[] = [];
+                                    notis?.forEach((el) => {
+                                        if (!el.read) arr.push(el.id);
+                                    })
+                                    if(arr.length > 0) fetcherReadNotis(arr, true).then(() => { setUnreadNotis(0) });
+                                }} ></IconButton>
                             </IconButtonHolder>
                         </UpperHolder>
                         <ButtonHolder>
@@ -321,43 +331,81 @@ const Account: NextPage = () => {
                                         arr = arr.concat(res?.data);
                                         setNotis(arr);
                                         setNotiPage(notiPage + 1);
+
+                                        let arrN: string[] = [];
+                                        arr?.forEach((el) => {
+                                            if (!el.read) arrN.push(el.id);
+                                        })
+                                        if(arr.length > 0) fetcherReadNotis(arrN, true).then(() => { setUnreadNotis(0) });
                                     })
                                 }
                             }}>
                                 {
                                     notis.map((noti: ENotification, key: number) => {
                                         switch (noti.type) {
+                                            case 'APPEAL': {
+                                                return (
+                                                    <Link key={key} href={{
+                                                        pathname: '/',
+                                                        query: {},
+                                                    }}>
+                                                        <a>
+                                                            <NotiHolder>
+                                                                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <StyledPath d="M1.04585 29.265L15.8458 14.465L13.6875 12.2759L12.5775 13.3704C12.4349 13.5134 12.2655 13.6267 12.079 13.7041C11.8925 13.7815 11.6925 13.8213 11.4906 13.8213C11.2887 13.8213 11.0888 13.7815 10.9023 13.7041C10.7158 13.6267 10.5464 13.5134 10.4038 13.3704L9.30918 12.2759C9.16626 12.1332 9.05288 11.9638 8.97551 11.7773C8.89815 11.5908 8.85833 11.3909 8.85833 11.189C8.85833 10.9871 8.89815 10.7871 8.97551 10.6006C9.05288 10.4141 9.16626 10.2447 9.30918 10.1021L18.035 1.37627C18.1776 1.23335 18.347 1.11996 18.5336 1.0426C18.7201 0.965236 18.92 0.925415 19.1219 0.925415C19.3238 0.925415 19.5237 0.965236 19.7102 1.0426C19.8967 1.11996 20.0661 1.23335 20.2088 1.37627L21.3033 2.47085C21.9046 3.0721 21.9046 4.04335 21.3033 4.6446L20.2088 5.70835L22.3979 7.91293C22.5406 7.77002 22.71 7.65663 22.8965 7.57927C23.083 7.5019 23.2829 7.46208 23.4848 7.46208C23.6867 7.46208 23.8866 7.5019 24.0731 7.57927C24.2596 7.65663 24.4291 7.77002 24.5717 7.91293C25.1729 8.51418 25.1729 9.50085 24.5717 10.1021L26.7454 12.2759L27.84 11.1813C28.4413 10.58 29.4279 10.58 30.0292 11.1813L31.1083 12.2759C31.7096 12.8771 31.7096 13.8638 31.1083 14.465L22.3979 23.1754C21.7967 23.7767 20.81 23.7767 20.2088 23.1754L19.1296 22.0963C18.9832 21.954 18.8668 21.7839 18.7874 21.5958C18.7079 21.4078 18.667 21.2058 18.667 21.0017C18.667 20.7976 18.7079 20.5955 18.7874 20.4075C18.8668 20.2195 18.9832 20.0493 19.1296 19.9071L20.2088 18.8125L18.035 16.6388L3.2196 31.4542C3.07697 31.5971 2.90756 31.7105 2.72106 31.7879C2.53456 31.8652 2.33463 31.905 2.13272 31.905C1.93081 31.905 1.73089 31.8652 1.54438 31.7879C1.35788 31.7105 1.18847 31.5971 1.04585 31.4542C0.444597 30.8529 0.444597 29.8663 1.04585 29.265ZM28.3333 27.2917C29.1511 27.2917 29.9354 27.6165 30.5136 28.1948C31.0918 28.773 31.4167 29.5573 31.4167 30.375V31.9167H16V30.375C16 29.5573 16.3249 28.773 16.9031 28.1948C17.4813 27.6165 18.2656 27.2917 19.0833 27.2917H28.3333Z" fill="#29335C" />
+                                                                </svg>
+                                                                <NotiText>{t2("notiBattleBegin")}</NotiText>
+                                                            </NotiHolder>
+                                                        </a>
+                                                    </Link>
+                                                )
+                                            }
                                             case 'BATTLE_BEGIN': {
                                                 return (
-                                                    <NotiHolder key={key}>
-                                                        <Link href={{
-                                                            pathname: '/account/battle/[id]',
-                                                            query: { id: noti.payload },
-                                                        }}>
-                                                            <a><NotiText>{t2("notiBattleBegin")}</NotiText></a>
-                                                        </Link>
-                                                    </NotiHolder>
+                                                    <Link key={key} href={{
+                                                        pathname: '/account/battle/[id]',
+                                                        query: { id: noti.payload },
+                                                    }}>
+                                                        <a>
+                                                            <NotiHolder>
+                                                                <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <StyledPathStroke isSelected={postSelection} d="M21.75 26.25L4.5 9V4.5H9L26.25 21.75M19.5 28.5L28.5 19.5M24 24L30 30M28.5 31.5L31.5 28.5M21.75 9.75L27 4.5H31.5V9L26.25 14.25M7.5 21L13.5 27M10.5 25.5L6 30M4.5 28.5L7.5 31.5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                                                </svg>
+                                                                <NotiText>{t2("notiBattleBegin")}</NotiText>
+                                                            </NotiHolder>
+                                                        </a>
+                                                    </Link>
                                                 )
                                             }
                                             case 'BATTLE_END': {
                                                 return (
-                                                    <NotiHolder key={key}>
-                                                        <Link href={{
-                                                            pathname: '/account/battle/[id]',
-                                                            query: { id: noti.payload },
-                                                        }}>
-                                                            <a><NotiText>{t2("notiBattleEnd")}</NotiText></a>
-                                                        </Link>
-                                                    </NotiHolder>
+                                                    <Link key={key} href={{
+                                                        pathname: '/account/battle/[id]',
+                                                        query: { id: noti.payload },
+                                                    }}>
+                                                        <a>
+                                                            <NotiHolder>
+                                                                <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <StyledPathStroke isSelected={postSelection} d="M21.75 26.25L4.5 9V4.5H9L26.25 21.75M19.5 28.5L28.5 19.5M24 24L30 30M28.5 31.5L31.5 28.5M21.75 9.75L27 4.5H31.5V9L26.25 14.25M7.5 21L13.5 27M10.5 25.5L6 30M4.5 28.5L7.5 31.5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                                                </svg>
+                                                                <NotiText>{t2("notiBattleEnd")}</NotiText>
+                                                            </NotiHolder>
+                                                        </a>
+                                                    </Link>
                                                 )
                                             }
                                             case 'NEW_LOGIN': {
                                                 return (
-                                                    <NotiHolder key={key}>
-                                                        <Link href={"account/settings?s=5"}>
-                                                            <a><NotiText>{t2("notiNewLogin")}</NotiText></a>
-                                                        </Link>
-                                                    </NotiHolder>
+                                                    <Link key={key} href={"account/settings?s=5"}>
+                                                        <a>
+                                                            <NotiHolder>
+                                                                <svg width="37" height="36" viewBox="0 0 37 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <StyledPath d="M18.5 1.5L5 7.5V16.5C5 24.825 10.76 32.61 18.5 34.5C26.24 32.61 32 24.825 32 16.5V7.5L18.5 1.5ZM18.5 17.985H29C28.205 24.165 24.08 29.67 18.5 31.395V18H8V9.45L18.5 4.785V17.985Z" fill="black" />
+                                                                </svg>
+                                                                <NotiText>{t2("notiNewLogin")}</NotiText>
+                                                            </NotiHolder>
+                                                        </a>
+                                                    </Link>
                                                 )
                                             }
                                             default: return (

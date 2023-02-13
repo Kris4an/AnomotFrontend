@@ -131,7 +131,7 @@ type Props = {
     text: string,
     style?: CSSProperties,
     ref?: any,
-    handleClick: any,
+    handleClick: () => void,
     title?: string
 }
 function Button({disabled, buttonType, text, style, ref, handleClick, title}: Props){

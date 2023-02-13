@@ -57,6 +57,10 @@ interface EVotedBattle{
     isFinished: boolean,
     id: string
 }
+interface ESimilarPosts {
+    media: EMediaPost,
+    similarPosts: EPost[]
+}
 
 export type {
     EComment,
@@ -65,5 +69,7 @@ export type {
     EPost,
     ESelfBattle,
     ENotification,
-    EVotedBattle
+    EVotedBattle,
+    EMediaPost,
+    ESimilarPosts
 };

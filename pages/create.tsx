@@ -12,7 +12,7 @@ import Tiptap from "../components/Tiptap";
 import Image from "next/image";
 import instance from "../axios_instance";
 import MessageScreen from "../components/MessageScreen";
-import { sanitizeHtml } from "../sanitize";
+import { EMediaPost } from "../components/Intefaces";
 
 const Create: NextPage = () => {
     return (
@@ -164,7 +164,6 @@ const CustomUpload = styled.label`
         text-decoration: underline;
     }
 `;
-
 const VideoWrapper = styled.div`
     position: absolute;
     width: 100%;
@@ -174,11 +173,30 @@ const VideoWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-`
-
+`;
 const StyledVideo = styled.video`
     max-width: 100%;
     max-height: 100%;
+`;
+const ErrorHolder = styled.div`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+`;
+const ErrorText = styled.span`
+    font-family: 'Roboto';
+    font-size: 20px;
+    line-height: 22px;
+    font-weight: 400;
+    font-style: normal;
+    color: ${props => props.theme.colors.primary};
+`;
+const ErrorImageHolder = styled.div`
+    height: 40rem;
+    width: 40rem;
+    position: relative;
 `
 
 interface MessageScreenI {
@@ -204,6 +222,7 @@ function Content() {
         "messsage": "",
         "success": false
     });
+    const [nsfwError, setNsfwError] = useState<EMediaPost>();
 
     const uploadFileFetcher = (url: string, formData: any) => instance.post(url, formData, {
         headers: {
@@ -245,15 +264,15 @@ function Content() {
     }, [router.query.s]);
 
     useEffect(() => {
-        if(stage != 1){
+        if (stage != 1) {
             setSelectedFile(undefined);
         }
-    },[stage])
+    }, [stage])
 
     switch (stage) {
         case 0: {
             const text = [t2("choosePostType"), t2("battleInfo"), t2("postInfo"), t2("geopostInfo")];
-            
+
             const updateUrlOverlay = (stage: number) => {
                 setOverlayStage(stage);
                 setOverlay(true);
@@ -321,23 +340,23 @@ function Content() {
                                                     <svg style={{ scale: '200%' }} xmlns="http://www.w3.org/2000/svg" height="48" width="48">
                                                         <PostTypePath isSelected={true} d="M9 42q-1.25 0-2.125-.875T6 39V9q0-1.25.875-2.125T9 6h20.45v3H9v30h30V18.6h3V39q0 1.25-.875 2.125T39 42Zm26-24.9v-4.05h-4.05v-3H35V6h3v4.05h4.05v3H38v4.05ZM12 33.9h24l-7.2-9.6-6.35 8.35-4.7-6.2ZM9 9v30V9Z" />
                                                     </svg>
-                                                    <UploadFileButtonText>{!selectedFile? t2("uploadFile"):""}</UploadFileButtonText>
+                                                    <UploadFileButtonText>{!selectedFile ? t2("uploadFile") : ""}</UploadFileButtonText>
                                                 </div>}
                                                 {(selectedFile && preview) &&
-                                                (selectedFile.name.match(new RegExp("^(.*\.(mkv|mov|mp4))$", "i")) ? 
-                                                 <VideoWrapper>
-                                                    <StyledVideo controls={true}>
-                                                        <source src={preview} />
-                                                    </StyledVideo>
-                                                 </VideoWrapper>
-                                                 :
-                                                 <Image src={preview} objectFit={'contain'} layout={'fill'} />)}
+                                                    (selectedFile.name.match(new RegExp("^(.*\.(mkv|mov|mp4))$", "i")) ?
+                                                        <VideoWrapper>
+                                                            <StyledVideo controls={true}>
+                                                                <source src={preview} />
+                                                            </StyledVideo>
+                                                        </VideoWrapper>
+                                                        :
+                                                        <Image src={preview} objectFit={'contain'} layout={'fill'} />)}
                                             </CustomUpload>
                                         </form>
                                     </UploadImageHolder>
                                     :
-                                    <UploadTextHolder><Tiptap getText={(html: string, text: string) => { 
-                                        setHtml(html); 
+                                    <UploadTextHolder><Tiptap getText={(html: string, text: string) => {
+                                        setHtml(html);
                                         setText(text);
                                     }} /></UploadTextHolder>
                             }
@@ -358,12 +377,31 @@ function Content() {
                                                         "messsage": t2("successMessageP")
                                                     })
                                                     setStage(3);
-                                                }).catch(() => {
-                                                    setMessageScr({
-                                                        "success": false,
-                                                        "messsage": t2("failMessage")
-                                                    })
-                                                    setStage(3);
+                                                }).catch((e: any) => {
+                                                    switch (e.response.status) {
+                                                        case '406': {
+                                                            setNsfwError(e.data);
+                                                            setStage(4);
+                                                        }
+                                                        case '409': {
+
+                                                        }
+                                                        case '415': {
+                                                            setMessageScr({
+                                                                "success": false,
+                                                                "messsage": t2("unsupportedMediaType")
+                                                            })
+                                                            setStage(3);
+                                                        }
+                                                        default: {
+                                                            setMessageScr({
+                                                                "success": false,
+                                                                "messsage": t2("failMessage")
+                                                            })
+                                                            setStage(3);
+                                                        }
+                                                    }
+
                                                 });
                                                 return;
                                             }
@@ -439,6 +477,36 @@ function Content() {
         case 3: {
             return (
                 <MessageScreen stage={messageScr?.success} text={messageScr?.messsage} continueTxt={t1("continue")} handleClick={() => { router.push('/create'); router.reload(); }}></MessageScreen>
+            )
+        }
+        case 4: {
+            return (
+                <ErrorHolder>
+                    <SelectionButtonText>{t2("nsfwFound")}</SelectionButtonText>
+                    <ErrorText>{t2("appealNsfwInfo")}</ErrorText>
+                    {nsfwError !== undefined &&
+                        <ErrorImageHolder>
+                            {
+                                nsfwError?.type == 'IMAGE' ?
+                                    <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + nsfwError.id} objectFit={"contain"} layout={"fill"}></Image>
+                                    :
+                                    <StyledVideo controls={true}>
+                                        <source src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + nsfwError.id} />
+                                    </StyledVideo>
+                            }
+                        </ErrorImageHolder>
+                    }
+                    <Button buttonType={"Solid"} text={t2("appeal")} handleClick={() => {}}></Button>
+                </ErrorHolder>
+            )
+        }
+        case 5: {
+            return(
+                <ErrorHolder>
+                    <SelectionButtonText>{t2("nsfwFound")}</SelectionButtonText>
+                    <ErrorText>{t2("appealSimilarityInfo")}</ErrorText>
+                    <Button buttonType={"Solid"} text={t2("appeal")} handleClick={() => {}}></Button>
+                </ErrorHolder>
             )
         }
         default: {
