@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import router from "next/router";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import instance from "../../axios_instance";
@@ -26,7 +27,6 @@ const Title = styled.span`
     align-items: flex-end;
     text-indent: 14px;
     color: ${props => props.theme.colors.inputPlaceholder};
-    padding-left: 2rem;
 `;
 const BattleHolder = styled.div`
     width: 100%;
@@ -45,6 +45,38 @@ const BattleMainHolder = styled.div`
     gap: 3rem;
     overflow-y: scroll;
 `;
+const UpperHolder = styled.div`
+    width: 100%;
+    display: flex;
+    gap: 3rem;
+    padding-left: 2rem;
+    align-items: center;
+`;
+const StyledPath = styled.path`
+    fill: ${props => props.theme.colors.primary};
+`;
+const SvgButton = styled.button`
+    width: 3rem;
+    height: 3rem;
+    background: ${props => props.theme.colors.secondaryButtonBackground};
+    border: 1px solid ${props => props.theme.colors.primary};
+    border-radius: 10px;
+    transition: all 0.3s cubic-bezier(0.39, 0.575, 0.565, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+
+    &:hover{
+        background-color: ${props => props.theme.colors.primary};
+    }
+    &:hover ${StyledPath} {
+        fill: ${props => props.theme.colors.secondaryButtonBackground};
+        transition: all 0.3s cubic-bezier(0.39, 0.575, 0.565, 1);
+    }
+`;
+
 const Votes: NextPage = () => {
     const fetcherGetPage = (url: string, page: number) => instance.get(url, { params: { page: page } });
     const [page, setPage] = useState(0);
@@ -59,7 +91,14 @@ const Votes: NextPage = () => {
     return (
         <NavBar stage={3} >
             <MianHolder>
-                <Title>{t2("votedFor")}</Title>
+                <UpperHolder>
+                    <SvgButton style={{ width: '4rem', height: '4rem' }} onClick={() => { router.push('/account') }}>
+                        <svg style={{ transform: 'rotate(90deg)' }} xmlns="http://www.w3.org/2000/svg" height="48" width="48">
+                            <StyledPath d="M24 40 8 24l2.1-2.1 12.4 12.4V8h3v26.3l12.4-12.4L40 24Z" />
+                        </svg>
+                    </SvgButton>
+                    <Title>{t2("votedFor")}</Title>
+                </UpperHolder>
                 {
                     battles !== undefined &&
                     <BattleMainHolder onScroll={(e: any) => {
@@ -76,7 +115,7 @@ const Votes: NextPage = () => {
                         }
                     }}>
                         {
-                            battles?.map((battle: EVotedBattle, key: number) => 
+                            battles?.map((battle: EVotedBattle, key: number) =>
                                 <BattleHolder key={key}>
                                     <Battle goldPost={{
                                         id: battle.votedPost.id,
@@ -86,7 +125,7 @@ const Votes: NextPage = () => {
                                         user: battle.votedPost.poster!
                                     }} redPost={battle.otherPost} jwt={""} id={battle.id} selfBattle={true} selfVotes={battle.votesForVoted} otherVotes={battle.votesForOther} nextBattle={function (): void {
                                         throw new Error("Function not implemented.");
-                                    } }/>
+                                    }} />
                                 </BattleHolder>
                             )
                         }
@@ -100,7 +139,7 @@ const Votes: NextPage = () => {
 export async function getStaticProps({ locale }: any) {
     return {
         props: {
-            ...(await serverSideTranslations(locale, ['votes', 'battle'])),
+            ...(await serverSideTranslations(locale, ['votes', 'battle', "burgerMenu"])),
         },
     };
 }

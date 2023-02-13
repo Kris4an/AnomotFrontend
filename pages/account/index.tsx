@@ -188,7 +188,7 @@ const Account: NextPage = () => {
     const [notis, setNotis] = useState<ENotification[]>();
     const [notiPage, setNotiPage] = useState(0);
     const [ureadNotis, setUnreadNotis] = useState(0);
-    useEffect(() => {
+    useEffect(() => {    
         fetcher('/account/followers/count').then((res: any) => { setFollowersCount(res.data.count); }).catch((e) => { console.log(e); });
         fetcher('/account/followed/count').then((res: any) => { setFollowingCount(res.data.count); }).catch((e) => { console.log(e); });
         fetcherGetPage('/account/posts', pageP).then((res) => { setPosts(res.data) }).catch((e) => { console.log(e); });
@@ -308,7 +308,6 @@ const Account: NextPage = () => {
             )
         }
         case 1: {
-
             return (
                 <NavBar stage={3} >
                     <MainNotiHolder>
@@ -336,7 +335,7 @@ const Account: NextPage = () => {
                                         arr?.forEach((el) => {
                                             if (!el.read) arrN.push(el.id);
                                         })
-                                        if(arr.length > 0) fetcherReadNotis(arrN, true).then(() => { setUnreadNotis(0) });
+                                        if(arrN.length > 0) fetcherReadNotis(arrN, true).then(() => { setUnreadNotis(0) });
                                     })
                                 }
                             }}>
@@ -474,9 +473,34 @@ function Overlay({ buttonSelected, close, followingCount, followersCount }: Over
     const [pageFollowing, setPageFollowing] = useState(0);
     const [followers, setFollowers] = useState<Follower[]>([]);
     const [following, setFollowing] = useState<Follower[]>([]);
+    const [noDubfollowers, setNoDubFollowers] = useState<Follower[]>([]);
+    const [noDubfollowing, setNoDubFollowing] = useState<Follower[]>([]);
     useEffect(() => {
-        fetcherGetFollwers('/account/followers', pageFollowers).then((res: any) => { setFollowers(res?.data); console.log(res?.data); }).catch((e) => { console.log(e); });
-        fetcherGetFollwers('/account/followed', pageFollowing).then((res: any) => { setFollowing(res?.data); console.log(res?.data); }).catch((e) => { console.log(e); });
+        fetcherGetFollwers('/account/followers', pageFollowers).then((res: any) => { 
+            setFollowers(res?.data);
+
+            const arr1:Follower[] = res.data;
+            let arr2:Follower[] = [];
+            arr2.push(arr1[0])
+            for(let i = 1; i < arr1.length; i++){
+                if(arr1[i-1].id != arr1[i].id){
+                    arr2.push(arr1[i]);
+                }
+            }
+            setNoDubFollowers(arr2);
+         }).catch((e) => { console.log(e); });
+        fetcherGetFollwers('/account/followed', pageFollowing).then((res: any) => { 
+            setFollowing(res?.data);
+            const arr1:Follower[] = res.data;
+            let arr2:Follower[] = [];
+            arr2.push(arr1[0])
+            for(let i = 1; i < arr1.length; i++){
+                if(arr1[i-1].id != arr1[i].id){
+                    arr2.push(arr1[i]);
+                }
+            }
+            setNoDubFollowing(arr2);
+         }).catch((e) => { console.log(e); });
     }, [])
     const [isSelected, setIsSelected] = useState(buttonSelected);
 
@@ -527,7 +551,7 @@ function Overlay({ buttonSelected, close, followingCount, followersCount }: Over
                 </ButtonHolder>
                 {isSelected ?
                     <>
-                        {followers?.map((f: any, key: number) => {
+                        {noDubfollowers?.map((f: any, key: number) => {
                             return (<MiniProfile src={f.avatarId} name={f.username} anon={false} key={key} handleClick={() => {
                                 router.push({
                                     pathname: '/user/[username]',
@@ -536,11 +560,11 @@ function Overlay({ buttonSelected, close, followingCount, followersCount }: Over
                             }}></MiniProfile>)
                         })}
                         {/* Възможен проблем при визуализацията на повече от 30 профила */}
-                        {displayAnons(followersCount - followers.length)}
+                        {displayAnons(followersCount - noDubfollowers.length)}
                     </>
                     :
                     <>
-                        {following.map((f: any, key: number) => {
+                        {noDubfollowing.map((f: any, key: number) => {
                             return (<MiniProfile src={f.avatarId} name={f.username} anon={false} key={key} handleClick={() => {
                                 router.push({
                                     pathname: '/user/[username]',
@@ -548,7 +572,7 @@ function Overlay({ buttonSelected, close, followingCount, followersCount }: Over
                                 });
                             }}></MiniProfile>)
                         })}
-                        {displayAnons(followingCount - following.length)}
+                        {displayAnons(followingCount - noDubfollowing.length)}
                     </>
                 }
             </Holder>
@@ -559,7 +583,7 @@ function Overlay({ buttonSelected, close, followingCount, followersCount }: Over
 export async function getStaticProps({ locale }: any) {
     return {
         props: {
-            ...(await serverSideTranslations(locale, ['account', 'battle', 'common'])),
+            ...(await serverSideTranslations(locale, ['account', 'battle', 'common', "burgerMenu"])),
         },
     };
 }

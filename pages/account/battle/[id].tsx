@@ -28,16 +28,17 @@ const SelfBattle: NextPage = () => {
                 setBattle(res.data);
                 setEndM(res.data.isFinished);
                 if(res.data.isFinished){
+                    const votes = " " + (res.data.selfVotes!==undefined? res.data.selfVotes:"0") + " " + t2("vs") + " " + (res.data.otherVotes!==undefined? res.data.otherVotes:"0");
                     if(res.data.selfVotes>res.data.otherVotes){
-                        setMessage(t2("battleWon") + "\n " + res.data.selfVotes + " " + t2("vs") + " " + res.data.otherVotes);
+                        setMessage(t2("battleWon") + votes);
                         return;
                     }
                     if(res.data.selfVotes<res.data.otherVotes){
-                        setMessage(t2("battleLost") + "\n " + res.data.selfVotes + " " + t2("vs") + " " + res.data.otherVotes);
+                        setMessage(t2("battleLost") + votes);
                         return;
                     }
                     else{
-                        setMessage(t2("battleDraw") + "\n " + res.data.selfVotes + " " + t2("vs") + " " + res.data.otherVotes);
+                        setMessage(t2("battleDraw") + votes);
                         return;
                     }
                 }
@@ -84,7 +85,7 @@ export const getStaticPaths: GetStaticPaths<{ id: string }> = async () => {
 export async function getStaticProps({ locale }: any) {
     return {
         props: {
-            ...(await serverSideTranslations(locale, ['battle', 'common'])),
+            ...(await serverSideTranslations(locale, ['battle', 'common', "burgerMenu"])),
         },
     };
 }

@@ -59,7 +59,45 @@ interface EVotedBattle{
 }
 interface ESimilarPosts {
     media: EMediaPost,
-    similarPosts: EPost[]
+    similarPosts: EPost[],
+    appealJwt: string
+}
+interface ENsfwError {
+    id: string,
+    type: string,
+    appealJwt: string
+}
+interface EAdminBattle {
+    id: string,
+    goldPost: EPost,
+    redPost: EPost,
+    goldVotes: number,
+    redVotes: number,
+    isFinished: boolean,
+    until: string
+}
+interface EReportTicket{
+    reportType: string,
+    post: EPost | null,
+    battle: EAdminBattle | null,
+    user: ENonSelfUser,
+    isDecided: boolean,
+    decisions: number,
+    creationDate: string,
+    id: string,
+    comment: EComment
+}
+interface EAdminAppeal {
+    id: string,
+    appealedBy: ENonSelfUser,
+    reason: string,
+    objective: string,
+    media: EMediaPost,
+    similarPosts: EPost[],
+    decidedBy: boolean,
+    decision: string,
+    explanation: string,
+    creationDate: string
 }
 
 export type {
@@ -71,5 +109,8 @@ export type {
     ENotification,
     EVotedBattle,
     EMediaPost,
-    ESimilarPosts
+    ESimilarPosts,
+    ENsfwError,
+    EReportTicket,
+    EAdminAppeal
 };

@@ -29,6 +29,7 @@ const CommentsHolder = styled.div`
     flex-direction: column;
     gap: 2rem;
     overflow-y: scroll;
+    overflow-x: hidden;
 `;
 
 const PostPage: NextPage = () => {
@@ -87,7 +88,7 @@ const PostPage: NextPage = () => {
                                 text: text,
                                 commenter: {
                                     username: userData.username,
-                                    id: "",
+                                    id: userData.id,
                                     avatarId: userData?.avatarId
                                 },
                                 isEdited: false,
@@ -121,7 +122,7 @@ export const getStaticPaths: GetStaticPaths<{ id: string }> = async () => {
 export async function getStaticProps({ locale }: any) {
     return {
         props: {
-            ...(await serverSideTranslations(locale, ['battle', 'common'])),
+            ...(await serverSideTranslations(locale, ['battle', 'common', "burgerMenu"])),
         },
     };
 }

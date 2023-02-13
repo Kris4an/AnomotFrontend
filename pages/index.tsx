@@ -1,11 +1,17 @@
 import type { NextPage } from 'next';
-
-import Checkbox from '../components/Checkbox';
+import router from 'next/router';
+import { useEffect } from 'react';
 import NavBar from '../components/NavBar';
-const Home: NextPage = () => {
 
+const Home: NextPage = () => {
+  useEffect(() => {
+    router.push('/account');
+  },[])
+  
   return (
-    <NavBar stage={9}></NavBar>
+    <NavBar stage={3}>
+
+    </NavBar>
   )
 }
 

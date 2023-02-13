@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import instance from "../axios_instance";
@@ -19,9 +20,21 @@ const PostHolder = styled.div`
 const Feed: NextPage = () => {
     const fetcherGetPage = (url: string, page: number) => instance.get(url, { params: { page: page } });
     const [posts, setPosts] = useState<EPost[]>([]);
+    const [noDubPosts, setNoDubPosts] = useState<EPost[]>([]);
     const [page, setPage] = useState(0);
     useEffect(() => {
-        fetcherGetPage('/feed', page).then((res) => { setPosts(res.data); console.log(res.data) })
+        fetcherGetPage('/feed', page).then((res) => {
+            setPosts(res.data);
+            const arr1: EPost[] = res.data;
+            let arr2: EPost[] = [];
+            arr2.push(arr1[0])
+            for (let i = 1; i < arr1.length; i++) {
+                if (arr1[i - 1].id != arr1[i].id) {
+                    arr2.push(arr1[i]);
+                }
+            }
+            setNoDubPosts(arr2);
+        })
     }, [])
     return (
         <NavBar stage={1}>
@@ -34,13 +47,23 @@ const Feed: NextPage = () => {
                         arr = posts;
                         arr = arr.concat(res?.data);
                         setPosts(arr);
+
+                        let arr2: EPost[] = [];
+                        arr2.push(arr[0])
+                        for (let i = 1; i < arr.length; i++) {
+                            if (arr[i - 1].id != arr[i].id) {
+                                arr2.push(arr[i]);
+                            }
+                        }
+                        setNoDubPosts(arr2);
+
                         setPage(page + 1);
                     })
                 }
             }}>
                 {
                     (Array.isArray(posts)) &&
-                    posts.map((post: EPost, key: number) => {
+                    noDubPosts.map((post: EPost, key: number) => {
                         return (
                             <Post post={post} key={key}></Post>
                         )
@@ -49,6 +72,14 @@ const Feed: NextPage = () => {
             </PostHolder>
         </NavBar>
     )
+}
+
+export async function getStaticProps({ locale }: any) {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale, ["burgerMenu"])),
+        },
+    };
 }
 
 export default Feed;

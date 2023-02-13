@@ -17,6 +17,9 @@ import html from 'highlight.js/lib/languages/xml'
 import Underline from "@tiptap/extension-underline";
 import { EPost, ENonSelfUser } from "./Intefaces";
 import router from "next/router";
+import useUser from "./useUser";
+import Button from "./Button";
+import { useTranslation } from "next-i18next";
 
 lowlight.registerLanguage('html', html)
 lowlight.registerLanguage('css', css)
@@ -24,17 +27,12 @@ lowlight.registerLanguage('js', js)
 lowlight.registerLanguage('ts', ts)
 
 const MainHolder = styled.div`
+    position: relative;
     width: 40rem;
     display: flex;
     flex-direction: column;
     gap: 10px;
 `;
-interface TextProps {
-    fontSize: string,
-    fontWeight: string,
-    isExpandable?: boolean,
-    isExpanded?: boolean
-}
 const SVGButton = styled.button`
     width: 100%;
     min-height: 2.5rem;
@@ -81,7 +79,7 @@ const Likes = styled.span`
     font-size: 30px;
     line-height: 32px;
     font-family: 'Roboto';
-    text-decoration-color: ${props => props.theme.colors.primary};
+    text-decoration-color: cc;
 
     &:hover {
         text-decoration: underline;
@@ -96,50 +94,196 @@ const VideoHolder = styled.div`
     width: 100%;
     height: fit-content;
 `;
-
+const BurgerMenuButton = styled.button`
+    background-color: transparent;
+    border: none;
+    width: fit-content;
+    height: fit-content;
+    position: absolute;
+    top: 0px;
+    right: 5px;
+    cursor: pointer;
+`;
+const ButgerMenuHolder = styled.div`
+    right: 0px;
+    top: 20px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    width: 20rem;
+    background: ${props => props.theme.colors.textInverted};
+    border: 1px solid ${props => props.theme.colors.primary};
+    box-shadow: 0px -10px 10px ${props => props.theme.colors.authContainerShadow};
+    border-radius: 10px;
+    z-index: 2;
+`;
+enum Reasons {
+    "NSFW_CONTENT", "ADVERTISING", "VIOLENCE", "HARASSMENT", "HATE_SPEECH", "TERRORISM", "SPAM"
+}
 interface Props {
     post: EPost,
     disableComments?: boolean
 }
-function Content({post, disableComments}:Props){
+function Content({ post, disableComments }: Props) {
+    const { user: userData, isError: userDataError } = useUser();
     const fetcherPost = (url: string, id: any) => instance.post(url, null, { params: { id: id } });
+    const fetcherDelete = (url: string, id: any) => instance.delete(url, { params: { id: id } });
+    const fetcherReport = (url: string, id: string, reason: Reasons, other: string | undefined) => instance.post(url, {
+        "postId": id,
+        "reason": reason,
+        "other": other
+    })
     const [liked, setLiked] = useState(post.hasUserLiked);
+    const [showBurgerMenu, setShowBurgerMenu] = useState(false);
+    const [selfPost, setSelfPost] = useState(false);
+    const [isDeleted, setIsDeleted] = useState(false);
+    const [t1] = useTranslation("burgerMenu");
+    const [showReports, setShowReports] = useState(false);
 
     const editor = useEditor({
         extensions: [
-          StarterKit, Underline, Subscript, Superscript, CodeBlockLowlight.configure({
-            lowlight,
-          })
+            StarterKit, Underline, Subscript, Superscript, CodeBlockLowlight.configure({
+                lowlight,
+            })
         ],
         content: "",
-      })
+    })
     useEffect(() => {
-        if(post.type == "TEXT" && post.text != null && editor != null){
+        if (post.type == "TEXT" && post.text != null && editor != null) {
             editor.commands.setContent(sanitizeHtml(post?.text))
         }
         editor?.setEditable(false)
-    },[editor])
-    
+    }, [editor])
+    useEffect(() => {
+        
+        if (post.poster == undefined) {
+            setSelfPost(false)
+            return;
+        }
+        if (userData !== undefined) setSelfPost(post.poster.id == userData.id)
+    }, [userData])
+
     return (
         <MainHolder>
-            <MiniPostHeader name={post?.poster?.username + ""} date={post.creationDate} src={post.poster?.avatarId != undefined ? post.poster?.avatarId : null} id={post.id}></MiniPostHeader>
+            <BurgerMenuButton onClick={() => { setShowBurgerMenu(!showBurgerMenu); setShowReports(false); }}>
+                <svg width="4" height="16" viewBox="0 0 4 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <StyledPath1 d="M2 4C3.1 4 4 3.1 4 2C4 0.9 3.1 0 2 0C0.9 0 0 0.9 0 2C0 3.1 0.9 4 2 4ZM2 6C0.9 6 0 6.9 0 8C0 9.1 0.9 10 2 10C3.1 10 4 9.1 4 8C4 6.9 3.1 6 2 6ZM2 12C0.9 12 0 12.9 0 14C0 15.1 0.9 16 2 16C3.1 16 4 15.1 4 14C4 12.9 3.1 12 2 12Z" />
+                </svg>
+            </BurgerMenuButton>
             {
-                post.type == "MEDIA"?
-                        post.media?.type=="IMAGE"?
-                            <ImageHolder>
-                                <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + post?.media?.id} objectFit={"contain"} layout={"fill"}></Image>
-                            </ImageHolder>
+                showBurgerMenu &&
+                <ButgerMenuHolder>
+                    {
+                        selfPost ?
+                            <Button buttonType={"Teriatary"} text={t1("delete")} handleClick={function (): void {
+                                if (!isDeleted) fetcherDelete('/account/post', post.id).then(() => { setIsDeleted(true); alert(t1("deletePost")); })
+                            }}></Button>
                             :
-                            <VideoHolder>
-                               <StyledVideo controls={true}>
-                                <source src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + post?.media?.id} />
-                                </StyledVideo> 
-                            </VideoHolder> 
-                :
-                // <div dangerouslySetInnerHTML={{__html: textHTML}} />
-                <EditorContent editor={editor} readOnly={true}/>
+                            <>
+                                <Button buttonType={"Teriatary"} text={t1("report")} handleClick={function (): void {
+                                    setShowReports(!showReports);
+                                    
+                                }}></Button>
+                                {
+                                    userData.roles.includes("ROLE_ADMIN") &&
+                                    <Button buttonType={"Teriatary"} text={t1("delete")} style ={{color: "red"}} handleClick={function (): void {
+                                        if (!isDeleted) fetcherDelete('/admin/post', post.id).then(() => { setIsDeleted(true); alert(t1("deleteCommmet")); })
+                                    }}></Button>
+                                }
+                                {
+                                    showReports &&
+                                    <>
+                                        <Button buttonType={"Teriatary"} text={t1("spam")} handleClick={function (): void {
+                                            fetcherReport('/post/report', post.id, Reasons.SPAM, undefined).then(() => {
+                                                setShowBurgerMenu(false);
+                                                setShowReports(false);
+                                                alert(t1("successReport"));
+                                            }).catch((e: any) => console.log(e))
+                                        }}></Button>
+                                        <Button buttonType={"Teriatary"} text={t1("terrorism")} handleClick={function (): void {
+                                            fetcherReport('/post/report', post.id, Reasons.TERRORISM, undefined).then(() => {
+                                                setShowBurgerMenu(false);
+                                                setShowReports(false);
+                                                alert(t1("successReport"));
+                                            }).catch((e: any) => console.log(e))
+                                        }}></Button>
+                                        <Button buttonType={"Teriatary"} text={t1("hateSpeech")} handleClick={function (): void {
+                                            fetcherReport('/post/report', post.id, Reasons.HATE_SPEECH, undefined).then(() => {
+                                                setShowBurgerMenu(false);
+                                                setShowReports(false);
+                                                alert(t1("successReport"));
+                                            }).catch((e: any) => console.log(e))
+                                        }}></Button>
+                                        <Button buttonType={"Teriatary"} text={t1("harassment")} handleClick={function (): void {
+                                            fetcherReport('/post/report', post.id, Reasons.HARASSMENT, undefined).then(() => {
+                                                setShowBurgerMenu(false);
+                                                setShowReports(false);
+                                                alert(t1("successReport"));
+                                            }).catch((e: any) => console.log(e))
+                                        }}></Button>
+                                        <Button buttonType={"Teriatary"} text={t1("violence")} handleClick={function (): void {
+                                            fetcherReport('/post/report', post.id, Reasons.VIOLENCE, undefined).then(() => {
+                                                setShowBurgerMenu(false);
+                                                setShowReports(false);
+                                                alert(t1("successReport"));
+                                            }).catch((e: any) => console.log(e))
+                                        }}></Button>
+                                        <Button buttonType={"Teriatary"} text={t1("advertising")} handleClick={function (): void {
+                                            fetcherReport('/post/report', post.id, Reasons.ADVERTISING, undefined).then(() => {
+                                                setShowBurgerMenu(false);
+                                                setShowReports(false);
+                                                alert(t1("successReport"));
+                                            }).catch((e: any) => console.log(e))
+                                        }}></Button>
+                                        <Button buttonType={"Teriatary"} text={t1("nsfwContent")} handleClick={function (): void {
+                                            fetcherReport('/post/report', post.id, Reasons.NSFW_CONTENT, undefined).then(() => {
+                                                setShowBurgerMenu(false);
+                                                setShowReports(false);
+                                                alert(t1("successReport"));
+                                            }).catch((e: any) => console.log(e))
+                                        }}></Button>
+                                        <Button buttonType={"Teriatary"} text={t1("other")} handleClick={function (): void {
+                                            let other = prompt(t1("enterReason"));
+                                            if (other != undefined) {
+                                                if(other.length > 1000) other = other.substring(0,999);
+                                                fetcherReport('/post/report', post.id, Reasons.SPAM, other).then(() => {
+                                                    setShowBurgerMenu(false);
+                                                    setShowReports(false);
+                                                    alert(t1("successReport"));
+                                                }).catch((e: any) => console.log(e))
+                                            }
+                                        }}></Button>
+                                    </>
+                                }
+                            </>
+
+                    }
+                    <Button buttonType={"Teriatary"} text={t1("close")} handleClick={function (): void {
+                        setShowBurgerMenu(false);
+                    }}></Button>
+                </ButgerMenuHolder>
             }
-            
+            {post.poster != null && <MiniPostHeader name={post?.poster?.username + ""} date={post.creationDate} src={post.poster?.avatarId != undefined ? post.poster?.avatarId : null} id={post.poster.id}></MiniPostHeader>}
+            {
+                post.type == "MEDIA" ?
+                    post.media?.type == "IMAGE" ?
+                        <ImageHolder>
+                            <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + post?.media?.id} objectFit={"contain"} layout={"fill"}></Image>
+                        </ImageHolder>
+                        :
+                        <VideoHolder>
+                            <StyledVideo controls={true}>
+                                <source src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + post?.media?.id} />
+                            </StyledVideo>
+                        </VideoHolder>
+                    :
+                    // <div dangerouslySetInnerHTML={{__html: textHTML}} />
+                    <EditorContent editor={editor} readOnly={true} />
+            }
+
             <ButtonHolder>
                 <SVGButton onClick={() => {
                     switch (liked) {
@@ -153,7 +297,7 @@ function Content({post, disableComments}:Props){
                         }
                     }
                 }}>
-                    <Likes>{Number(post.likes) + (liked ? 1 : 0) - (post.hasUserLiked? 1:0)}</Likes>
+                    <Likes>{Number(post.likes) + (liked ? 1 : 0) - (post.hasUserLiked ? 1 : 0)}</Likes>
                     <StyledSVG xmlns="http://www.w3.org/2000/svg" height="40" width="40">
                         {
                             liked ?
@@ -166,9 +310,10 @@ function Content({post, disableComments}:Props){
                 <SVGButton onClick={() => {
                     router.push({
                         pathname: '/post/[id]',
-                        query: { id: post.id},
+                        query: { id: post.id },
                     });
                 }} disabled={disableComments}>
+
                     <StyledSVG width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <StyledPath1 d="m 6,3 h 24 c 1.65,0 3,1.35 3,3 V 33 L 27,27 H 6 C 4.35,27 3,25.65 3,24 V 6 C 3,4.35 4.35,3 6,3 Z m 0,21 h 21 l 3,3 V 6 H 6 Z" />
                     </StyledSVG>

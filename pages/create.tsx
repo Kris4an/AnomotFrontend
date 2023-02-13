@@ -12,7 +12,8 @@ import Tiptap from "../components/Tiptap";
 import Image from "next/image";
 import instance from "../axios_instance";
 import MessageScreen from "../components/MessageScreen";
-import { EMediaPost } from "../components/Intefaces";
+import { EMediaPost, ENsfwError, EPost, ESimilarPosts } from "../components/Intefaces";
+import Post from "../components/Post";
 
 const Create: NextPage = () => {
     return (
@@ -184,6 +185,7 @@ const ErrorHolder = styled.div`
     display: flex;
     flex-direction: column;
     gap: 3rem;
+    align-items: center;
 `;
 const ErrorText = styled.span`
     font-family: 'Roboto';
@@ -194,10 +196,19 @@ const ErrorText = styled.span`
     color: ${props => props.theme.colors.primary};
 `;
 const ErrorImageHolder = styled.div`
-    height: 40rem;
+    height: 50rem;
     width: 40rem;
     position: relative;
-`
+`;
+const SimilarityHolder = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    align-items: center;
+    overflow-y: scroll;
+    height: 50rem;
+`;
 
 interface MessageScreenI {
     success: boolean,
@@ -222,7 +233,8 @@ function Content() {
         "messsage": "",
         "success": false
     });
-    const [nsfwError, setNsfwError] = useState<EMediaPost>();
+    const [nsfwError, setNsfwError] = useState<ENsfwError>();
+    const [similarityError, setSimilarityError] = useState<ESimilarPosts>();
 
     const uploadFileFetcher = (url: string, formData: any) => instance.post(url, formData, {
         headers: {
@@ -232,6 +244,9 @@ function Content() {
     const uploadTextFetcher = (url: string, text: any) => instance.post(url, {
         "text": text
     });
+    const appealFetcher = (url: string, jwt: string) => instance.post(url, {
+        "jwt": jwt
+    })
 
     useEffect(() => {
         router.push('/create?s=0');
@@ -379,19 +394,13 @@ function Content() {
                                                     setStage(3);
                                                 }).catch((e: any) => {
                                                     switch (e.response.status) {
-                                                        case '406': {
-                                                            setNsfwError(e.data);
-                                                            setStage(4);
-                                                        }
-                                                        case '409': {
-
-                                                        }
-                                                        case '415': {
+                                                        case 415: {
                                                             setMessageScr({
                                                                 "success": false,
                                                                 "messsage": t2("unsupportedMediaType")
                                                             })
                                                             setStage(3);
+                                                            break;
                                                         }
                                                         default: {
                                                             setMessageScr({
@@ -399,9 +408,9 @@ function Content() {
                                                                 "messsage": t2("failMessage")
                                                             })
                                                             setStage(3);
+                                                            break;
                                                         }
                                                     }
-
                                                 });
                                                 return;
                                             }
@@ -413,11 +422,34 @@ function Content() {
                                                     })
                                                     setStage(3);
                                                 }).catch((e) => {
-                                                    setMessageScr({
-                                                        "success": false,
-                                                        "messsage": t2("failMessage")
-                                                    })
-                                                    setStage(3);
+                                                    switch (e.response.status) {
+                                                        case 406: {
+                                                            setNsfwError(e.response.data);
+                                                            setStage(4);
+                                                            break;
+                                                        }
+                                                        case 409: {
+                                                            setSimilarityError(e.response.data);
+                                                            setStage(5);
+                                                            break;
+                                                        }
+                                                        case 415: {
+                                                            setMessageScr({
+                                                                "success": false,
+                                                                "messsage": t2("unsupportedMediaType")
+                                                            })
+                                                            setStage(3);
+                                                            break;
+                                                        }
+                                                        default: {
+                                                            setMessageScr({
+                                                                "success": false,
+                                                                "messsage": t2("failMessage")
+                                                            })
+                                                            setStage(3);
+                                                            break;
+                                                        }
+                                                    }
                                                 });
                                                 return;
                                             }
@@ -496,16 +528,30 @@ function Content() {
                             }
                         </ErrorImageHolder>
                     }
-                    <Button buttonType={"Solid"} text={t2("appeal")} handleClick={() => {}}></Button>
+                    <Button buttonType={"Solid"} text={t2("appeal")} handleClick={() => {
+                       if(nsfwError!=undefined) appealFetcher('/appeal', nsfwError?.appealJwt).then(() => {}).catch((e: any) => {console.log(e)})
+                    }} style={{maxWidth: '90%', width: '30rem'}}></Button>
                 </ErrorHolder>
             )
         }
         case 5: {
-            return(
+            return (
                 <ErrorHolder>
-                    <SelectionButtonText>{t2("nsfwFound")}</SelectionButtonText>
+                    <SelectionButtonText>{t2("similarPost")}</SelectionButtonText>
                     <ErrorText>{t2("appealSimilarityInfo")}</ErrorText>
-                    <Button buttonType={"Solid"} text={t2("appeal")} handleClick={() => {}}></Button>
+                    {
+                        similarityError !== undefined &&
+                        <SimilarityHolder>
+                            {
+                                similarityError.similarPosts.map((post: EPost, key: number) =>
+                                    <Post post={post} key={key}></Post>
+                                )
+                            }
+                        </SimilarityHolder>
+                    }
+                    <Button buttonType={"Solid"} text={t2("appeal")} handleClick={() => {
+                        if(similarityError!=undefined) appealFetcher('/appeal', similarityError?.appealJwt).then(() => {}).catch((e: any) => {console.log(e)})
+                    }} style={{maxWidth: '90%', width: '30rem'}}></Button>
                 </ErrorHolder>
             )
         }

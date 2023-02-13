@@ -259,6 +259,7 @@ const UpperCommentHolder = styled.div`
     flex-direction: column;
     gap: 4rem;
     max-height: calc(100vh - 5px - 3.5rem);
+    overflow-x: hidden;
 `;
 const CommentHeader = styled.div`
     display: flex;
@@ -403,7 +404,7 @@ function Content({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes
                                 text: text,
                                 commenter: {
                                     username: userData.username,
-                                    id: "",
+                                    id: userData.id,
                                     avatarId: userData?.avatarId
                                 },
                                 isEdited: false,
