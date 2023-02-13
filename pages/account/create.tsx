@@ -101,7 +101,7 @@ function Content(){
             <ModifiedAuthContainer height={'32rem'} gap={'2rem'} width={'28rem'} padding={'2rem 2rem'}>
                 <Text>{t2("letsBegin")}</Text>
                 <LoginInput inputType = 'Email' handleChange={(event: React.ChangeEvent<HTMLInputElement>) => {setEmail(event.target.value);}} placeHolder = {t1("email")} style = {{width: '20rem', height: '3.5rem', fontSize: '20px'}}></LoginInput>
-                <Checkbox text={t2("acceptTerms")} handleChange={(event: React.ChangeEvent<HTMLInputElement>) => (setAcceptedTerms(event.target.checked))} style = {{marginBottom: '0.5rem', width: '20rem'}}></Checkbox>
+                <Checkbox dangerouslySet={true} text={t2("acceptTerms", {interpolation: {escapeValue: false}})} handleChange={(event: React.ChangeEvent<HTMLInputElement>) => (setAcceptedTerms(event.target.checked))} style = {{marginBottom: '0.5rem', width: '20rem'}}></Checkbox>
                 <Button buttonType='Solid' handleClick={() => {goToPage(1);}} disabled = {!(acceptedTerms && email.length>=3 && email.includes('@'))} text = {t1("continue")} style = {{width: '20rem', fontSize: '20px'}}></Button>
                 <Button buttonType='Teriatary' handleClick={() => {router.push('/login')}} text = {t2("alrearyHaveAnAccount")} style = {{width: '18rem', fontSize: '18px'}}></Button>
             </ModifiedAuthContainer>
