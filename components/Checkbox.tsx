@@ -53,16 +53,24 @@ type Props = {
     text: string,
     style?: CSSProperties,
     handleChange: any,
-    ref?: any
+    ref?: any,
+    dangerouslySet?: boolean
 }
-function Checkbox({text, style, handleChange, ref}:Props){
+function Checkbox({text, style, handleChange, ref, dangerouslySet = false}:Props) {
+    const options: any = {};
+    if (dangerouslySet) {
+      options.dangerouslySetInnerHTML = {__html: text};
+    } else {
+        options.children = [text];
+    }
+
     return(
         <Holder style={style}>
             <Holder2>
                 <CheckboxStyle ref={ref} type="checkbox" onChange={handleChange}></CheckboxStyle>
                 <Round></Round>
             </Holder2>
-            <Text>{text}</Text>
+            <Text {...options}></Text>
         </Holder>
     )
 }
