@@ -93,6 +93,7 @@ const CreateBattleMainHolder = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow-x: hidden;
     //padding: 5rem;
 `;
 const SwitchTypeButtonHolder = styled.div`

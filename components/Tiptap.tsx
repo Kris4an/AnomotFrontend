@@ -15,6 +15,7 @@ import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder';
 import { useTranslation } from 'next-i18next';
+import instance from '../axios_instance';
 
 lowlight.registerLanguage('html', html)
 lowlight.registerLanguage('css', css)
@@ -34,7 +35,6 @@ const MenuHolder = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-items: center;
   gap: 1rem;
   border-top: 1px solid ${props => props.theme.colors.secondary};
   padding-top: 0.5rem;
@@ -79,10 +79,18 @@ const Button = styled.button<ButtonProps>`
 
 const StyledEditorContent = styled(EditorContent)`
   height: 100%;
+  overflow: auto;
 `
 
+const uploadLink = (url: string) => instance.post<UrlUploaded>("/account/url", {
+    url: url
+});
 
-const MenuBar = ({editor}: any) => {
+interface UrlUploaded {
+  newUrl: string
+}
+
+const MenuBar = ({editor, t}: any) => {
   if(!editor){
     return null;
   }
@@ -97,7 +105,7 @@ const MenuBar = ({editor}: any) => {
 
   const setLink = useCallback(() => {
     const previousUrl = editor.getAttributes('link').href
-    const url = window.prompt('URL', previousUrl)
+    let url = window.prompt('URL', previousUrl)
 
     // cancelled
     if (url === null) {
@@ -112,9 +120,26 @@ const MenuBar = ({editor}: any) => {
       return
     }
 
-    // update link
-    editor.chain().focus().extendMarkRange('link').setLink({ href: url })
+    if (url.length > 2000) {
+      window.alert(t("linkMax"))
+      return
+    }
+
+    if (!(url.startsWith("http://") || url.startsWith("https://"))) {
+      window.alert(t("linkHttp"))
+      return
+    }
+
+    uploadLink(url).then((res) => {
+      url = `${process.env.NEXT_PUBLIC_FRONTEND_URL}url/${res.data.newUrl}`
+      // update link
+      editor.chain().focus().extendMarkRange('link').setLink({ href: url })
       .run()
+    }).catch((err) => {
+      window.alert(t("linkCouldNotBeUploaded"))
+      return
+    })
+    
   }, [editor])
 
   return(
@@ -235,7 +260,7 @@ const Tiptap = ({getText}: Props) => {
   return (
     <Holder>
         <StyledEditorContent editor={editor} />
-        <MenuBar editor={editor} />
+        <MenuBar editor={editor} t={t1}/>
     </Holder>
   )
 }

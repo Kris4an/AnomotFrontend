@@ -26,6 +26,8 @@ const Text =styled.span<TextProps>`
     font-family: 'Roboto';
 `
 
+const codePath = `${process.env.NEXT_PUBLIC_FRONTEND_URL}follow?code=`
+
 const Code:NextPage = () => {
     const [t2] = useTranslation("settings");
     const [t3] = useTranslation("account");
@@ -40,9 +42,9 @@ const Code:NextPage = () => {
         <NavBar stage = {3}>
             <MainHolder>    
                 <Text fontSize="30px">{t3("codeInfo")}</Text>
-                <QRCodeSVG value={"http://localhost:3000/bg/account/follow?code="+code} style={{ width: '40%', height: '40%' }} />
-                <a href={"http://localhost:3000/bg/account/follow?code="+code}><Text fontSize="24px">{"http://localhost:3000/bg/account/follow?code="+code}</Text></a>
-                <Button buttonType={"Solid"} text={t2("copy")} handleClick={() => {navigator.clipboard.writeText("http://localhost:3000/bg/account/follow?code="+code);}} style={{width: "30rem"}}></Button>
+                <QRCodeSVG value={codePath+code} style={{ width: '40%', height: '40%' }} />
+                <a href={codePath+code}><Text fontSize="24px">{codePath+code}</Text></a>
+                <Button buttonType={"Solid"} text={t2("copy")} handleClick={() => {navigator.clipboard.writeText(codePath+code);}} style={{width: "30rem"}}></Button>
             </MainHolder>
         </NavBar>
     )

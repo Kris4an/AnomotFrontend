@@ -16,5 +16,8 @@
     "similarPost": "Similar post already exists",
     "nsfwFound": "NSFW content detected",
     "appealNsfwInfo": "If you think that your post is wrongly marked as NSFW, you can appeal to an admin.",
-    "appeal": "Appeal"
+    "appeal": "Appeal",
+    "linkMax": "The link must be below 2000 characters",
+    "linkHttp": "The link must be HTTP or HTTPS",
+    "linkCouldNotBeUploaded": "The link could not be validate. Check if it is correct again."
 }
