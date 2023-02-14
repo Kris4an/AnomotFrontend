@@ -18,6 +18,10 @@ const MainHolder = styled.div`
     padding-left: 10px;
     border-left: solid 1px ${props => props.theme.colors.primary};
     position: relative;
+
+    @media (max-width: 840px) {
+        width: 90vw;
+    }
 `;
 const CommentText = styled.span`
     font-family: 'Roboto';
@@ -97,9 +101,10 @@ enum Reasons {
     "NSFW_CONTENT", "ADVERTISING", "VIOLENCE", "HARASSMENT", "HATE_SPEECH", "TERRORISM", "SPAM", "IDENTITY_REVEAL"
 }
 interface Props {
-    comment: EComment
+    comment: EComment,
+    notFechedComment?: boolean
 }
-function Comment({ comment }: Props) {
+function Comment({ comment, notFechedComment }: Props) {
     const [t1] = useTranslation("burgerMenu");
     const [showBurgerMenu, setShowBurgerMenu] = useState(false);
     const fetcherDelete = (url: string, id: any) => instance.delete(url, { params: { id: id } });
@@ -117,14 +122,17 @@ function Comment({ comment }: Props) {
     })
 
     useEffect(() => {
-        console.log(userData)
         if (comment.commenter == undefined) {
             setSelfPost(false)
             return;
         }
-        setLiked(comment.hasUserLiked);
+        
         if (userData !== undefined) setSelfPost(comment.commenter.id == userData.id)
     }, [userData])
+
+    useEffect(() => {
+        setLiked(comment.hasUserLiked);
+    },[])
 
     if (comment === undefined || isDeleted) return (<></>);
     return (
@@ -136,6 +144,10 @@ function Comment({ comment }: Props) {
                     </svg>
                 </BurgerMenuButton>
                 <BurgerMenuButton style={{ left: '10px' }} onClick={() => {
+                    if(notFechedComment){
+                        setLiked(!liked);
+                        return;
+                    }
                     switch (liked) {
                         case true: {
                             fetcherPost('/comment/unlike', comment.id).then(() => { setLiked(false); })

@@ -1,4 +1,8 @@
 {
     "tickets": "Билети",
-    "appeals": "Жалби"
+    "appeals": "Жалби",
+    "decided": "Разрешени",
+    "accept": "Приеми",
+    "deny": "Откажи",
+    "showSimilar": "Покажи подобните"
 }

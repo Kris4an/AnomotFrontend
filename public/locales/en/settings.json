@@ -3,7 +3,6 @@
     "language": "Language",
     "theme": "Dark theme",
     "security": "Security",
-    "downloadInfo": "Download your information",
     "logOut": "Log out",
     "terms": "Terms of service",
     "policy": "Privacy policy",
@@ -52,6 +51,7 @@
     "orUseTheCode": "Or use this code:",
     "scan": "Scan with your app of choice",
     "profilePic": "Profile picture",
-    "uploadFile": "Upload file"
+    "uploadFile": "Upload file",
+    "logOutSession": "Log out off everywhere but here"
     
 }

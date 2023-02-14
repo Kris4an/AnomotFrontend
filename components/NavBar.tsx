@@ -1,6 +1,5 @@
 import Link from "next/link";
 import styled from "styled-components";
-import CheckLogin from "./CheckLogin";
 
 const Holder = styled.div`
     display: flex;
@@ -13,7 +12,7 @@ const Holder = styled.div`
     width: 48px;
     padding: 10px 5px;
     
-    @media (max-width: 800px) {
+    @media (max-width: 840px) {
         flex-direction: row;
         width: 100vw;
         height: fit-content;
@@ -28,11 +27,11 @@ const MainHolder = styled.div`
     max-width: 100%;
     height: 100vh;
 
-    @media (max-width: 800px) {
+    @media (max-width: 840px) {
         flex-direction: column-reverse;
     }
 `;
-const StyledSVG =  styled.svg`
+const StyledSVG = styled.svg`
     &:hover{
         cursor: pointer;
     }
@@ -42,9 +41,9 @@ type Props = {
     stage: number
     children?: any
 }
-function NavBar({children, stage}: Props) {
-    return(
-        <CheckLogin>
+function NavBar({ children, stage }: Props) {
+    return (
+
         <MainHolder>
             <Holder>
                 <Link href='/battles'>
@@ -90,7 +89,7 @@ function NavBar({children, stage}: Props) {
             </Holder>
             {children}
         </MainHolder>
-        </CheckLogin>
+
     )
 }
 

@@ -14,7 +14,8 @@ const MainHolder = styled.div`
   flex-direction: row;
   gap: 1rem;
   width: 100%;
-  max-height: 100vh;
+  //max-height: 100vh;
+  height: 100%;
   align-items: center;
 `;
 const PlaceHolder = styled.div`
@@ -35,19 +36,19 @@ const Text = styled.span`
 
 const LogoAnim = keyframes`
     0% {
-        transform: translateX(-17rem);
+        transform: translateX(-200%);
     }
     100% {
-        transform: translateX(17rem);
+        transform: translateX(200%);
     }
 `;
 
 const LogoHolder = styled.div`
     position: absolute;
-    animation: ${LogoAnim} 1.3s ease-in-out 0s infinite alternate;
+    animation: ${LogoAnim} 1s ease-in-out 0s infinite alternate;
 `;
 
-const Battles:NextPage = () => { 
+const Battles: NextPage = () => {
     const fetcher = (url: any, page: number) => instance.get(url, { params: { page: page } }).then((res) => res.data).catch((res) => res.error);
     const [goldPost, setGoldPost] = useState<EBattlePost>();
     const [redPost, setRedPost] = useState<EBattlePost>();
@@ -64,15 +65,15 @@ const Battles:NextPage = () => {
             setJwt(res.voteJWT);
             setBattleId(res.id)
             setIsReady(true);
-            setBattleNum(battleNum+1);
+            setBattleNum(battleNum + 1);
             console.log(res)
-        }).catch((e) => {console.log(e)});
+        }).catch((e) => { console.log(e) });
     }
     useEffect(() => {
         BattleGetter();
-    },[])
+    }, [])
 
-    return(
+    return (
         <NavBar stage={0} >
             <MainHolder>
                 {
@@ -80,11 +81,11 @@ const Battles:NextPage = () => {
                         <Battle goldPost={goldPost!} redPost={redPost!} jwt={jwt} nextBattle={() => {
                             BattleGetter();
                             setIsReady(false);
-                        } } id={battleId} selfBattle={false}></Battle>
+                        }} id={battleId} selfBattle={false}></Battle>
                         :
                         <PlaceHolder>
                             <LogoHolder>
-                                <Logo/>
+                                <Logo />
                             </LogoHolder>
                             <Text>{t2("lookingForBattle")}</Text>
                         </PlaceHolder>
@@ -97,7 +98,7 @@ const Battles:NextPage = () => {
 export async function getStaticProps({ locale }: any) {
     return {
         props: {
-            ...(await serverSideTranslations(locale, ['battle', 'account','common'])),
+            ...(await serverSideTranslations(locale, ['battle', 'account', 'common', "burgerMenu"])),
         },
     };
 }

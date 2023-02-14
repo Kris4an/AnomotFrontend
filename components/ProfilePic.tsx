@@ -11,6 +11,13 @@ const Holder = styled.div`
     margin-left: 3rem;
     align-items: flex-start;
     height: fit-content;
+
+    @media (max-width: 840px) {
+        gap: 1rem;
+        margin-left: 0rem;
+        width: 95vw;
+        //height: ;
+    }
 `;
 const Holder2 = styled.div`
     display: flex;
@@ -39,6 +46,13 @@ const FollowersMainContainer = styled.div`
     align-items: flex-start;
     padding: 0px;
     gap: 4rem;
+
+    @media (max-width: 840px) {
+        gap: 0.5rem;
+        width: fit-content;
+        max-width: 95vw;
+    }
+
 `;
 interface ContainerProps {
     typeP: boolean
@@ -145,8 +159,8 @@ function ProfilePic({ type, handleClick1, handleClick2, handleClickFollowing, ha
                         </Info>
                     </Holder2>
                     <ButtonHolder>
-                        <Button buttonType={"Solid"} text={t2("customizeProfile")} style={{ width: '30rem' }} handleClick={handleClick1}></Button>
-                        <Button buttonType={"Secondary"} text={t2("generateCode")} style={{ width: '20rem' }} handleClick={handleClick2}></Button>
+                        <Button buttonType={"Solid"} text={t2("customizeProfile")} style={{ width: '30rem', maxWidth: '40vw' }} handleClick={handleClick1}></Button>
+                        <Button buttonType={"Secondary"} text={t2("generateCode")} style={{ width: '20rem', maxWidth: '50vw' }} handleClick={handleClick2}></Button>
                     </ButtonHolder>
 
                 </Holder>
@@ -183,10 +197,10 @@ function ProfilePic({ type, handleClick1, handleClick2, handleClickFollowing, ha
                         </Info>
                     </Holder2>
                     <ButtonHolder>
-                        <Button buttonType={followed ? "Secondary" : "Solid"} text={followed ? t2("unfollow") : t2("follow")} style={{ width: '30rem' }} handleClick={handleClick1}></Button>
+                        <Button buttonType={followed ? "Secondary" : "Solid"} text={followed ? t2("unfollow") : t2("follow")} style={{ width: '30rem', maxWidth: '70vw' }} handleClick={handleClick1}></Button>
                         {/* <Button buttonType={"Secondary"} text={t2("message")} style={{ width: '20rem' }} handleClick={handleClick2}></Button> */}
                     </ButtonHolder>
-
+                    
                 </Holder>
             )
         }

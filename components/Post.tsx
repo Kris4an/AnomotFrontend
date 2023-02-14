@@ -32,6 +32,10 @@ const MainHolder = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
+
+    @media (max-width: 840px) {
+        width: 95%;
+    }
 `;
 const SVGButton = styled.button`
     width: 100%;
@@ -125,9 +129,10 @@ enum Reasons {
 }
 interface Props {
     post: EPost,
-    disableComments?: boolean
+    disableComments?: boolean,
+    disableLiking?: boolean
 }
-function Content({ post, disableComments }: Props) {
+function Content({ post, disableComments, disableLiking }: Props) {
     const { user: userData, isError: userDataError } = useUser();
     const fetcherPost = (url: string, id: any) => instance.post(url, null, { params: { id: id } });
     const fetcherDelete = (url: string, id: any) => instance.delete(url, { params: { id: id } });
@@ -136,7 +141,7 @@ function Content({ post, disableComments }: Props) {
         "reason": reason,
         "other": other
     })
-    const [liked, setLiked] = useState(post.hasUserLiked);
+    const [liked, setLiked] = useState(post.hasUserLiked != null? post.hasUserLiked: false);
     const [showBurgerMenu, setShowBurgerMenu] = useState(false);
     const [selfPost, setSelfPost] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false);
@@ -285,7 +290,7 @@ function Content({ post, disableComments }: Props) {
             }
 
             <ButtonHolder>
-                <SVGButton onClick={() => {
+                <SVGButton disabled={disableLiking} onClick={() => {
                     switch (liked) {
                         case true: {
                             fetcherPost('/unlike', post.id).then(() => { setLiked(false); })

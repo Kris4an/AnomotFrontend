@@ -22,11 +22,15 @@ const MainHolder = styled.div`
     gap: 1rem;
 `;
 const IconButtonHolder = styled.div`
+    position: absolute;
+    top: 1rem;
+    right: 0.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 12px;
     margin-right: 1rem;
+    z-index: 4;
 `;
 const UpperHolder = styled.div`
     display: flex;

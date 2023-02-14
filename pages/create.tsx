@@ -31,6 +31,10 @@ const SelectionButtonHolder = styled.div`
     align-items: center;
     padding: 0rem 7rem 0rem 7rem;
     height: 70%;
+
+    @media (max-width: 840px) {
+        flex-direction: column;
+    }
 `;
 const SelButtonSvg = styled.svg`
     height: 8rem;
@@ -53,6 +57,12 @@ const SelectionButton = styled.button<SelectionButtonProps>`
     border-color: ${props => props.theme.colors.secondary};
     cursor: pointer;
     transition: background 300ms ease-in-out, box-shadow 400ms ease-in-out;
+
+    @media (max-width: 840px) {
+        border-left: none;
+        border-top: ${(props) => (props.isFirst ? 'none' : '3px solid')};
+        width: 50vw;
+    }
     &:hover{
         background-color: ${props => props.theme.colors.switchButtonHover};;
         box-shadow: 10px 10px inset #d6d6d6;
@@ -68,6 +78,7 @@ const SelectionButtonMainHolder = styled.div`
     height: 100%;
     justify-content: space-evenly;
     align-items: center;
+
 `;
 const SelectionButtonText = styled.span`
     font-family: 'Montserrat';
@@ -77,6 +88,11 @@ const SelectionButtonText = styled.span`
     text-align: center;
     max-width: 70%;
     height: 2rem;
+
+    @media (max-width: 840px) {
+        font-size: 24px;
+        line-height: 26px;
+    }
 `;
 const CreateBattleHolder = styled.div`
     display: flex;
@@ -85,7 +101,10 @@ const CreateBattleHolder = styled.div`
     width: 70%;
     height: 90%;
     gap: 2rem;
-    //border: 2px solid ${props => props.theme.colors.secondary};
+    
+    @media (max-width: 840px) {
+        width: 95%;
+    }
 `;
 const CreateBattleMainHolder = styled.div`
     width: 100%;
@@ -141,7 +160,8 @@ const UploadTextHolder = styled.div`
 const UploadFileButtonText = styled.span`
     font-size: 20px;
     font-family: 'Roboto';
-    color: ${props => props.theme.colors.secondary};;
+    color: ${props => props.theme.colors.secondary};
+    text-align: center;
 `;
 const PostTypePath = styled.path<IsSelectedProps>`
     fill: ${(props) => (props.isSelected ? props => props.theme.colors.primary : props => props.theme.colors.navBarSecondary)};
@@ -499,7 +519,7 @@ function Content() {
                                     }
 
                                 }
-                            }} text={t1("continue")} style={{ width: '38rem' }}
+                            }} text={t1("continue")} style={{ width: '38rem', maxWidth: '95vw' }}
                             disabled={(postType != "battle" && postType != "post") || (selectedPostType ? selectedFile == null : text.length < 50)}
                             title={selectedPostType ? "" : t2("textPostReq")}></Button>
                     </CreateBattleHolder>
@@ -529,7 +549,7 @@ function Content() {
                         </ErrorImageHolder>
                     }
                     <Button buttonType={"Solid"} text={t2("appeal")} handleClick={() => {
-                       if(nsfwError!=undefined) appealFetcher('/appeal', nsfwError?.appealJwt).then(() => {}).catch((e: any) => {console.log(e)})
+                       if(nsfwError!=undefined) appealFetcher('/appeal', nsfwError?.appealJwt).then(() => {alert(t1("success"));router.reload()}).catch((e: any) => {console.log(e)})
                     }} style={{maxWidth: '90%', width: '30rem'}}></Button>
                 </ErrorHolder>
             )
@@ -550,7 +570,7 @@ function Content() {
                         </SimilarityHolder>
                     }
                     <Button buttonType={"Solid"} text={t2("appeal")} handleClick={() => {
-                        if(similarityError!=undefined) appealFetcher('/appeal', similarityError?.appealJwt).then(() => {}).catch((e: any) => {console.log(e)})
+                        if(similarityError!=undefined) appealFetcher('/appeal', similarityError?.appealJwt).then(() => {alert(t1("success"));router.reload()}).catch((e: any) => {console.log(e)})
                     }} style={{maxWidth: '90%', width: '30rem'}}></Button>
                 </ErrorHolder>
             )
@@ -579,6 +599,7 @@ const OverlayText = styled.span`
     font-family: 'Roboto';
     font-size: 24px;
     color:  ${props => props.theme.colors.primary};
+    text-align: center;
 `;
 const Slider = styled.input`
     -webkit-appearance: none;
@@ -607,6 +628,17 @@ const SliderHolder = styled.div`
     gap: 1rem;
     align-items: center;
 `
+const AuthCont = styled(AuthContainer)`
+    padding: 7rem;
+    gap: 4rem;
+    z-index: 2;
+    width: 50rem;
+
+    @media (max-width: 840px) {
+        width: 90vw;
+        padding: 4rem 2rem 4rem 2rem;
+    }
+`;
 type OverlayProps = {
     close: any,
     stage: number,
@@ -619,23 +651,23 @@ function OverlayWindow({ close, stage, handleClick }: OverlayProps) {
     switch (stage) {
         case 0: return (
             <OverlayHolder onClick={close}>
-                <AuthContainer onClick={(e: any) => {
+                <AuthCont onClick={(e: any) => {
                     e.stopPropagation();
                     e.cancelBubble = true;
-                }} style={{ padding: '7rem', gap: '4rem', zIndex: '2', maxWidth: '50vw' }}>
+                }}>
                     <OverlayText>{t2("battleOverlayInfo")}</OverlayText>
                     <Button buttonType={"Solid"} text={t1("continue")} handleClick={handleClick}></Button>
-                </AuthContainer>
+                </AuthCont>
             </OverlayHolder>
         )
         case 1: {
             const [sliderValue, setSliderValue] = useState(500);
             return (
                 <OverlayHolder onClick={close}>
-                    <AuthContainer onClick={(e: any) => {
+                    <AuthCont onClick={(e: any) => {
                         e.stopPropagation();
                         e.cancelBubble = true;
-                    }} style={{ padding: '7rem', gap: '4rem', zIndex: '2', maxWidth: '50vw' }}>
+                    }}>
                         <SliderHolder>
                             <OverlayText>{t2("geopostOverlayInfo1")}</OverlayText>
                             <OverlayText>{sliderValue}</OverlayText>
@@ -643,7 +675,7 @@ function OverlayWindow({ close, stage, handleClick }: OverlayProps) {
                             <OverlayText>{t2("geopostOverlayInfo2")}</OverlayText>
                         </SliderHolder>
                         <Button buttonType={"Solid"} text={t1("continue")} disabled={true} handleClick={() => { }}></Button>
-                    </AuthContainer>
+                    </AuthCont>
                 </OverlayHolder>
             )
         }

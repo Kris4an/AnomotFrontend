@@ -26,6 +26,10 @@ const PostHolder = styled.div`
     flex-direction: column;
     gap: 3rem;
     overflow-y: scroll;
+    
+    @media (max-width: 840px) {
+        height: calc(100vh - 260px);
+    }
 `;
 const BurgerMenuButton = styled.button`
     background-color: transparent;
@@ -42,6 +46,10 @@ const BurgerMenuButton = styled.button`
     position: absolute;
     top: 1rem;
     right: 2rem;
+
+    @media (max-width: 840px) {
+        right: 1rem;
+    }
 `;
 const StyledPath = styled.path`
     fill: ${props => props.theme.colors.primary};
@@ -86,29 +94,50 @@ const Account: NextPage = () => {
         "other": other
     })
     const [showReports, setShowReports] = useState(false);
-    const { user: userData, isError: userDataError } = useUser();
+    const { user: userData, isError: userDataError, isValidating: isValidating } = useUser();
 
     useEffect(() => {
-        if (router.isReady) {
+        if (router.isReady && !isValidating && user == undefined) {
             const { id } = router.query
-            fetcherGet('/followers/count', id).then((res: any) => { setFollowersCount(res?.data.count) }).catch((e) => { console.log(e) })
-            fetcherGet('/followed/count', id).then((res: any) => { setFollowingCount(res?.data.count) }).catch((e) => { console.log(e) })
-            fetcherGet('/user', id).then((res: any) => { setUser(res?.data); console.log(res.data.avatarID == null) }).catch((e) => { router.push('/404'); console.log(e) })
             fetcherGet('/account/follows', id).then((res: any) => { console.log(res); setIsFollowed(res.data) }).catch((e) => { console.log(e) })
-            fetcherGetPage('/posts', id, page).then((res: any) => {
-                setPosts(res.data)
-                const arr1: EPost[] = res.data;
-                let arr2: EPost[] = [];
-                arr2.push(arr1[0])
-                for (let i = 1; i < arr1.length; i++) {
-                    if (arr1[i - 1].id != arr1[i].id) {
-                        arr2.push(arr1[i]);
+            if (!userData.roles.includes("ROLE_ADMIN")) {
+                console.log('plebej');
+                fetcherGet('/followers/count', id).then((res: any) => { setFollowersCount(res?.data.count) }).catch((e) => { console.log(e) })
+                fetcherGet('/followed/count', id).then((res: any) => { setFollowingCount(res?.data.count) }).catch((e) => { console.log(e) })
+                fetcherGet('/user', id).then((res: any) => { setUser(res?.data); }).catch((e) => { router.push('/404'); console.log(e) })
+                fetcherGetPage('/posts', id, page).then((res: any) => {
+                    setPosts(res.data)
+                    const arr1: EPost[] = res.data;
+                    let arr2: EPost[] = [];
+                    arr2.push(arr1[0])
+                    for (let i = 1; i < arr1.length; i++) {
+                        if (arr1[i - 1].id != arr1[i].id) {
+                            arr2.push(arr1[i]);
+                        }
                     }
-                }
-                setNoDubPosts(arr2);
-            })
+                    setNoDubPosts(arr2);
+                })
+            }
+            else{
+                fetcherGet('/admin/user/followers/count', id).then((res: any) => { setFollowersCount(res?.data.count) }).catch((e) => { console.log(e) })
+                fetcherGet('/admin/user/followed/count', id).then((res: any) => { setFollowingCount(res?.data.count) }).catch((e) => { console.log(e) })
+                fetcherGet('/admin/user', id).then((res: any) => { setUser(res?.data); }).catch((e) => { router.push('/404'); console.log(e) })
+                fetcherGetPage('/admin/posts', id, page).then((res: any) => {
+                    setPosts(res.data)
+                    const arr1: EPost[] = res.data;
+                    let arr2: EPost[] = [];
+                    arr2.push(arr1[0])
+                    for (let i = 1; i < arr1.length; i++) {
+                        if (arr1[i - 1].id != arr1[i].id) {
+                            arr2.push(arr1[i]);
+                        }
+                    }
+                    setNoDubPosts(arr2);
+                })
+            }
+
         }
-    }, [router])
+    }, [router, isValidating])
 
     return (
         <NavBar stage={3}>
@@ -134,7 +163,7 @@ const Account: NextPage = () => {
                                 instance.delete('/admin/user/avatar', { params: { id: user.id } }).then(() => { alert(t1("success")); })
                             }}></Button>
                             <Button buttonType={"Teriatary"} text={t1("ban")} style={{ color: 'red' }} handleClick={function (): void {
-                                let reason = prompt(t1("enterPassword"));
+                                let reason = prompt("Reason");
                                 let days = prompt(t1("banLenght"));
                                 let date = new Date();
                                 date.setDate(date.getDate() + Number(days));
@@ -227,7 +256,8 @@ const Account: NextPage = () => {
                     const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
                     if (bottom) {
                         if (posts.length % 9 != 0) return;
-                        fetcherGetPage('/posts', user?.id, page + 1).then((res) => {
+                        const url = userData.roles.includes("ROLE_ADMIN")? "/admin":"";
+                        fetcherGetPage(url+'/posts', user?.id, page + 1).then((res) => {
                             let arr = [];
                             arr = posts;
                             arr = arr.concat(res?.data);

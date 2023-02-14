@@ -1,4 +1,8 @@
 {
     "tickets": "Tickets",
-    "appeals": "Appeals"
+    "appeals": "Appeals",
+    "decided": "Decided",
+    "accept": "Приеми",
+    "deny": "Откажи",
+    "showSimilar": "Show similar"
 }

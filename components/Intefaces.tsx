@@ -99,6 +99,16 @@ interface EAdminAppeal {
     explanation: string,
     creationDate: string
 }
+interface EUser{
+    avatarId: string,
+    email: string,
+    id: string,
+    isEmailVeried: boolean,
+    isMfaActive: boolean,
+    mfaMethods: string[],
+    roles: string[],
+    username: string
+}
 
 export type {
     EComment,
@@ -112,5 +122,6 @@ export type {
     ESimilarPosts,
     ENsfwError,
     EReportTicket,
-    EAdminAppeal
+    EAdminAppeal,
+    EUser
 };

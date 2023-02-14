@@ -22,6 +22,13 @@ const MainHolder = styled.div`
     gap: 6rem;
     overflow-y: hidden;
     padding-bottom: 4rem;
+
+    @media (max-width: 840px) {
+        flex-direction: column;
+        padding-left: 0px;
+        gap: 0.5rem;
+        align-items: center;
+    }
 `;
 const CommentsHolder = styled.div`
     flex-grow: 1;
@@ -30,6 +37,10 @@ const CommentsHolder = styled.div`
     gap: 2rem;
     overflow-y: scroll;
     overflow-x: hidden;
+
+    @media (max-width: 840px) {
+        align-self: flex-start;
+    }
 `;
 
 const PostPage: NextPage = () => {
@@ -73,7 +84,7 @@ const PostPage: NextPage = () => {
                             {
                                 userComments != null && userComments !== undefined &&
                                 userComments.map((comment: EComment, key: number) =>
-                                    <Comment comment={comment} key={key}></Comment>
+                                    <Comment comment={comment} key={key} notFechedComment={true}></Comment>
                                 )
                             }
                             {

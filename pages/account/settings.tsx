@@ -581,7 +581,7 @@ function Content() {
                                 <option value='en'>English</option>
                             </ChooseLanguage>
                         </MiniHolder>
-                        <MiniHolder>
+                        {/* <MiniHolder>
                             <svg width="37" height="36" viewBox="0 0 27 28" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ padding: '5px 4px' }}>
                                 <StyledPath d="M13.5 0.5C9.91958 0.5 6.4858 1.92232 3.95406 4.45406C1.42232 6.9858 0 10.4196 0 14C0 17.5804 1.42232 21.0142 3.95406 23.5459C6.4858 26.0777 9.91958 27.5 13.5 27.5C14.745 27.5 15.75 26.495 15.75 25.25C15.75 24.665 15.525 24.14 15.165 23.735C14.82 23.345 14.595 22.82 14.595 22.25C14.595 21.005 15.6 20 16.845 20H19.5C23.64 20 27 16.64 27 12.5C27 5.87 20.955 0.5 13.5 0.5ZM5.25 14C4.005 14 3 12.995 3 11.75C3 10.505 4.005 9.5 5.25 9.5C6.495 9.5 7.5 10.505 7.5 11.75C7.5 12.995 6.495 14 5.25 14ZM9.75 8C8.505 8 7.5 6.995 7.5 5.75C7.5 4.505 8.505 3.5 9.75 3.5C10.995 3.5 12 4.505 12 5.75C12 6.995 10.995 8 9.75 8ZM17.25 8C16.005 8 15 6.995 15 5.75C15 4.505 16.005 3.5 17.25 3.5C18.495 3.5 19.5 4.505 19.5 5.75C19.5 6.995 18.495 8 17.25 8ZM21.75 14C20.505 14 19.5 12.995 19.5 11.75C19.5 10.505 20.505 9.5 21.75 9.5C22.995 9.5 24 10.505 24 11.75C24 12.995 22.995 14 21.75 14Z" fill="black" />
                             </svg>
@@ -594,7 +594,7 @@ function Content() {
                                 </Switch>
                             </AnotherHolder>
 
-                        </MiniHolder>
+                        </MiniHolder> */}
                         <MiniHolder>
                             <svg width="37" height="36" viewBox="0 0 37 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <StyledPath d="M18.5 1.5L5 7.5V16.5C5 24.825 10.76 32.61 18.5 34.5C26.24 32.61 32 24.825 32 16.5V7.5L18.5 1.5ZM18.5 17.985H29C28.205 24.165 24.08 29.67 18.5 31.395V18H8V9.45L18.5 4.785V17.985Z" fill="black" />
@@ -611,7 +611,7 @@ function Content() {
                             <svg width="37" height="36" viewBox="0 0 37 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <StyledPath d="M25.385 13.5H23V6C23 5.175 22.325 4.5 21.5 4.5H15.5C14.675 4.5 14 5.175 14 6V13.5H11.615C10.28 13.5 9.605 15.12 10.55 16.065L17.435 22.95C18.02 23.535 18.965 23.535 19.55 22.95L26.435 16.065C27.38 15.12 26.72 13.5 25.385 13.5ZM8 28.5C8 29.325 8.675 30 9.5 30H27.5C28.325 30 29 29.325 29 28.5C29 27.675 28.325 27 27.5 27H9.5C8.675 27 8 27.675 8 28.5Z" fill="black" />
                             </svg>
-                            <OptionButton onClick={() => { }}>{t2("downloadInfo")}</OptionButton>
+                            <OptionButton onClick={() => { }}>{t2("logOutSession")}</OptionButton>
                         </MiniHolder>
                         <MiniHolder>
                             <svg xmlns="http://www.w3.org/2000/svg" height="37" width="36" style={{ padding: '2px 4px' }}>
@@ -624,7 +624,7 @@ function Content() {
                         <Button buttonType={"Teriatary"} text={t2("terms")} handleClick={() => { }} style={{ width: 'fit-content', padding: '0px', height: 'fit-content' }}></Button>
                         <Button buttonType={"Teriatary"} text={t2("policy")} handleClick={() => { }} style={{ width: 'fit-content', padding: '0px', height: 'fit-content' }}></Button>
                         <Button buttonType={"Teriatary"} text={t2("openSource")} handleClick={() => { }} style={{ width: 'fit-content', padding: '0px', height: 'fit-content' }}></Button>
-                        <Version>{t2("version")} 0.0.0</Version>
+                        <Version>{t2("version")} 1.0.0</Version>
                     </Others>
                 </MenuContent>
             </MainHolder>
