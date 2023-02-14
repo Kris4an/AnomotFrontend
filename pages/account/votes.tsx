@@ -16,6 +16,10 @@ const MianHolder = styled.div`
     flex-direction: column;
     gap: 3rem;
     padding-top: 2rem;
+
+    @media (max-width: 840px) {
+        gap: 1rem;
+    }
 `;
 const Title = styled.span`
     font-family: 'Roboto';
@@ -27,6 +31,12 @@ const Title = styled.span`
     align-items: flex-end;
     text-indent: 14px;
     color: ${props => props.theme.colors.inputPlaceholder};
+
+    @media (max-width: 840px) {
+        font-size: 24px;
+        line-height: 26px;
+        padding-right: 5px;
+    }
 `;
 const BattleHolder = styled.div`
     width: 100%;
@@ -36,6 +46,10 @@ const BattleHolder = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
+
+    @media (max-width: 840px) {
+        border-bottom: 1px solid ${props => props.theme.colors.primary};
+    }
 `;
 const BattleMainHolder = styled.div`
     width: 100%;
@@ -44,6 +58,10 @@ const BattleMainHolder = styled.div`
     flex-direction: column;
     gap: 3rem;
     overflow-y: scroll;
+
+    @media (max-width: 840px) {
+        gap: 4rem;
+    }
 `;
 const UpperHolder = styled.div`
     width: 100%;
@@ -51,6 +69,11 @@ const UpperHolder = styled.div`
     gap: 3rem;
     padding-left: 2rem;
     align-items: center;
+
+    @media (max-width: 840px) {
+        padding-top: 1rem;
+        padding-left: 1rem;
+    }
 `;
 const StyledPath = styled.path`
     fill: ${props => props.theme.colors.primary};

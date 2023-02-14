@@ -30,6 +30,9 @@ const DefaultButton = styled.button`
     &:disabled{
         background: ${props => props.theme.colors.buttonDisabled};
     }
+    @media (max-width: 840px) {
+        font-size: 18px;
+    }
 
 `;
 
@@ -63,6 +66,9 @@ const SolidButton = styled.button`
     }
     &:disabled{
         background: ${props => props.theme.colors.buttonDisabled};
+    }
+    @media (max-width: 840px) {
+        font-size: 18px;
     }
 `;
 
@@ -99,6 +105,9 @@ const SecondaryButton = styled.button`
         background: ${props => props.theme.colors.secondaryButtonBackground};
         color: ${props => props.theme.colors.buttonDisabled};
     }
+    @media (max-width: 840px) {
+        font-size: 18px;
+    }
 `;
 
 const TeriataryButton = styled.button`
@@ -122,6 +131,10 @@ const TeriataryButton = styled.button`
 
     &:hover{
         text-decoration-line: underline;
+    }
+
+    @media (max-width: 840px) {
+        font-size: 18px;
     }
 `;
 

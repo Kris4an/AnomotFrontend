@@ -13,7 +13,7 @@ const Holder = styled.div`
     height: fit-content;
 
     @media (max-width: 840px) {
-        gap: 1rem;
+        gap: 2rem;
         margin-left: 0rem;
         width: 95vw;
         //height: ;
@@ -25,6 +25,10 @@ const Holder2 = styled.div`
     gap: 2rem;
     justify-content: center;
     align-items: flex-start;
+
+    @media (max-width: 840px) {
+        gap: 0.8rem;
+    }
 `;
 const Pic = styled.div`
     position: relative;
@@ -32,6 +36,10 @@ const Pic = styled.div`
     border-radius: 25px;
     aspect-ratio: 1;
     height: 8rem;
+
+    @media (max-width: 840px) {
+        height: 7rem;
+    }
 `;
 const Info = styled.div`
     display: flex;
@@ -134,7 +142,7 @@ function ProfilePic({ type, handleClick1, handleClick2, handleClickFollowing, ha
                     <Holder2>
                         <Pic>
                             {src != undefined && src != null && src != "null" ?
-                                <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + src} height={128} width={128} objectFit={'cover'} className={'profilePicBig'}></Image>
+                                <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + src} layout={'fill'} objectFit={'cover'} className={'profilePicBig'}></Image>
                                 :
                                 <StyledSvg width="120" height="120" viewBox="0 0 198 275" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M0 43.5792L8.43988 40.0427C69.3165 14.5335 138.117 15.817 198 43.5792V97.1767V176C198 230.676 153.676 275 99 275C44.3238 275 0 230.676 0 176V97.1767V43.5792Z" fill="#29335C" />
@@ -172,7 +180,7 @@ function ProfilePic({ type, handleClick1, handleClick2, handleClickFollowing, ha
                     <Holder2>
                         <Pic>
                             {src != undefined && src != null && src != "null" ?
-                                <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + src} height={128} width={128} objectFit={'cover'} className={'profilePicBig'}></Image>
+                                <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + src} layout={'fill'} objectFit={'cover'} className={'profilePicBig'}></Image>
                                 :
                                 <StyledSvg width="120" height="120" viewBox="0 0 198 275" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M0 43.5792L8.43988 40.0427C69.3165 14.5335 138.117 15.817 198 43.5792V97.1767V176C198 230.676 153.676 275 99 275C44.3238 275 0 230.676 0 176V97.1767V43.5792Z" fill="#29335C" />

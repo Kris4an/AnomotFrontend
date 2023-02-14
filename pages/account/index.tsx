@@ -24,13 +24,18 @@ const MainHolder = styled.div`
 const IconButtonHolder = styled.div`
     position: absolute;
     top: 1rem;
-    right: 0.5rem;
+    right: 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 12px;
-    margin-right: 1rem;
     z-index: 4;
+
+    @media (max-width: 840px) {
+        gap: 5px;
+        top: 0.5rem;
+        right: 5px;
+    }
 `;
 const UpperHolder = styled.div`
     display: flex;
@@ -40,12 +45,20 @@ const UpperHolder = styled.div`
     height: fit-content;
     width: 100%;//-3rem;
     gap: 12px;
+
+    @media (max-width: 840px) {
+        height: 15rem;
+    }
 `;
 const ButtonHolder = styled.div`
     width: 100%;
     display: flex;
     align-items: center;
     padding: 0px 10px;
+
+    @media (max-width: 840px) {
+        height: 2rem;
+    }
 `;
 const PostHolder = styled.div`
     width: 100%;
@@ -54,6 +67,10 @@ const PostHolder = styled.div`
     flex-direction: column;
     gap: 3rem;
     overflow-y: scroll;
+
+    @media (max-width: 840px) {
+        height: calc(100vh - 50px - 17rem);
+    }
 `;
 interface PostButtonProps {
     readonly isSelected: boolean
@@ -141,6 +158,9 @@ const NotiHeader = styled.div`
     display: flex;
     align-items: center;
     gap: 2rem;
+    @media (max-width: 840px) {
+        padding-top: 2rem;
+    }
 `;
 const NotiTitle = styled.span`
     font-family: 'Roboto';
@@ -151,7 +171,6 @@ const NotiTitle = styled.span`
     display: flex;
     align-items: flex-end;
     text-indent: 14px;
-
     color: ${props => props.theme.colors.inputPlaceholder};
 `;
 const NotiText = styled.span`
