@@ -757,7 +757,7 @@ function Content() {
                                         setMessageS(true);
                                         setStage(3);
                                     }).catch((e) => {
-                                        console.log(e.response.status)
+
                                         setResendS(false); 
                                         console.log(e);
                                     })
