@@ -4,10 +4,8 @@ import Image from "next/image";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import MiniProfilePic from "./MiniProfilePic";
-import Link from "next/link";
 import router from "next/router";
 import instance from "../axios_instance";
-import next from "next";
 import { EBattlePost, EComment, ENonSelfUser, EPost } from "./Intefaces";
 import Comment from "./Comment";
 import CommentInput from "./CommentInput";
@@ -352,7 +350,7 @@ interface Props {
     disableVote?: boolean,
     nextBattle: () => void
 }
-function Content({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes, disableVote, nextBattle }: Props) {
+function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes, disableVote, nextBattle }: Props) {
     const [t2] = useTranslation("battle");
     const [t3] = useTranslation("burgerMenu");
     const [isExpanded1, setIsExpanded1] = useState(false);
@@ -826,4 +824,4 @@ function Content({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes
 
 
 
-export default Content;
+export default Battle;

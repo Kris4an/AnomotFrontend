@@ -91,10 +91,6 @@ interface UrlUploaded {
 }
 
 const MenuBar = ({editor, t}: any) => {
-  if(!editor){
-    return null;
-  }
-
   const addImage = useCallback(() => {
     const url = window.prompt('URL')
 
@@ -141,6 +137,10 @@ const MenuBar = ({editor, t}: any) => {
     })
     
   }, [editor])
+  
+  if(!editor){
+    return null;
+  }
 
   return(
     <MenuHolder>

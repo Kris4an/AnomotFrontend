@@ -659,6 +659,7 @@ type OverlayProps = {
 function OverlayWindow({ close, stage, handleClick }: OverlayProps) {
     const [t1] = useTranslation("common");
     const [t2] = useTranslation("create-post");
+    const [sliderValue, setSliderValue] = useState(500);
 
     switch (stage) {
         case 0: return (
@@ -673,7 +674,6 @@ function OverlayWindow({ close, stage, handleClick }: OverlayProps) {
             </OverlayHolder>
         )
         case 1: {
-            const [sliderValue, setSliderValue] = useState(500);
             return (
                 <OverlayHolder onClick={close}>
                     <AuthCont onClick={(e: any) => {
