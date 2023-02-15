@@ -11,6 +11,7 @@ instance.interceptors.request.use((config: AxiosRequestConfig<any>) => {
         return config;
     }
     config!!.headers!!["X-XSRF-TOKEN"] = token;
+    config!!.headers!!["Accept"] = "*/*"
     return config;
 })
 
