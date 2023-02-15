@@ -412,9 +412,9 @@ function Content() {
                             handleClick={() => {
                                 switch (selectedPostType) {
                                     case true: {
-                                        let file = fileUpload.current.files[0];
+                                        if (selectedFile == undefined) return
                                         const formData = new FormData();
-                                        formData.append('file', file, file.name)
+                                        formData.append('file', selectedFile, selectedFile.name)
 
                                         switch (postType) {
                                             case "post": {

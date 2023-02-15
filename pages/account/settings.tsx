@@ -413,8 +413,123 @@ const SecurityText = styled.span<TextProps>`
 `
 
 
+const UploadFileButtonText = styled.span`
+    font-size: 20px;
+    font-family: 'Roboto';
+    color: ${props => props.theme.colors.secondary};
+`;
+const CustomUpload = styled.label`
+    align-self: center;
+    width: 3rem;
+    //height: fit-content;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    //gap: 1rem;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover ${UploadFileButtonText}{
+        text-decoration: underline;
+    }
+`;
+const StyledPath1 = styled.path`
+    fill: ${props => props.theme.colors.primary};
+`
+
 function Content() {
+    const router = useRouter();
     const { user: userData, isError: userDataError } = useUser();
+    const [t1] = useTranslation("common");
+    const [t2] = useTranslation("settings");
+    const [t3] = useTranslation("create");
+    const [newUsername, setNewUsername] = useState('');
+    const [message, setMessage] = useState(0);
+    const [messageS, setMessageS] = useState(false);
+    const [newEmail, setNewEmail] = useState('');
+    const [newEmailPassword, setNewEmailPassword] = useState('');
+    const [newEmailSuccess, setNewEmailSuccess] = useState(true);
+    const [changePasswordP, setChangePasswordP] = useState('');
+    const [changePasswordSuccess, setChangePasswordSuccess] = useState(true);
+    const [newPassword, setNewPassword] = useState('');
+    const [stage, setStage] = useState(0);
+    const [recoveryCodes, setRecoveryCodes] = useState<string[]>();
+    const [deleteAccPassword, setDeleteAccPassword] = useState('');
+    const { t, i18n } = useTranslation();
+    const [resendP, setResendP] = useState("");
+    const [resendS, setResendS] = useState(true);
+    interface TotpRes {
+        "secret": string,
+        "uri": string
+    }
+    const [totpRes, setTotpRes] = useState<TotpRes>()
+    const [pastLogins, setPastLogins] = useState([]);
+    const [loginsPage, setLoginsPage] = useState(0);
+    const [selectedFile, setSelectedFile] = useState();
+    const [preview, setPreview] = useState<string>();
+    const [fileState, setFileState] = useState<File>();
+    const [crop, setCrop] = useState<Crop>({
+        unit: 'px', // Can be 'px' or '%'
+        x: 0,
+        y: 0,
+        width: 225,
+        height: 225
+    })
+    const imgRef = useRef<any>()
+
+    useEffect(() => {
+        changeStageOnRouterQuery();
+    }, [router.query.s]);
+    
+
+    useEffect(() => {
+        setNewEmailSuccess(true);
+        setChangePasswordSuccess(true);
+    }, [newEmailPassword, changePasswordP]);
+
+    useEffect(() => {
+        if (!selectedFile) {
+            setPreview(undefined)
+            return
+        }
+
+        const objectUrl = URL.createObjectURL(selectedFile)
+        setPreview(objectUrl)
+
+        return () => URL.revokeObjectURL(objectUrl)
+    }, [selectedFile])
+    
+    const changeStageOnRouterQuery = () => {
+        let s = window.location.search;
+        if (s.length > 1) {
+            s = s.substring(3);
+            if (s == '1' || s == '0' || s == '5') {
+                if (Number(s) != stage) {
+                    setStage(Number(s));
+                    if (s == '5') {
+                        fetcherGetLogins(0).then((res: any) => {
+                            setPastLogins(res?.data);
+                        })
+                    }
+                }
+            }
+            else {
+                if (s != "0") setStageUrl(0);
+                else setStage(0);
+            }
+            return;
+        }
+        setStageUrl(0);
+    }
+
+    const setStageUrl = (newStage: number) => {
+        if (stage == 1 || stage == 0) {
+            router.push('/account/settings?s=' + String(newStage), undefined, { shallow: true });
+        }
+        else setStage(newStage);
+    }
+
     const fetcherGetLogins = (page: number) => instance.get('/account/security/logins', { params: { page: page } });
     const fecherChangeUsername = (url: any, username: string) => instance.put(url, {
         "username": username
@@ -453,98 +568,6 @@ function Content() {
         }
     }).then((res: any) => { console.log(res) }).catch((e: any) => { console.log(e) });
 
-
-    const [t1] = useTranslation("common");
-    const [t2] = useTranslation("settings");
-    const [t3] = useTranslation("create");
-    const [darkTheme, setDarkTheme] = useState(false);
-    const [newUsername, setNewUsername] = useState('');
-    const [message, setMessage] = useState(0);
-    const [messageS, setMessageS] = useState(false);
-    const [newEmail, setNewEmail] = useState('');
-    const [newEmailPassword, setNewEmailPassword] = useState('');
-    const [newEmailSuccess, setNewEmailSuccess] = useState(true);
-    const [changePasswordP, setChangePasswordP] = useState('');
-    const [changePasswordSuccess, setChangePasswordSuccess] = useState(true);
-    const [newPassword, setNewPassword] = useState('');
-    const [stage, setStage] = useState(0);
-    const [recoveryCodes, setRecoveryCodes] = useState<string[]>();
-    const [deleteAccPassword, setDeleteAccPassword] = useState('');
-    const { t, i18n } = useTranslation();
-    const [resendP, setResendP] = useState("");
-    const [resendS, setResendS] = useState(true);
-    interface TotpRes {
-        "secret": string,
-        "uri": string
-    }
-    const [totpRes, setTotpRes] = useState<TotpRes>()
-    const [pastLogins, setPastLogins] = useState([]);
-    const [loginsPage, setLoginsPage] = useState(0);
-    const router = useRouter();
-    const [selectedFile, setSelectedFile] = useState();
-    const [preview, setPreview] = useState<string>();
-    const [fileState, setFileState] = useState<File>();
-    const [crop, setCrop] = useState<Crop>({
-        unit: 'px', // Can be 'px' or '%'
-        x: 0,
-        y: 0,
-        width: 225,
-        height: 225
-    })
-    const imgRef = useRef<any>()
-
-    const setStageUrl = (newStage: number) => {
-        if (stage == 1 || stage == 0) {
-            router.push('/account/settings?s=' + String(newStage), undefined, { shallow: true });
-        }
-        else setStage(newStage);
-    }
-
-    const changeStageOnRouterQuery = () => {
-        let s = window.location.search;
-        if (s.length > 1) {
-            s = s.substring(3);
-            if (s == '1' || s == '0' || s == '5') {
-                if (Number(s) != stage) {
-                    setStage(Number(s));
-                    if (s == '5') {
-                        fetcherGetLogins(0).then((res: any) => {
-                            setPastLogins(res?.data);
-                        })
-                    }
-                }
-            }
-            else {
-                if (s != "0") setStageUrl(0);
-                else setStage(0);
-            }
-            return;
-        }
-        setStageUrl(0);
-    }
-
-    useEffect(() => {
-        changeStageOnRouterQuery();
-    }, [router.query.s]);
-
-
-    useEffect(() => {
-        setNewEmailSuccess(true);
-        setChangePasswordSuccess(true);
-    }, [newEmailPassword, changePasswordP]);
-
-    useEffect(() => {
-        if (!selectedFile) {
-            setPreview(undefined)
-            return
-        }
-
-        const objectUrl = URL.createObjectURL(selectedFile)
-        setPreview(objectUrl)
-
-        return () => URL.revokeObjectURL(objectUrl)
-    }, [selectedFile])
-
     switch (stage) {
         case 0: return (
             <MainHolder>
@@ -581,20 +604,6 @@ function Content() {
                                 <option value='en'>English</option>
                             </ChooseLanguage>
                         </MiniHolder>
-                        {/* <MiniHolder>
-                            <svg width="37" height="36" viewBox="0 0 27 28" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ padding: '5px 4px' }}>
-                                <StyledPath d="M13.5 0.5C9.91958 0.5 6.4858 1.92232 3.95406 4.45406C1.42232 6.9858 0 10.4196 0 14C0 17.5804 1.42232 21.0142 3.95406 23.5459C6.4858 26.0777 9.91958 27.5 13.5 27.5C14.745 27.5 15.75 26.495 15.75 25.25C15.75 24.665 15.525 24.14 15.165 23.735C14.82 23.345 14.595 22.82 14.595 22.25C14.595 21.005 15.6 20 16.845 20H19.5C23.64 20 27 16.64 27 12.5C27 5.87 20.955 0.5 13.5 0.5ZM5.25 14C4.005 14 3 12.995 3 11.75C3 10.505 4.005 9.5 5.25 9.5C6.495 9.5 7.5 10.505 7.5 11.75C7.5 12.995 6.495 14 5.25 14ZM9.75 8C8.505 8 7.5 6.995 7.5 5.75C7.5 4.505 8.505 3.5 9.75 3.5C10.995 3.5 12 4.505 12 5.75C12 6.995 10.995 8 9.75 8ZM17.25 8C16.005 8 15 6.995 15 5.75C15 4.505 16.005 3.5 17.25 3.5C18.495 3.5 19.5 4.505 19.5 5.75C19.5 6.995 18.495 8 17.25 8ZM21.75 14C20.505 14 19.5 12.995 19.5 11.75C19.5 10.505 20.505 9.5 21.75 9.5C22.995 9.5 24 10.505 24 11.75C24 12.995 22.995 14 21.75 14Z" fill="black" />
-                            </svg>
-                            <AnotherHolder>
-                                {t2("theme")}
-
-                                <Switch>
-                                    <SwitchInput type="checkbox" />
-                                    <Slider></Slider>
-                                </Switch>
-                            </AnotherHolder>
-
-                        </MiniHolder> */}
                         <MiniHolder>
                             <svg width="37" height="36" viewBox="0 0 37 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <StyledPath d="M18.5 1.5L5 7.5V16.5C5 24.825 10.76 32.61 18.5 34.5C26.24 32.61 32 24.825 32 16.5V7.5L18.5 1.5ZM18.5 17.985H29C28.205 24.165 24.08 29.67 18.5 31.395V18H8V9.45L18.5 4.785V17.985Z" />
@@ -623,38 +632,12 @@ function Content() {
                     <Others>
                         <Button buttonType={"Teriatary"} text={t2("terms")} handleClick={() => { router.push('/terms-of-service') }} style={{ width: 'fit-content', padding: '0px', height: 'fit-content' }}></Button>
                         <Button buttonType={"Teriatary"} text={t2("policy")} handleClick={() => { router.push('/privacy-policy') }} style={{ width: 'fit-content', padding: '0px', height: 'fit-content' }}></Button>
-                        {/* <Button buttonType={"Teriatary"} text={t2("openSource")} handleClick={() => { }} style={{ width: 'fit-content', padding: '0px', height: 'fit-content' }}></Button> */}
                         <Version>{t2("version")} 1.0.0</Version>
                     </Others>
                 </MenuContent>
             </MainHolder>
         )
         case 1: {
-            const UploadFileButtonText = styled.span`
-                font-size: 20px;
-                font-family: 'Roboto';
-                color: ${props => props.theme.colors.secondary};
-            `;
-            const CustomUpload = styled.label`
-                align-self: center;
-                width: 3rem;
-                //height: fit-content;
-                position: relative;
-                display: flex;
-                flex-direction: row;
-                justify-content: center;
-                //gap: 1rem;
-                align-items: center;
-                cursor: pointer;
-
-                &:hover ${UploadFileButtonText}{
-                    text-decoration: underline;
-                }
-            `;
-            const StyledPath = styled.path`
-                fill: ${props => props.theme.colors.primary};
-            `
-
             return (
                 <MainHolder>
                     <Title mediaMarginTop='3rem'>{t2("profile")}</Title>
@@ -674,7 +657,7 @@ function Content() {
                                         {<div style={{ display: !selectedFile ? 'flex' : 'none', flexDirection: 'column', gap: '1.5rem', alignItems: 'center' }}>
                                             <input type="file" name="file" style={{ display: 'none' }} onChange={(e) => { if (e.target.files != null) setFileState(e.target.files[0]) }} accept={"image/png, image/jpeg, image/webp, image/heif, image/heic"} />
                                             <svg style={{ scale: '200%' }} xmlns="http://www.w3.org/2000/svg" height="48" width="48">
-                                                <StyledPath d="M9 42q-1.25 0-2.125-.875T6 39V9q0-1.25.875-2.125T9 6h20.45v3H9v30h30V18.6h3V39q0 1.25-.875 2.125T39 42Zm26-24.9v-4.05h-4.05v-3H35V6h3v4.05h4.05v3H38v4.05ZM12 33.9h24l-7.2-9.6-6.35 8.35-4.7-6.2ZM9 9v30V9Z" />
+                                                <StyledPath1 d="M9 42q-1.25 0-2.125-.875T6 39V9q0-1.25.875-2.125T9 6h20.45v3H9v30h30V18.6h3V39q0 1.25-.875 2.125T39 42Zm26-24.9v-4.05h-4.05v-3H35V6h3v4.05h4.05v3H38v4.05ZM12 33.9h24l-7.2-9.6-6.35 8.35-4.7-6.2ZM9 9v30V9Z" />
                                             </svg>
                                             <UploadFileButtonText>{t2("uploadFile")}</UploadFileButtonText>
                                         </div>}
