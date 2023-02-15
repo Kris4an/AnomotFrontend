@@ -113,6 +113,10 @@ const ButtonHolder = styled.div`
     display: flex;
     flex-direction: row;
     gap: 10px;
+
+    @media (max-width: 840px) {
+        flex-direction: column;
+    }
 `;
 type Props = {
     type: boolean,
@@ -130,6 +134,13 @@ const StyledSvg = styled.svg`
     position: absolute;
     top: 0px;
     left: 4px;
+
+    @media (max-width: 840px) {
+        height: 7rem;
+        width: 7rem;
+        left: 0px;
+        top: -5px;
+    }
 `;
 
 
@@ -167,8 +178,8 @@ function ProfilePic({ type, handleClick1, handleClick2, handleClickFollowing, ha
                         </Info>
                     </Holder2>
                     <ButtonHolder>
-                        <Button buttonType={"Solid"} text={t2("customizeProfile")} style={{ width: '30rem', maxWidth: '40vw' }} handleClick={handleClick1}></Button>
-                        <Button buttonType={"Secondary"} text={t2("generateCode")} style={{ width: '20rem', maxWidth: '50vw' }} handleClick={handleClick2}></Button>
+                        <Button buttonType={"Solid"} text={t2("customizeProfile")} style={{ width: '30rem', maxWidth: '80vw' }} handleClick={handleClick1}></Button>
+                        <Button buttonType={"Secondary"} text={t2("generateCode")} style={{ width: '20rem', maxWidth: '80vw' }} handleClick={handleClick2}></Button>
                     </ButtonHolder>
 
                 </Holder>

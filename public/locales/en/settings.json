@@ -34,7 +34,6 @@
     "resendEmail": "Resend verification email",
     "add2FA": "Add 2-factor authentication",
     "criticalActions": "Critical Actions",
-    "deactivate": "Deactivate account",
     "delete": "Delete account",
     "errorMessage": "Incorrect password",
     "removeEmail2fa": "Remove email 2FA",
@@ -52,6 +51,6 @@
     "scan": "Scan with your app of choice",
     "profilePic": "Profile picture",
     "uploadFile": "Upload file",
-    "logOutSession": "Log out off everywhere but here"
-    
+    "logOutSession": "Log out off everywhere but here",
+    "successLogOut": "Successfully logged out"
 }

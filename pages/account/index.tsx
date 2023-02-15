@@ -47,7 +47,7 @@ const UpperHolder = styled.div`
     gap: 12px;
 
     @media (max-width: 840px) {
-        height: 15rem;
+        height: 19rem;
     }
 `;
 const ButtonHolder = styled.div`
@@ -69,7 +69,7 @@ const PostHolder = styled.div`
     overflow-y: scroll;
 
     @media (max-width: 840px) {
-        height: calc(100vh - 50px - 17rem);
+        height: calc(100vh - 50px - 21rem);
     }
 `;
 interface PostButtonProps {
@@ -188,6 +188,15 @@ const NotiHolder = styled.div`
     justify-content: center;
     gap: 3rem;
 `;
+const ErrorText = styled.span`
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+    color: red;
+    font-family: 'Roboto';
+    top: 45vh;
+`
 
 const Account: NextPage = () => {
     const [postSelection, setPostSelection] = useState(true);
@@ -206,6 +215,7 @@ const Account: NextPage = () => {
     const [pageP, setPageP] = useState(0);
     const [pageB, setPageB] = useState(0);
     const { t, i18n } = useTranslation();
+    const [t1] = useTranslation("common");
     const [t2] = useTranslation("account");
     const [stage, setStage] = useState(0);
     const [notis, setNotis] = useState<ENotification[]>();
@@ -231,6 +241,7 @@ const Account: NextPage = () => {
         case 0: {
             return (
                 <NavBar stage={3}>
+                    {userData!=undefined && !userData.isEmailVerified && <ErrorText>{t1("notVerified")}</ErrorText>}
                     {overlay != 0 ? <Overlay buttonSelected={overlay == 1} close={() => { setOverlay(0); }} followingCount={followingCount} followersCount={followersCount}></Overlay> : <></>}
                     <MainHolder>
                         <UpperHolder>
