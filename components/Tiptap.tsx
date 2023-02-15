@@ -103,7 +103,7 @@ const MenuBar = ({editor, t}: any) => {
     }
   }, [editor]);
 
-  const setLink = useCallback(() => {
+  const setLink = () => {
     const previousUrl = editor.getAttributes('link').href
     let url = window.prompt('URL', previousUrl)
 
@@ -140,7 +140,7 @@ const MenuBar = ({editor, t}: any) => {
       return
     })
     
-  }, [editor])
+  }
 
   return(
     <MenuHolder>
