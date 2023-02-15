@@ -70,9 +70,6 @@ const fetcher = (url: any, email: string, password: string, username: string) =>
 });
 
 const Create: NextPage = () => {
-  useEffect(() => {
-    document.title = "Anomot - Create Account";
-  },[])
     return (
       <Holder>
           <LogoSlogan style={{marginTop: '0rem'}}/>

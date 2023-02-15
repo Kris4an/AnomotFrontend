@@ -2,7 +2,7 @@
     "choosePostType": "Choose post type",
     "battleInfo": "Battle - your post will be put up against another post. Whoever has the most votes wins!",
     "postInfo": "Post - can be seen by only your followers",
-    "geopostInfo": "Geopost - can be seen by all users in a radius chosen by you from your current location",
+    "geopostInfo": "Geopost - can be seen by all users in a radius chosen by you from your current location (Coming soon)",
     "battleOverlayInfo": "It is forbidden to show follow codes or any form of connection to the poster outside of Anomot",
     "geopostOverlayInfo1": "The post will be shown in",
     "geopostOverlayInfo2": "metre radius from your current location",

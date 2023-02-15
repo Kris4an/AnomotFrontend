@@ -32,7 +32,7 @@ const MainHolder = styled.div`
         //min-height: fit-content;
     }
 `;
-interface TitleProps{
+interface TitleProps {
     mediaMarginTop?: string
 }
 const Title = styled.div<TitleProps>`
@@ -442,16 +442,16 @@ function Content() {
             'password': password
         }
     });
-    const uploadFileFetcher = (url:string, formData: any, left: number, top: number, cropSize: number) => instance.post(url, formData, {
+    const uploadFileFetcher = (url: string, formData: any, left: number, top: number, cropSize: number) => instance.post(url, formData, {
         headers: {
             "Content-Type": "multipart/form-data",
-          },
+        },
         params: {
             left: Math.floor(left),
             top: Math.floor(top),
             cropSize: Math.floor(cropSize)
         }
-    }).then((res:any) => {console.log(res)}).catch((e:any) => {console.log(e)});
+    }).then((res: any) => { console.log(res) }).catch((e: any) => { console.log(e) });
 
 
     const [t1] = useTranslation("common");
@@ -494,8 +494,8 @@ function Content() {
     const imgRef = useRef<any>()
 
     const setStageUrl = (newStage: number) => {
-        if(stage == 1 || stage == 0) {
-            router.push('/account/settings?s='+String(newStage), undefined, { shallow: true });
+        if (stage == 1 || stage == 0) {
+            router.push('/account/settings?s=' + String(newStage), undefined, { shallow: true });
         }
         else setStage(newStage);
     }
@@ -504,10 +504,10 @@ function Content() {
         let s = window.location.search;
         if (s.length > 1) {
             s = s.substring(3);
-            if (s == '1' || s=='0' || s=='5'){
-                if(Number(s)!=stage){
+            if (s == '1' || s == '0' || s == '5') {
+                if (Number(s) != stage) {
                     setStage(Number(s));
-                    if(s == '5'){
+                    if (s == '5') {
                         fetcherGetLogins(0).then((res: any) => {
                             setPastLogins(res?.data);
                         })
@@ -515,7 +515,7 @@ function Content() {
                 }
             }
             else {
-                if(s!="0") setStageUrl(0);
+                if (s != "0") setStageUrl(0);
                 else setStage(0);
             }
             return;
@@ -597,7 +597,7 @@ function Content() {
                         </MiniHolder> */}
                         <MiniHolder>
                             <svg width="37" height="36" viewBox="0 0 37 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <StyledPath d="M18.5 1.5L5 7.5V16.5C5 24.825 10.76 32.61 18.5 34.5C26.24 32.61 32 24.825 32 16.5V7.5L18.5 1.5ZM18.5 17.985H29C28.205 24.165 24.08 29.67 18.5 31.395V18H8V9.45L18.5 4.785V17.985Z" fill="black" />
+                                <StyledPath d="M18.5 1.5L5 7.5V16.5C5 24.825 10.76 32.61 18.5 34.5C26.24 32.61 32 24.825 32 16.5V7.5L18.5 1.5ZM18.5 17.985H29C28.205 24.165 24.08 29.67 18.5 31.395V18H8V9.45L18.5 4.785V17.985Z" />
                             </svg>
 
                             <OptionButton onClick={() => {
@@ -608,10 +608,10 @@ function Content() {
                             }}>{t2("security")}</OptionButton>
                         </MiniHolder>
                         <MiniHolder>
-                            <svg width="37" height="36" viewBox="0 0 37 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <StyledPath d="M25.385 13.5H23V6C23 5.175 22.325 4.5 21.5 4.5H15.5C14.675 4.5 14 5.175 14 6V13.5H11.615C10.28 13.5 9.605 15.12 10.55 16.065L17.435 22.95C18.02 23.535 18.965 23.535 19.55 22.95L26.435 16.065C27.38 15.12 26.72 13.5 25.385 13.5ZM8 28.5C8 29.325 8.675 30 9.5 30H27.5C28.325 30 29 29.325 29 28.5C29 27.675 28.325 27 27.5 27H9.5C8.675 27 8 27.675 8 28.5Z" fill="black" />
+                            <svg xmlns="http://www.w3.org/2000/svg" height="36" width="36">
+                                <StyledPath style={{scale: '130%'}} d="M5 21q-.825 0-1.413-.587Q3 19.825 3 19v-4h2v4h14V5H5v4H3V5q0-.825.587-1.413Q4.175 3 5 3h14q.825 0 1.413.587Q21 4.175 21 5v14q0 .825-.587 1.413Q19.825 21 19 21Zm5.5-4-1.4-1.45L11.65 13H3v-2h8.65L9.1 8.45 10.5 7l5 5Z" />
                             </svg>
-                            <OptionButton onClick={() => { }}>{t2("logOutSession")}</OptionButton>
+                            <OptionButton onClick={() => { instance.post('/account/logout/all').then(() => {alert(t2("successLogOut"))}) }}>{t2("logOutSession")}</OptionButton>
                         </MiniHolder>
                         <MiniHolder>
                             <svg xmlns="http://www.w3.org/2000/svg" height="37" width="36" style={{ padding: '2px 4px' }}>
@@ -621,9 +621,9 @@ function Content() {
                         </MiniHolder>
                     </Options>
                     <Others>
-                        <Button buttonType={"Teriatary"} text={t2("terms")} handleClick={() => { }} style={{ width: 'fit-content', padding: '0px', height: 'fit-content' }}></Button>
-                        <Button buttonType={"Teriatary"} text={t2("policy")} handleClick={() => { }} style={{ width: 'fit-content', padding: '0px', height: 'fit-content' }}></Button>
-                        <Button buttonType={"Teriatary"} text={t2("openSource")} handleClick={() => { }} style={{ width: 'fit-content', padding: '0px', height: 'fit-content' }}></Button>
+                        <Button buttonType={"Teriatary"} text={t2("terms")} handleClick={() => { router.push('/terms-of-service') }} style={{ width: 'fit-content', padding: '0px', height: 'fit-content' }}></Button>
+                        <Button buttonType={"Teriatary"} text={t2("policy")} handleClick={() => { router.push('/privacy-policy') }} style={{ width: 'fit-content', padding: '0px', height: 'fit-content' }}></Button>
+                        {/* <Button buttonType={"Teriatary"} text={t2("openSource")} handleClick={() => { }} style={{ width: 'fit-content', padding: '0px', height: 'fit-content' }}></Button> */}
                         <Version>{t2("version")} 1.0.0</Version>
                     </Others>
                 </MenuContent>
@@ -662,7 +662,7 @@ function Content() {
                         <ProfileSettingsMainHolder>
                             <ProfileSettingsHolder isLast={false}>
                                 <ProfileSettingsHeading>{t2("profilePic")}</ProfileSettingsHeading>
-                                <form method="post" style={{display: 'flex', justifyContent: 'center'}}>
+                                <form method="post" style={{ display: 'flex', justifyContent: 'center' }}>
                                     <CustomUpload onChange={(e: any) => {
                                         if (!e.target.files || e.target.files.length === 0) {
                                             setSelectedFile(undefined)
@@ -672,34 +672,36 @@ function Content() {
                                         setSelectedFile(e.target.files[0])
                                     }}>
                                         {<div style={{ display: !selectedFile ? 'flex' : 'none', flexDirection: 'column', gap: '1.5rem', alignItems: 'center' }}>
-                                            <input type="file" name="file" style={{ display: 'none' }} onChange={(e) => {if(e.target.files!=null) setFileState(e.target.files[0])}} accept={"image/png, image/jpeg, image/webp, image/heif, image/heic"} />
+                                            <input type="file" name="file" style={{ display: 'none' }} onChange={(e) => { if (e.target.files != null) setFileState(e.target.files[0]) }} accept={"image/png, image/jpeg, image/webp, image/heif, image/heic"} />
                                             <svg style={{ scale: '200%' }} xmlns="http://www.w3.org/2000/svg" height="48" width="48">
                                                 <StyledPath d="M9 42q-1.25 0-2.125-.875T6 39V9q0-1.25.875-2.125T9 6h20.45v3H9v30h30V18.6h3V39q0 1.25-.875 2.125T39 42Zm26-24.9v-4.05h-4.05v-3H35V6h3v4.05h4.05v3H38v4.05ZM12 33.9h24l-7.2-9.6-6.35 8.35-4.7-6.2ZM9 9v30V9Z" />
                                             </svg>
                                             <UploadFileButtonText>{t2("uploadFile")}</UploadFileButtonText>
                                         </div>}
 
-                                        
+
                                     </CustomUpload>
-                                    {selectedFile && <ReactCrop style={{maxWidth: '30rem', maxHeight: '30rem', position: 'relative'}} aspect={1} minWidth={225} crop={crop} onChange={(_, percentCrop) => setCrop(percentCrop)}>
-                                            <img ref={imgRef} src={preview!}/>
-                                        </ReactCrop>}
+                                    {selectedFile && <ReactCrop style={{ maxWidth: '30rem', maxHeight: '30rem', position: 'relative' }} aspect={1} minWidth={225} crop={crop} onChange={(_, percentCrop) => setCrop(percentCrop)}>
+                                        <img ref={imgRef} src={preview!} />
+                                    </ReactCrop>}
                                 </form>
                                 <Button disabled={!selectedFile} buttonType={"Solid"} text={t1("save")} handleClick={() => {
-                                    
-                                     let file = fileState;
-                                     const formData = new FormData();
-                                     if(file!=null) {formData.append('file', file, file.name);
-                                     uploadFileFetcher('/account/avatar', formData, (crop.x / 100) * imgRef.current.naturalWidth, (crop.y / 100) * imgRef.current.naturalWidth, (crop.width / 100) * imgRef.current.naturalWidth)
-                                     .then(() => {
-                                        setMessage(8);
-                                        setMessageS(true);
-                                        setStage(3);
-                                     }).catch(() => {
-                                        setMessage(8);
-                                        setMessageS(false);
-                                        setStage(3);
-                                     });}
+
+                                    let file = fileState;
+                                    const formData = new FormData();
+                                    if (file != null) {
+                                        formData.append('file', file, file.name);
+                                        uploadFileFetcher('/account/avatar', formData, (crop.x / 100) * imgRef.current.naturalWidth, (crop.y / 100) * imgRef.current.naturalWidth, (crop.width / 100) * imgRef.current.naturalWidth)
+                                            .then(() => {
+                                                setMessage(8);
+                                                setMessageS(true);
+                                                setStage(3);
+                                            }).catch(() => {
+                                                setMessage(8);
+                                                setMessageS(false);
+                                                setStage(3);
+                                            });
+                                    }
                                 }}></Button>
                             </ProfileSettingsHolder>
 
@@ -746,13 +748,14 @@ function Content() {
                             <ProfileSettingsHolder isLast={false}>
                                 <ProfileSettingsHeading>{t2("verifyEmail")}</ProfileSettingsHeading>
                                 <LoginInput inputType={"Password"} placeHolder={t1("password")} handleChange={(event: React.ChangeEvent<HTMLInputElement>) => { setResendP(event.currentTarget.value) }} style={{ width: '100%', height: '3.5rem', fontSize: '20px' }} passwordStyle={{ height: '3.5rem' }}></LoginInput>
-                                <Button buttonType={"Solid"} text={t2("resendEmail")} disabled={resendP.length<1} handleClick={() => {
-                                    fetcherGetMfaStatus(resendP, userData?.email).then(() => { 
+                                <Button buttonType={"Solid"} text={t2("resendEmail")} disabled={resendP.length < 1} handleClick={() => {
+                                    fetcherGetMfaStatus(resendP, userData?.email).then(() => {
                                         setMessage(5);
                                         setMessageS(true);
-                                        setStage(3) }).catch((e) => { setResendS(false); console.log(e) })
+                                        setStage(3)
+                                    }).catch((e) => { setResendS(false); console.log(e) })
                                 }}></Button>
-                                {resendS ? null : <ErrorMessage>{t2("errorMessage")}</ErrorMessage>}    
+                                {resendS ? null : <ErrorMessage>{t2("errorMessage")}</ErrorMessage>}
                             </ProfileSettingsHolder>
 
                             <ProfileSettingsHolder isLast={false}>
@@ -802,7 +805,6 @@ function Content() {
                             <ProfileSettingsHolder isLast={true}>
                                 <ProfileSettingsHeading>{t2("criticalActions")}</ProfileSettingsHeading>
                                 <LoginInput inputType={"Password"} handleChange={(event: React.ChangeEvent<HTMLInputElement>) => { setDeleteAccPassword(event.currentTarget.value) }} placeHolder={t1("password")} style={{ width: '100%', height: '3.5rem', fontSize: '20px' }} passwordStyle={{ height: '3.5rem' }}></LoginInput>
-                                <CriticalButton disabled={deleteAccPassword.length < 1} >{t2("deactivate")}</CriticalButton>
                                 <CriticalButton disabled={deleteAccPassword.length < 1} onClick={() => { fetcherDeleteAccount(deleteAccPassword) }} >{t2("delete")}</CriticalButton>
                             </ProfileSettingsHolder>
 
@@ -830,7 +832,7 @@ function Content() {
             </MainHolder>
         )
         case 3: {
-            const messagesT = [t2("changeUsernameMessage1"), t2("changeEmailMessage1"), t2("changeEmail2faMessage1"), t2("changeTotp2faMessage1"), t2("changePasswordMessage1"), t3("weSentEmail")                    , t2("removeEmail2faMessage1"), t2("removeTotp2faMessage1"), t2("profilePicMessage1")];
+            const messagesT = [t2("changeUsernameMessage1"), t2("changeEmailMessage1"), t2("changeEmail2faMessage1"), t2("changeTotp2faMessage1"), t2("changePasswordMessage1"), t3("weSentEmail"), t2("removeEmail2faMessage1"), t2("removeTotp2faMessage1"), t2("profilePicMessage1")];
             const messagesF = [t2("changeUsernameMessage0"), t2("changeEmailMessage0"), t2("changeEmail2faMessage0"), t2("changeTotp2faMessage0"), t2("changePasswordMessage0"), t2("resendVerificationEmailMessage0"), t2("removeEmail2faMessage0"), t2("removeTotp2faMessage1"), t2("profilePicMessage0")];
             return (
                 <MessageScreen stage={messageS} text={messageS ? messagesT[message] : messagesF[message]} continueTxt={t1("continue")} handleClick={() => {
@@ -877,7 +879,7 @@ function Content() {
                                 arr = arr.concat(res?.data);
                                 setPastLogins(arr);
                                 setLoginsPage(loginsPage + 1);
-                            }).catch((e) => {console.log(e)});    
+                            }).catch((e) => { console.log(e) });
                         }
                     }}>
                         {pastLogins?.map((log: any, key: number) =>

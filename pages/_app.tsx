@@ -18,16 +18,25 @@ function MyApp({ Component, pageProps }: AppProps) {
   const { user: userData, isError: userDataError, isValidating: isValidating } = useUser();
   const router = useRouter();
   useEffect(() => {
+    //console.log(userData)
     if (!isValidating) {
-      console.log(userData)
       if(userData == undefined){
-        if (router.pathname == "/account") router.push("/account/create");
-        else router.push('login');
+        if (router.pathname == "/account") {
+          router.push("/account/create");
+          return;
+        }
+        if(router.pathname == '/terms-of-service' || router.pathname == '/privacy-policy') return;
+        else router.push('/login');
         return;
       }
       if (userData.id == undefined) {
-        if (router.pathname == "/account") router.push("/account/create");
-        else router.push('login');
+        console.log(router.pathname)
+        if (router.pathname == "/account") {
+          router.push("/account/create");
+          return;
+        }
+        if(router.pathname == '/terms-of-service' || router.pathname == '/privacy-policy') return;
+        else router.push('/login');
       }
     }
   }, [isValidating])

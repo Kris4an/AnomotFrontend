@@ -10,5 +10,6 @@
     "typeSomething": "Type something…",
     "edited": "Edited",
     "deleted": "Deleted",
-    "success": "Success"
+    "success": "Success",
+    "notVerified": "Verify your email. In order to use most of Anomot you need a verified email."
 }

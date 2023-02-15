@@ -14,6 +14,7 @@ import instance from "../axios_instance";
 import MessageScreen from "../components/MessageScreen";
 import { EMediaPost, ENsfwError, EPost, ESimilarPosts } from "../components/Intefaces";
 import Post from "../components/Post";
+import useUser from "../components/useUser";
 
 const Create: NextPage = () => {
     return (
@@ -256,6 +257,7 @@ function Content() {
     });
     const [nsfwError, setNsfwError] = useState<ENsfwError>();
     const [similarityError, setSimilarityError] = useState<ESimilarPosts>();
+    const { user: userData, isError: userDataError, isValidating: isValidating } = useUser();
 
     const uploadFileFetcher = (url: string, formData: any) => instance.post(url, formData, {
         headers: {
@@ -304,6 +306,15 @@ function Content() {
             setSelectedFile(undefined);
         }
     }, [stage])
+
+    useEffect(() => {
+        if(!isValidating){
+            if(!userData.isEmailVerified){
+                alert(t1("notVerified"));
+                router.push('/account/settings?s=1');
+            }
+        }
+    },[isValidating])
 
     switch (stage) {
         case 0: {
