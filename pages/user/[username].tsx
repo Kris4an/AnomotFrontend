@@ -278,7 +278,9 @@ const Account: NextPage = () => {
                     <>
                         {
                             (Array.isArray(posts)) &&
-                            noDubPosts.map((post: EPost, key: number) => {
+                            noDubPosts
+                            .filter(post => post != undefined)
+                            .map((post: EPost, key: number) => {
                                 return (
                                     <Post post={post} key={key}></Post>
                                 )

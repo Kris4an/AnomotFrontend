@@ -3,7 +3,7 @@ import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Link from "next/link";
 import router, { Router } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import instance from "../../axios_instance";
 import Battle from "../../components/Battle";
@@ -584,32 +584,40 @@ function Overlay({ buttonSelected, close, followingCount, followersCount }: Over
                     <OverlayPostButton isSelected={isSelected} onClick={() => { setIsSelected(true); }}>{t2("followers2")}</OverlayPostButton>
                 </ButtonHolder>
                 {isSelected ?
-                    <>
-                        {noDubfollowers?.map((f: any, key: number) => {
-                            if (f == undefined) return <MiniProfile anon={true} src={""}></MiniProfile>;
-                            return (<MiniProfile src={f.avatarId} name={f.username} anon={false} key={key} handleClick={() => {
-                                router.push({
-                                    pathname: '/user/[username]',
-                                    query: { username: f.username, id: f.id },
-                                });
-                            }}></MiniProfile>)
-                        })}
-                        {/* Възможен проблем при визуализацията на повече от 30 профила */}
-                        {displayAnons(followersCount - noDubfollowers.length)}
-                    </>
+                    <React.Fragment>
+                        {followersCount > 0 && 
+                            <React.Fragment>
+                                {noDubfollowers?.map((f: any, key: number) => {
+                                    if (f == undefined) return <MiniProfile anon={true} src={""}></MiniProfile>;
+                                    return (<MiniProfile src={f.avatarId} name={f.username} anon={false} key={key} handleClick={() => {
+                                        router.push({
+                                            pathname: '/user/[username]',
+                                            query: { username: f.username, id: f.id },
+                                        });
+                                    }}></MiniProfile>)
+                                })}
+                                {/* Възможен проблем при визуализацията на повече от 30 профила */}
+                                {displayAnons(followersCount - noDubfollowers.length)}
+                            </React.Fragment>
+                        }
+                    </React.Fragment>
                     :
-                    <>
-                        {noDubfollowing.map((f: any, key: number) => {
-                            if (f == undefined) return <MiniProfile anon={true} src={""}></MiniProfile>;
-                            return (<MiniProfile src={f.avatarId} name={f.username} anon={false} key={key} handleClick={() => {
-                                router.push({
-                                    pathname: '/user/[username]',
-                                    query: { username: f.username, id: f.id },
-                                });
-                            }}></MiniProfile>)
-                        })}
-                        {displayAnons(followingCount - noDubfollowing.length)}
-                    </>
+                    <React.Fragment>
+                        {followingCount > 0 && 
+                            <React.Fragment>
+                                {noDubfollowing.map((f: any, key: number) => {
+                                    if (f == undefined) return <MiniProfile anon={true} src={""}></MiniProfile>;
+                                    return (<MiniProfile src={f.avatarId} name={f.username} anon={false} key={key} handleClick={() => {
+                                        router.push({
+                                            pathname: '/user/[username]',
+                                            query: { username: f.username, id: f.id },
+                                        });
+                                    }}></MiniProfile>)
+                                })}
+                                {displayAnons(followingCount - noDubfollowing.length)}    
+                            </React.Fragment>
+                        }
+                    </React.Fragment>
                 }
             </Holder>
         </OverlayMainHolder>

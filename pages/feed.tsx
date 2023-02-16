@@ -63,7 +63,7 @@ const Feed: NextPage = () => {
             }}>
                 {
                     (posts.length!=0 && (Array.isArray(posts)) && noDubPosts!=undefined && (Array.isArray(noDubPosts))) &&
-                    noDubPosts.map((post: EPost, key: number) => {
+                    noDubPosts.filter(post => post != undefined).map((post: EPost, key: number) => {
                         return (
                             <Post post={post} key={key}></Post>
                         )
