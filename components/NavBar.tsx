@@ -37,14 +37,14 @@ const StyledSVG = styled.svg`
         cursor: pointer;
     }
 `;
-interface PathProps{
+interface PathProps {
     isSelected: boolean
 }
 const StyledPathFill = styled.path<PathProps>`
-    fill: ${props => props.isSelected? props.theme.colors.primary:props.theme.colors.navBarSecondary};
+    fill: ${props => props.isSelected ? props.theme.colors.primary : props.theme.colors.navBarSecondary};
 `;
 const StyledPathStroke = styled.path<PathProps>`
-    stroke: ${props => props.isSelected? props.theme.colors.primary:props.theme.colors.navBarSecondary};
+    stroke: ${props => props.isSelected ? props.theme.colors.primary : props.theme.colors.navBarSecondary};
 `;
 
 type Props = {
@@ -97,14 +97,20 @@ function NavBar({ children, stage }: Props) {
                     </a>
                 </Link>
 
-                {!isValidating && userData.roles.includes("ROLE_ADMIN") &&
-                    <Link href='/admin'>
-                        <a>
-                            <StyledSVG xmlns="http://www.w3.org/2000/svg" height="36" viewBox="0 96 960 960" width="36">
-                                <StyledPathFill isSelected={stage == 5} d="M680 776q25 0 42.5-17.5T740 716q0-25-17.5-42.5T680 656q-25 0-42.5 17.5T620 716q0 25 17.5 42.5T680 776Zm0 120q31 0 57-14.5t42-38.5q-22-13-47-20t-52-7q-27 0-52 7t-47 20q16 24 42 38.5t57 14.5Zm-200 80q-139-35-229.5-159.5T160 540V296l320-120 320 120v227q-19-8-39-14.5t-41-9.5V352l-240-90-240 90v188q0 47 12.5 94t35 89.5Q310 766 342 802t71 60q11 32 29 61t41 52q-1 0-1.5.5t-1.5.5Zm200 0q-83 0-141.5-58.5T480 776q0-83 58.5-141.5T680 576q83 0 141.5 58.5T880 776q0 83-58.5 141.5T680 976ZM480 562Z" />
-                            </StyledSVG>
-                        </a>
-                    </Link>
+                {!isValidating &&
+                    <>
+                        {
+                            userData.roles.includes("ROLE_ADMIN") &&
+                            <Link href='/admin'>
+                                <a>
+                                    <StyledSVG xmlns="http://www.w3.org/2000/svg" height="36" viewBox="0 96 960 960" width="36">
+                                        <StyledPathFill isSelected={stage == 5} d="M680 776q25 0 42.5-17.5T740 716q0-25-17.5-42.5T680 656q-25 0-42.5 17.5T620 716q0 25 17.5 42.5T680 776Zm0 120q31 0 57-14.5t42-38.5q-22-13-47-20t-52-7q-27 0-52 7t-47 20q16 24 42 38.5t57 14.5Zm-200 80q-139-35-229.5-159.5T160 540V296l320-120 320 120v227q-19-8-39-14.5t-41-9.5V352l-240-90-240 90v188q0 47 12.5 94t35 89.5Q310 766 342 802t71 60q11 32 29 61t41 52q-1 0-1.5.5t-1.5.5Zm200 0q-83 0-141.5-58.5T480 776q0-83 58.5-141.5T680 576q83 0 141.5 58.5T880 776q0 83-58.5 141.5T680 976ZM480 562Z" />
+                                    </StyledSVG>
+                                </a>
+                            </Link>
+                        }
+                    </>
+
                 }
             </Holder>
             {children}

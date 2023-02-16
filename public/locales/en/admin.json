@@ -5,11 +5,13 @@
     "accept": "Приеми",
     "deny": "Откажи",
     "showSimilar": "Show similar",
-    "stats": "Statisticks",
+    "stats": "Statistics",
     "usersCount": "Users count",
     "postsCount": "Posts count",
     "loginsCount": "Logins count",
-    "possibleVotes": "Vote possibilities",
+    "possibleVotes1": "Average actual votes",
+    "possibleVotes2": "Average vote possibilities",
     "battlesCount": "Battles count",
-    "queueCount": "Queue lenght"
+    "queueCount": "Queue lenght",
+    "updateStats": "Update the statistics"
 }

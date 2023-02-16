@@ -56,7 +56,18 @@ const Title = styled.span`
     line-height: 20px;
     font-family: 'Roboto';
 `;
-
+const StyledInput = styled.input`
+    border: 1px solid ${props => props.theme.colors.primary};
+    border-radius: 10px;
+    font-size: 20px;
+    width: 4rem;
+    color: ${props => props.theme.colors.text};
+    background-color: ${props => props.theme.colors.secondaryButtonBackground};
+`;
+interface VotePossibilities {
+    averageActualVotes: number
+    averageVotePossibilities: number
+}
 const Admin: NextPage = () => {
     const [t2] = useTranslation("admin");
     const [selType, setSelType] = useState(0);
@@ -70,13 +81,14 @@ const Admin: NextPage = () => {
     const [pageTA, setPageTA] = useState(0);
     const { user: userData, isError: userDataError, isValidating: isValidating } = useUser();
     const fetcherPage = (url: string, page: number) => instance.get(url, { params: { page: page } })
+    const fetcherDays = (url: string, days: number) => instance.get(url, { params: { days: days } })
     const [usersCount, setUsersCount] = useState(0);
     const [postsCount, setPostsCount] = useState(0);
     const [loginsCount, setLoginsCount] = useState(0);
-    const [votePossibilities, setVotePossibilities] = useState(0);
+    const [votePossibilities, setVotePossibilities] = useState<VotePossibilities>();
     const [battlesCount, setBattlesCount] = useState(0);
     const [queueLenght, setQueueLenght] = useState(0);
-    const fetcherGet = (url: string) => instance.get(url)
+    const [statsPage, setStatsPage] = useState(0);
     useEffect(() => {
         if (userData == undefined) {
             //router.push('/account');
@@ -90,13 +102,16 @@ const Admin: NextPage = () => {
         fetcherPage('/admin/tickets', pageTA).then((res: any) => { setTicketsAll(res.data); }).catch((e: any) => { console.log(e) })
         fetcherPage('/admin/appeals/undecided', pageA).then((res: any) => { setAppeals(res.data); }).catch((e: any) => { console.log(e) })
         fetcherPage('/admin/appeals', pageAA).then((res: any) => { setAppealsAll(res.data); }).catch((e: any) => { console.log(e) })
-        fetcherGet('/admin/statistics/users/count').then((res) => { setUsersCount(res.data.count) }).catch((e: any) => { console.log(e) })
-        fetcherGet('/admin/statistics/post/count').then((res) => { setPostsCount(res.data.count) }).catch((e: any) => { console.log(e) })
-        fetcherGet('/admin/statistics/logins/count').then((res) => { setLoginsCount(res.data.count) }).catch((e: any) => { console.log(e) })
-        fetcherGet('/admin/statistics/vote/possibilities').then((res) => { setVotePossibilities(res.data.count) }).catch((e: any) => { console.log(e) })
-        fetcherGet('/admin/statistics/battle/count').then((res) => { setBattlesCount(res.data.count) }).catch((e: any) => { console.log(e) })
-        fetcherGet('/admin/statistics/queue/count').then((res) => { setQueueLenght(res.data.count) }).catch((e: any) => { console.log(e) })
+        updateStats();
     }, [userData])
+    const updateStats = () => {
+        fetcherDays('/admin/statistics/users/count', statsPage).then((res) => { setUsersCount(res.data.count) }).catch((e: any) => { console.log(e) })
+        fetcherDays('/admin/statistics/post/count', statsPage).then((res) => { setPostsCount(res.data.count) }).catch((e: any) => { console.log(e) })
+        fetcherDays('/admin/statistics/logins/count', statsPage).then((res) => { setLoginsCount(res.data.count) }).catch((e: any) => { console.log(e) })
+        fetcherDays('/admin/statistics/vote/possibilities', statsPage).then((res) => { setVotePossibilities(res.data); console.log(res.data)}).catch((e: any) => { console.log(e) })
+        fetcherDays('/admin/statistics/battle/count', statsPage).then((res) => { setBattlesCount(res.data.count) }).catch((e: any) => { console.log(e) })
+        fetcherDays('/admin/statistics/queue/count', statsPage).then((res) => { setQueueLenght(res.data.count) }).catch((e: any) => { console.log(e) })
+    }
 
     const Switcher = () => {
         switch (selType) {
@@ -196,13 +211,24 @@ const Admin: NextPage = () => {
             }
             case 4: {
                 return (
-                    <ContentHolder>
+                    <ContentHolder style={{alignItems: 'center', gap: '3rem'}}>
+                        <div style={{display: 'flex', gap: '2rem'}}>
+                            <StyledInput type='text' defaultValue={0} onChange={(e) => {
+                                if(!isNaN(Number(e.currentTarget.value))){
+                                    setStatsPage(Number(e.currentTarget.value));
+                                }
+                            }}></StyledInput>
+                            <Button buttonType={"Solid"} text={t2("updateStats")} handleClick={function (): void {
+                                updateStats();
+                            } }></Button>
+                        </div>
                         <Title>{t2("usersCount")}: {usersCount}</Title>
                         <Title>{t2("postsCount")}: {postsCount}</Title>
                         <Title>{t2("loginsCount")}: {loginsCount}</Title>
                         <Title>{t2("battlesCount")}: {battlesCount}</Title>
                         <Title>{t2("queueCount")}: {queueLenght}</Title>
-                        <Title>{t2("possibleVotes")}: {votePossibilities}</Title>
+                        <Title>{t2("possibleVotes1")}: {votePossibilities?.averageActualVotes!=null? votePossibilities?.averageActualVotes+"":0}</Title>
+                        <Title>{t2("possibleVotes2")}: {votePossibilities?.averageVotePossibilities!=null? votePossibilities?.averageVotePossibilities+"":0}</Title>
                     </ContentHolder>
                 )
             }
