@@ -162,7 +162,7 @@ const Votes: NextPage = () => {
 export async function getStaticProps({ locale }: any) {
     return {
         props: {
-            ...(await serverSideTranslations(locale, ['votes', 'battle', "burgerMenu"])),
+            ...(await serverSideTranslations(locale, ['votes', 'battle', "burgerMenu", 'common'])),
         },
     };
 }

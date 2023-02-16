@@ -91,8 +91,9 @@ const SelectionButtonText = styled.span`
     height: 2rem;
 
     @media (max-width: 840px) {
-        font-size: 24px;
-        line-height: 26px;
+        font-size: 22px;
+        line-height: 24px;
+        width: 95%;
     }
 `;
 const CreateBattleHolder = styled.div`
@@ -208,6 +209,7 @@ const ErrorHolder = styled.div`
     flex-direction: column;
     gap: 3rem;
     align-items: center;
+    justify-content: space-around;
 `;
 const ErrorText = styled.span`
     font-family: 'Roboto';
