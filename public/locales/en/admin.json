@@ -4,5 +4,12 @@
     "decided": "Decided",
     "accept": "Приеми",
     "deny": "Откажи",
-    "showSimilar": "Show similar"
+    "showSimilar": "Show similar",
+    "stats": "Statisticks",
+    "usersCount": "Users count",
+    "postsCount": "Posts count",
+    "loginsCount": "Logins count",
+    "possibleVotes": "Vote possibilities",
+    "battlesCount": "Battles count",
+    "queueCount": "Queue lenght"
 }

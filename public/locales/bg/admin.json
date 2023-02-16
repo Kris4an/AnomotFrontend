@@ -4,5 +4,12 @@
     "decided": "Разрешени",
     "accept": "Приеми",
     "deny": "Откажи",
-    "showSimilar": "Покажи подобните"
+    "showSimilar": "Покажи подобните",
+    "stats": "Статистики",
+    "usersCount": "Брой потребители",
+    "postsCount": "Брой публикации",
+    "loginsCount": "Брой на влизания в профил",
+    "possibleVotes": "Възможности за гласуване",
+    "battlesCount": "Брой битки",
+    "queueCount": "Дължина на опашката"
 }

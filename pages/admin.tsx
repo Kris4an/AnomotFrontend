@@ -50,6 +50,12 @@ const ContentHolder = styled.div`
     gap: 1rem;
     overflow-y: scroll;
 `;
+const Title = styled.span`
+    color: ${props => props.theme.colors.primary};
+    font-size: 18px;
+    line-height: 20px;
+    font-family: 'Roboto';
+`;
 
 const Admin: NextPage = () => {
     const [t2] = useTranslation("admin");
@@ -62,8 +68,15 @@ const Admin: NextPage = () => {
     const [pageAA, setPageAA] = useState(0);
     const [pageT, setPageT] = useState(0);
     const [pageTA, setPageTA] = useState(0);
-    const { user: userData, isError: userDataError } = useUser();
+    const { user: userData, isError: userDataError, isValidating: isValidating } = useUser();
     const fetcherPage = (url: string, page: number) => instance.get(url, { params: { page: page } })
+    const [usersCount, setUsersCount] = useState(0);
+    const [postsCount, setPostsCount] = useState(0);
+    const [loginsCount, setLoginsCount] = useState(0);
+    const [votePossibilities, setVotePossibilities] = useState(0);
+    const [battlesCount, setBattlesCount] = useState(0);
+    const [queueLenght, setQueueLenght] = useState(0);
+    const fetcherGet = (url: string) => instance.get(url)
     useEffect(() => {
         if (userData == undefined) {
             //router.push('/account');
@@ -77,6 +90,12 @@ const Admin: NextPage = () => {
         fetcherPage('/admin/tickets', pageTA).then((res: any) => { setTicketsAll(res.data); }).catch((e: any) => { console.log(e) })
         fetcherPage('/admin/appeals/undecided', pageA).then((res: any) => { setAppeals(res.data); }).catch((e: any) => { console.log(e) })
         fetcherPage('/admin/appeals', pageAA).then((res: any) => { setAppealsAll(res.data); }).catch((e: any) => { console.log(e) })
+        fetcherGet('/admin/statistics/users/count').then((res) => { setUsersCount(res.data.count) }).catch((e: any) => { console.log(e) })
+        fetcherGet('/admin/statistics/post/count').then((res) => { setPostsCount(res.data.count) }).catch((e: any) => { console.log(e) })
+        fetcherGet('/admin/statistics/logins/count').then((res) => { setLoginsCount(res.data.count) }).catch((e: any) => { console.log(e) })
+        fetcherGet('/admin/statistics/vote/possibilities').then((res) => { setVotePossibilities(res.data.count) }).catch((e: any) => { console.log(e) })
+        fetcherGet('/admin/statistics/battle/count').then((res) => { setBattlesCount(res.data.count) }).catch((e: any) => { console.log(e) })
+        fetcherGet('/admin/statistics/queue/count').then((res) => { setQueueLenght(res.data.count) }).catch((e: any) => { console.log(e) })
     }, [userData])
 
     const Switcher = () => {
@@ -85,7 +104,7 @@ const Admin: NextPage = () => {
                 return (
                     <ContentHolder onScroll={(e: any) => {
                         const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-                        if (bottom && tickets!=undefined) {
+                        if (bottom && tickets != undefined) {
                             if (tickets.length % 10 != 0) return;
                             fetcherPage('/admin/ticket/undecided', pageT + 1).then((res) => {
                                 let arr = [];
@@ -97,8 +116,8 @@ const Admin: NextPage = () => {
                         }
                     }}>
                         {
-                            tickets?.map((ticket: EReportTicket, key:number) => 
-                                <Report report={ticket} key={key}/>
+                            tickets?.map((ticket: EReportTicket, key: number) =>
+                                <Report report={ticket} key={key} />
                             )
                         }
                     </ContentHolder>
@@ -108,7 +127,7 @@ const Admin: NextPage = () => {
                 return (
                     <ContentHolder onScroll={(e: any) => {
                         const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-                        if (bottom && ticketsAll!=undefined) {
+                        if (bottom && ticketsAll != undefined) {
                             if (ticketsAll.length % 10 != 0) return;
                             fetcherPage('/admin/ticket/undecided', pageTA + 1).then((res) => {
                                 let arr = [];
@@ -120,8 +139,8 @@ const Admin: NextPage = () => {
                         }
                     }}>
                         {
-                            ticketsAll?.map((ticket: EReportTicket, key:number) => 
-                                <Report report={ticket} key={key}/>
+                            ticketsAll?.map((ticket: EReportTicket, key: number) =>
+                                <Report report={ticket} key={key} />
                             )
                         }
                     </ContentHolder>
@@ -131,7 +150,7 @@ const Admin: NextPage = () => {
                 return (
                     <ContentHolder onScroll={(e: any) => {
                         const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-                        if (bottom && appeals !=undefined) {
+                        if (bottom && appeals != undefined) {
                             if (appeals.length % 10 != 0) return;
                             fetcherPage('/admin/appeals/undecided', pageA + 1).then((res) => {
                                 let arr = [];
@@ -155,7 +174,7 @@ const Admin: NextPage = () => {
                 return (
                     <ContentHolder onScroll={(e: any) => {
                         const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-                        if (bottom && appealsAll!=undefined) {
+                        if (bottom && appealsAll != undefined) {
                             if (appealsAll.length % 10 != 0) return;
                             fetcherPage('/admin/appeals', pageAA + 1).then((res) => {
                                 let arr = [];
@@ -175,6 +194,18 @@ const Admin: NextPage = () => {
                     </ContentHolder>
                 )
             }
+            case 4: {
+                return (
+                    <ContentHolder>
+                        <Title>{t2("usersCount")}: {usersCount}</Title>
+                        <Title>{t2("postsCount")}: {postsCount}</Title>
+                        <Title>{t2("loginsCount")}: {loginsCount}</Title>
+                        <Title>{t2("battlesCount")}: {battlesCount}</Title>
+                        <Title>{t2("queueCount")}: {queueLenght}</Title>
+                        <Title>{t2("possibleVotes")}: {votePossibilities}</Title>
+                    </ContentHolder>
+                )
+            }
             default: {
                 setSelType(1);
                 return (
@@ -185,15 +216,21 @@ const Admin: NextPage = () => {
     }
 
     return (
-        <NavBar stage={9}>
+        <NavBar stage={5}>
             <MainHolder>
-                <ButtonHolder>
-                    <ButtonType onClick={() => { setSelType(0) }}>{t2("tickets")}</ButtonType>
-                    <ButtonType onClick={() => { setSelType(1) }}>{t2("tickets")} + {t2("decided")}</ButtonType>
-                    <ButtonType onClick={() => { setSelType(2) }}>{t2("appeals")}</ButtonType>
-                    <ButtonType onClick={() => { setSelType(3) }}>{t2("appeals")} + {t2("decided")}</ButtonType>
-                </ButtonHolder>
-                {Switcher()}
+                {!isValidating &&
+                    <>
+                        <ButtonHolder>
+                            <ButtonType onClick={() => { setSelType(0) }}>{t2("tickets")}</ButtonType>
+                            <ButtonType onClick={() => { setSelType(1) }}>{t2("tickets")} + {t2("decided")}</ButtonType>
+                            <ButtonType onClick={() => { setSelType(2) }}>{t2("appeals")}</ButtonType>
+                            <ButtonType onClick={() => { setSelType(3) }}>{t2("appeals")} + {t2("decided")}</ButtonType>
+                            <ButtonType onClick={() => { setSelType(4) }}>{t2("stats")}</ButtonType>
+                        </ButtonHolder>
+                        {Switcher()}
+                    </>
+                }
+
             </MainHolder>
         </NavBar>
     )
@@ -222,12 +259,6 @@ const VideoHolder = styled.div`
 const StyledVideo = styled.video`
     max-width: 100%;
     max-height: 100%;
-`;
-const AppealTitle = styled.span`
-    color: ${props => props.theme.colors.primary};
-    font-size: 18px;
-    line-height: 20px;
-    font-family: 'Roboto';
 `;
 const DecisionButton = styled.button`
     background-color: transparent;
@@ -265,7 +296,7 @@ function Appeal({ appeal }: ApealProps) {
 
     return (
         <AppealMainHolder>
-            <AppealTitle>{appeal.reason} {appeal.objective}</AppealTitle>
+            <Title>{appeal.reason} {appeal.objective}</Title>
             <MiniPostHeader name={appeal.appealedBy.username} date={appeal.creationDate} src={appeal.appealedBy.avatarId} id={appeal.appealedBy.id} />
             {
                 appeal.media?.type == "IMAGE" ?
@@ -343,32 +374,32 @@ function Report({ report }: ReportProps) {
 
         switch (report.reportType) {
             case "BATTLE": {
-                if(report.battle == null || report.battle == undefined) return(<></>);
+                if (report.battle == null || report.battle == undefined) return (<></>);
                 return (
                     <BattleHolder>
                         <>
                             <Button buttonType={"Solid"} text={"Delete gold post post"} handleClick={function (): void {
-                                instance.delete('/admin/post', { params: {id: report.battle?.goldPost.id}}).then(() => {alert("success")})
-                            } }></Button>
+                                instance.delete('/admin/post', { params: { id: report.battle?.goldPost.id } }).then(() => { alert("success") })
+                            }}></Button>
                             <Button buttonType={"Solid"} text={"Delete red post post"} handleClick={function (): void {
-                                instance.delete('/admin/post', { params: {id: report.battle?.redPost.id}}).then(() => {alert("success")})
-                            } }></Button>
+                                instance.delete('/admin/post', { params: { id: report.battle?.redPost.id } }).then(() => { alert("success") })
+                            }}></Button>
                         </>
-                        
+
                         <Battle goldPost={report.battle!.goldPost!} redPost={report.battle?.redPost!} jwt={""} id={""} selfBattle={false} disableVote={true} nextBattle={function (): void {
                             throw new Error("Function not implemented.");
-                        } }></Battle>
+                        }}></Battle>
                     </BattleHolder>
                 )
             }
             case "POST": {
-                if(report.post == null || report.post == undefined) return(<></>);
+                if (report.post == null || report.post == undefined) return (<></>);
                 return (
                     <Post post={report.post!}></Post>
                 )
             }
             case "COMMENT": {
-                if(report.comment == null || report.comment == undefined) return(<></>);
+                if (report.comment == null || report.comment == undefined) return (<></>);
                 return (
                     <Comment comment={report.comment!}></Comment>
                 )
@@ -379,7 +410,7 @@ function Report({ report }: ReportProps) {
                         pathname: '/user/[username]',
                         query: { username: report.user.username, id: report.user.id },
                     }}>
-                        <a><AppealTitle>{report.user.username + ": " + report.user.id}</AppealTitle></a>
+                        <a><Title>{report.user.username + ": " + report.user.id}</Title></a>
                     </Link>
                 )
             }
@@ -390,11 +421,11 @@ function Report({ report }: ReportProps) {
     }
     return (
         <AppealMainHolder>
-            <AppealTitle>{report.reportType} - {new Intl.DateTimeFormat(i18n.language, { timeStyle: 'short', dateStyle: 'medium' }).format(new Date(report.creationDate))}</AppealTitle>
+            <Title>{report.reportType} - {new Intl.DateTimeFormat(i18n.language, { timeStyle: 'short', dateStyle: 'medium' }).format(new Date(report.creationDate))}</Title>
             {Switcher()}
             <DecisionButton onClick={() => {
                 let decision = prompt("Decision");
-                if(decision!=undefined) instance.post('/admin/ticket/decide', {
+                if (decision != undefined) instance.post('/admin/ticket/decide', {
                     "reportTicketId": report.id,
                     "decision": decision
                 })

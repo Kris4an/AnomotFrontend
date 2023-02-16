@@ -14,6 +14,10 @@ const Holder = styled.button<HolderProps>`
     background-color: transparent;
     width: 30%;
     cursor: ${props => !props.anon? 'pointer':'default'};
+
+    @media (max-width: 840px) {
+        width: 100%;
+    }
 `;
 const Text = styled.span`
     font-size: 20px;

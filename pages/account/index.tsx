@@ -480,6 +480,7 @@ const Holder = styled.div`
     gap: 10px;
     background-color: ${props => props.theme.colors.authContainerBackground};
     border-radius: 1rem;
+    overflow-y: scroll;
 `;
 const OverlayPostButton = styled(PostButton)`
     font-family: 'Roboto';
