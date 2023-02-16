@@ -14,6 +14,7 @@ import Post from "../components/Post";
 import Link from "next/link";
 import Battle from "../components/Battle";
 import Comment from "../components/Comment";
+import Button from "../components/Button";
 
 const MainHolder = styled.div`
     display: flex;
@@ -269,7 +270,7 @@ function Appeal({ appeal }: ApealProps) {
             {
                 appeal.media?.type == "IMAGE" ?
                     <ImageHolder>
-                        <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + appeal.media.id} objectFit={"contain"} layout={"fill"}></Image>
+                        <Image unoptimized={true} src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + appeal.media.id} objectFit={"contain"} layout={"fill"}></Image>
                     </ImageHolder>
                     :
                     <VideoHolder>
@@ -345,6 +346,15 @@ function Report({ report }: ReportProps) {
                 if(report.battle == null || report.battle == undefined) return(<></>);
                 return (
                     <BattleHolder>
+                        <>
+                            <Button buttonType={"Solid"} text={"Delete gold post post"} handleClick={function (): void {
+                                instance.delete('/admin/post', { params: {id: report.battle?.goldPost.id}}).then(() => {alert("success")})
+                            } }></Button>
+                            <Button buttonType={"Solid"} text={"Delete red post post"} handleClick={function (): void {
+                                instance.delete('/admin/post', { params: {id: report.battle?.redPost.id}}).then(() => {alert("success")})
+                            } }></Button>
+                        </>
+                        
                         <Battle goldPost={report.battle!.goldPost!} redPost={report.battle?.redPost!} jwt={""} id={""} selfBattle={false} disableVote={true} nextBattle={function (): void {
                             throw new Error("Function not implemented.");
                         } }></Battle>

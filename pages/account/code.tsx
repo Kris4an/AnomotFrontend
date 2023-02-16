@@ -44,7 +44,7 @@ const Code:NextPage = () => {
                 <Text fontSize="30px">{t3("codeInfo")}</Text>
                 <QRCodeSVG value={codePath+code} style={{ width: '40%', height: '40%' }} />
                 <a href={codePath+code}><Text fontSize="24px">{codePath+code}</Text></a>
-                <Button buttonType={"Solid"} text={t2("copy")} handleClick={() => {navigator.clipboard.writeText(codePath+code);}} style={{width: "30rem"}}></Button>
+                <Button buttonType={"Solid"} text={t2("copy")} handleClick={() => {navigator.clipboard.writeText(codePath+code);}} style={{width: "30rem", maxWidth: '90vw'}}></Button>
             </MainHolder>
         </NavBar>
     )

@@ -280,7 +280,7 @@ function Content() {
             setPreview(undefined)
             return
         }
-
+        
         const objectUrl = URL.createObjectURL(selectedFile)
         setPreview(objectUrl)
 

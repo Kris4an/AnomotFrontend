@@ -509,7 +509,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                     goldPost.type == "MEDIA" ?
                         goldPost.media?.type == "IMAGE" ?
                             <ImageHolder>
-                                <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + goldPost.media?.id} objectFit={'contain'} alt={'gold image'} layout='fill'></Image>
+                                <Image unoptimized={true} src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + goldPost.media?.id} objectFit={'contain'} alt={'gold image'} layout='fill'></Image>
                             </ImageHolder>
                             :
                             <VideoHolder>
@@ -666,7 +666,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                     redPost.type == "MEDIA" ?
                         redPost.media?.type == "IMAGE" ?
                             <ImageHolder>
-                                <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + redPost.media?.id} objectFit={'contain'} alt={'red image'} layout='fill'></Image>
+                                <Image unoptimized={true} src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + redPost.media?.id} objectFit={'contain'} alt={'red image'} layout='fill'></Image>
                             </ImageHolder>
                             :
                             <VideoHolder>

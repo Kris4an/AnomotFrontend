@@ -22,11 +22,13 @@ const Follow:NextPage = () => {
     const [t1] = useTranslation("common");
     const [t2] = useTranslation("account");
 
-    if(router.isReady){
-        const {code}:any = router.query;
-        fetcherPostCode(code);
-    }
-
+    useEffect(() => {
+        if(router.isReady){
+            const {code}:any = router.query;
+            fetcherPostCode(code);
+        }
+    },[router.isReady])
+    
     return(
         <>
             {success == 0? <Holder></Holder>:<MessageScreen continueTxt={t1("continue")} handleClick={() => {router.push('/account')}} stage={success==1} text={success==1? t2("successfulFollow"): t2("unsuccessfulFollow")}></MessageScreen>}

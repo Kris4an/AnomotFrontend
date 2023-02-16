@@ -23,7 +23,7 @@ function Content({src, title, anon}: Props){
         case false: return (
             <PicHolder title={title}>
                 {
-                    src != null ? <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + src} width={48} height={48} className={'profilePic'} objectFit={"cover"}></Image>
+                    src != null ? <Image unoptimized={true} src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + src} layout={'fill'} className={'profilePic'} objectFit={"cover"}></Image>
                     :
                     <StyledSvg width="48" height="48" viewBox="0 0 198 275" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M0 43.5792L8.43988 40.0427C69.3165 14.5335 138.117 15.817 198 43.5792V97.1767V176C198 230.676 153.676 275 99 275C44.3238 275 0 230.676 0 176V97.1767V43.5792Z" fill="#29335C" />

@@ -276,7 +276,7 @@ function Content({ post, disableComments, disableLiking }: Props) {
                 post.type == "MEDIA" ?
                     post.media?.type == "IMAGE" ?
                         <ImageHolder>
-                            <Image src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + post?.media?.id} objectFit={"contain"} layout={"fill"}></Image>
+                            <Image unoptimized={true} src={process.env.NEXT_PUBLIC_SERVERURL + "/media/" + post?.media?.id} objectFit={"contain"} layout={"fill"}></Image>
                         </ImageHolder>
                         :
                         <VideoHolder>
