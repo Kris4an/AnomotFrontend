@@ -72,10 +72,10 @@ const Admin: NextPage = () => {
             router.push('/account');
             return;
         }
-        fetcherPage('/admin/ticket/undecided', pageT).then((res: any) => { setTickets(res.data); console.log(res.data) }).then((e: any) => { console.log(e) })
-        fetcherPage('/admin/tickets', pageTA).then((res: any) => { setTicketsAll(res.data); console.log(res.data) }).then((e: any) => { console.log(e) })
-        fetcherPage('/admin/appeals/undecided', pageA).then((res: any) => { setAppeals(res.data); console.log(res.data) }).then((e: any) => { console.log(e) })
-        fetcherPage('/admin/appeals', pageAA).then((res: any) => { setAppealsAll(res.data); console.log(res.data) }).then((e: any) => { console.log(e) })
+        fetcherPage('/admin/ticket/undecided', pageT).then((res: any) => { setTickets(res.data); }).catch((e: any) => { console.log(e) })
+        fetcherPage('/admin/tickets', pageTA).then((res: any) => { setTicketsAll(res.data); }).catch((e: any) => { console.log(e) })
+        fetcherPage('/admin/appeals/undecided', pageA).then((res: any) => { setAppeals(res.data); }).catch((e: any) => { console.log(e) })
+        fetcherPage('/admin/appeals', pageAA).then((res: any) => { setAppealsAll(res.data); }).catch((e: any) => { console.log(e) })
     }, [userData])
 
     const Switcher = () => {

@@ -66,7 +66,6 @@ const Battles: NextPage = () => {
             setBattleId(res.id)
             setIsReady(true);
             setBattleNum(battleNum + 1);
-            console.log(res)
         }).catch((e) => { console.log(e) });
     }
     useEffect(() => {

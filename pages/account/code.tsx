@@ -32,7 +32,7 @@ const Code:NextPage = () => {
     const [t2] = useTranslation("settings");
     const [t3] = useTranslation("account");
     const [code, setCode] = useState("");
-    const fetcherGetCode = () => instance.get('/follow/code').then((res) => {console.log(res.data.code); setCode(res.data.code)}).catch((res) => {console.log('e'); res.error;});
+    const fetcherGetCode = () => instance.get('/follow/code').then((res) => { setCode(res.data.code)}).catch((res) => {console.log('e'); res.error;});
     
     useEffect(() => {
         fetcherGetCode();

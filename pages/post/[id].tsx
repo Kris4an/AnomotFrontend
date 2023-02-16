@@ -58,7 +58,7 @@ const PostPage: NextPage = () => {
             const { id } = router.query;
             fetcherGet('/post', id + "").then((res) => {
                 setPost(res);
-                fetcherGetPage('/post/comment', res.id, page).then((res) => { setComments(res); console.table(res) }).catch((e) => { console.log(e) })
+                fetcherGetPage('/post/comment', res.id, page).then((res) => { setComments(res); }).catch((e) => { console.log(e) })
             }).catch(() => { router.push('404') })
         }
     }, [router])

@@ -566,7 +566,7 @@ function Content() {
             top: Math.floor(top),
             cropSize: Math.floor(cropSize)
         }
-    }).then((res: any) => { console.log(res) }).catch((e: any) => { console.log(e) });
+    }).then((res: any) => {  }).catch((e: any) => { console.log(e) });
 
     switch (stage) {
         case 0: return (

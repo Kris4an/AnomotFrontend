@@ -471,7 +471,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                 isGold != 0 && <PostVoteButtons>
                     <SvgButton onClick={() => {
                         setShowComments(true);
-                        if (comments == null || comments == undefined) fetcher('/battle/comment', page).then((res: any) => { setComments(res.data); console.log(res.data) }).catch((e) => e.error);
+                        if (comments == null || comments == undefined) fetcher('/battle/comment', page).then((res: any) => { setComments(res.data); }).catch((e) => e.error);
                     }}>
                         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <StyledPath d="m 6,3 h 24 c 1.65,0 3,1.35 3,3 V 33 L 27,27 H 6 C 4.35,27 3,25.65 3,24 V 6 C 3,4.35 4.35,3 6,3 Z m 0,21 h 21 l 3,3 V 6 H 6 Z" />
@@ -528,7 +528,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                         </svg>
                     </ExpandButton>
                     <ExpandedHolder>
-                        <VoteButton isLeft={true} onClick={() => { fetcherVote(goldPost.id).then((res: any) => { setVotedUser(res.data.votedPost.poster); setIsGold(1) }).catch((e) => { console.log(e) }) }} disabled={isGold != 0 || selfBattle || disableVote}>
+                        <VoteButton isLeft={true} onClick={() => { fetcherVote(goldPost.id).then((res: any) => { setVotedUser(res.data.votedPost.poster); setIsGold(1) }).catch((e) => {  }) }} disabled={isGold != 0 || selfBattle || disableVote}>
                             <StyledSvg width="49" height="54" viewBox="0 0 49 54" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <StyledPath d="M40.5 29.3369H38.6867L33.3533 34.6702H38.4467L43.1667 40.0036H5.83333L10.58 34.6702H16.0467L10.7133 29.3369H8.5L0.5 37.3369V48.0036C0.5 50.9369 2.87333 53.3369 5.80667 53.3369H43.1667C44.5812 53.3369 45.9377 52.775 46.9379 51.7748C47.9381 50.7746 48.5 49.4181 48.5 48.0036V37.3369L40.5 29.3369ZM43.1667 48.0036H5.83333V45.3369H43.1667V48.0036ZM22.74 34.7236C23.78 35.7636 25.46 35.7636 26.5 34.7236L43.46 17.7636C43.7072 17.5169 43.9033 17.2238 44.0372 16.9012C44.171 16.5786 44.2399 16.2328 44.2399 15.8836C44.2399 15.5343 44.171 15.1885 44.0372 14.8659C43.9033 14.5433 43.7072 14.2503 43.46 14.0036L30.26 0.803579C30.0194 0.55185 29.7307 0.351014 29.411 0.212986C29.0913 0.0749589 28.7472 0.00255349 28.399 6.63299e-05C28.0508 -0.00242083 27.7056 0.065061 27.384 0.198508C27.0624 0.331954 26.7708 0.528646 26.5267 0.776912L9.54 17.7636C9.29279 18.0103 9.09666 18.3033 8.96285 18.6259C8.82903 18.9485 8.76015 19.2943 8.76015 19.6436C8.76015 19.9928 8.82903 20.3386 8.96285 20.6612C9.09666 20.9838 9.29279 21.2769 9.54 21.5236L22.74 34.7236ZM28.3933 6.43025L37.8333 15.8702L24.6333 29.0702L15.1933 19.6302L28.3933 6.43025Z" />
                             </StyledSvg>
@@ -685,7 +685,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                         </svg>
                     </ExpandButton>
                     <ExpandedHolder>
-                        <VoteButton isLeft={false} onClick={() => { fetcherVote(redPost.id).then((res: any) => { console.log(res); setVotedUser(res.data.votedPost.poster); setIsGold(2); }).catch((e) => { console.log(e) }) }} disabled={isGold != 0 || selfBattle || disableVote}>
+                        <VoteButton isLeft={false} onClick={() => { fetcherVote(redPost.id).then((res: any) => { setVotedUser(res.data.votedPost.poster); setIsGold(2); }).catch((e) => {  }) }} disabled={isGold != 0 || selfBattle || disableVote}>
                             <StyledSvg width="49" height="54" viewBox="0 0 49 54" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <StyledPath d="M40.5 29.3369H38.6867L33.3533 34.6702H38.4467L43.1667 40.0036H5.83333L10.58 34.6702H16.0467L10.7133 29.3369H8.5L0.5 37.3369V48.0036C0.5 50.9369 2.87333 53.3369 5.80667 53.3369H43.1667C44.5812 53.3369 45.9377 52.775 46.9379 51.7748C47.9381 50.7746 48.5 49.4181 48.5 48.0036V37.3369L40.5 29.3369ZM43.1667 48.0036H5.83333V45.3369H43.1667V48.0036ZM22.74 34.7236C23.78 35.7636 25.46 35.7636 26.5 34.7236L43.46 17.7636C43.7072 17.5169 43.9033 17.2238 44.0372 16.9012C44.171 16.5786 44.2399 16.2328 44.2399 15.8836C44.2399 15.5343 44.171 15.1885 44.0372 14.8659C43.9033 14.5433 43.7072 14.2503 43.46 14.0036L30.26 0.803579C30.0194 0.55185 29.7307 0.351014 29.411 0.212986C29.0913 0.0749589 28.7472 0.00255349 28.399 6.63299e-05C28.0508 -0.00242083 27.7056 0.065061 27.384 0.198508C27.0624 0.331954 26.7708 0.528646 26.5267 0.776912L9.54 17.7636C9.29279 18.0103 9.09666 18.3033 8.96285 18.6259C8.82903 18.9485 8.76015 19.2943 8.76015 19.6436C8.76015 19.9928 8.82903 20.3386 8.96285 20.6612C9.09666 20.9838 9.29279 21.2769 9.54 21.5236L22.74 34.7236ZM28.3933 6.43025L37.8333 15.8702L24.6333 29.0702L15.1933 19.6302L28.3933 6.43025Z" />
                             </StyledSvg>
@@ -693,7 +693,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                         </VoteButton>
                         {isExpanded2 &&
                             <ReportsHolder>
-                                <ExpandedButton onClick={() => { setShowReportsR(true); console.log('zdr') }}>{t2("report")}</ExpandedButton>
+                                <ExpandedButton onClick={() => { setShowReportsR(true); }}>{t2("report")}</ExpandedButton>
                                 {
                                     showReportsR &&
                                     <>

@@ -266,7 +266,6 @@ function Content(){
                 <MfaInput id={"7"} ref={inp17} type="text" minLength={1} maxLength={8} onChange={event => mfaInputHandleChange(event, inps)}/>
               </Holder3>
               <Button buttonType='Solid' text = {t1("continue")} disabled={code.length!=8} handleClick={() => {
-                console.log(code);
                 fetcher2('/account/login', email, password, undefined, rememberMe, undefined, code).then(() => { router.push('/'); }).catch((res) => { console.log(res.error) });
             }}/>
             </ModifiedAuthContainer>

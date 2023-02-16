@@ -208,56 +208,56 @@ function Comment({ comment, notFechedComment }: Props) {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
-                                            }).catch((e: any) => console.log(e))
+                                            }).catch((e: any) => {})
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("terrorism")} handleClick={function (): void {
                                             fetcherReport('/comment/report', comment.id, Reasons.TERRORISM, undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
-                                            }).catch((e: any) => console.log(e))
+                                            }).catch((e: any) => {})
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("hateSpeech")} handleClick={function (): void {
                                             fetcherReport('/comment/report', comment.id, Reasons.HATE_SPEECH, undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
-                                            }).catch((e: any) => console.log(e))
+                                            }).catch((e: any) => {})
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("harassment")} handleClick={function (): void {
                                             fetcherReport('/comment/report', comment.id, Reasons.HARASSMENT, undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
-                                            }).catch((e: any) => console.log(e))
+                                            }).catch((e: any) => {})
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("violence")} handleClick={function (): void {
                                             fetcherReport('/comment/report', comment.id, Reasons.VIOLENCE, undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
-                                            }).catch((e: any) => console.log(e))
+                                            }).catch((e: any) => {})
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("advertising")} handleClick={function (): void {
                                             fetcherReport('/comment/report', comment.id, Reasons.ADVERTISING, undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
-                                            }).catch((e: any) => console.log(e))
+                                            }).catch((e: any) => {})
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("nsfwContent")} handleClick={function (): void {
                                             fetcherReport('/comment/report', comment.id, Reasons.NSFW_CONTENT, undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
-                                            }).catch((e: any) => console.log(e))
+                                            }).catch((e: any) => {})
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("identityReveal")} handleClick={function (): void {
                                             fetcherReport('/comment/report', comment.id, Reasons.IDENTITY_REVEAL, undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
-                                            }).catch((e: any) => console.log(e))
+                                            }).catch((e: any) => {})
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("other")} handleClick={function (): void {
                                             let other = prompt(t1("enterReason"));
@@ -267,7 +267,7 @@ function Comment({ comment, notFechedComment }: Props) {
                                                     setShowBurgerMenu(false);
                                                     setShowReports(false);
                                                     alert(t1("successReport"));
-                                                }).catch((e: any) => console.log(e))
+                                                }).catch((e: any) => {})
                                             }
                                         }}></Button>
                                     </>

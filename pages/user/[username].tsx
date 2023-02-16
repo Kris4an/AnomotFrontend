@@ -99,9 +99,8 @@ const Account: NextPage = () => {
     useEffect(() => {
         if (router.isReady && !isValidating && user == undefined) {
             const { id } = router.query
-            fetcherGet('/account/follows', id).then((res: any) => { console.log(res); setIsFollowed(res.data) }).catch((e) => { console.log(e) })
+            fetcherGet('/account/follows', id).then((res: any) => { setIsFollowed(res.data) }).catch((e) => { console.log(e) })
             if (!userData.roles.includes("ROLE_ADMIN")) {
-                console.log('plebej');
                 fetcherGet('/followers/count', id).then((res: any) => { setFollowersCount(res?.data.count) }).catch((e) => { console.log(e) })
                 fetcherGet('/followed/count', id).then((res: any) => { setFollowingCount(res?.data.count) }).catch((e) => { console.log(e) })
                 fetcherGet('/user', id).then((res: any) => { setUser(res?.data); }).catch((e) => { router.push('/404'); console.log(e) })

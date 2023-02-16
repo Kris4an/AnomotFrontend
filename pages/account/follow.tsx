@@ -17,14 +17,13 @@ const Follow:NextPage = () => {
     const [success, setSuccess] = useState(0);
     const fetcherPostCode = (code: string) => instance.post('/follow/code', {
         "code": code
-    }).then(() => {setSuccess(1) }).catch((e) => {setSuccess(2); console.log(e);});
+    }).then(() => {setSuccess(1) }).catch((e) => { setSuccess(2); });
     const router = useRouter();
     const [t1] = useTranslation("common");
     const [t2] = useTranslation("account");
 
     if(router.isReady){
         const {code}:any = router.query;
-        console.log(code);
         fetcherPostCode(code);
     }
 

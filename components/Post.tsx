@@ -184,7 +184,7 @@ function Content({ post, disableComments, disableLiking }: Props) {
                     {
                         selfPost ?
                             <Button buttonType={"Teriatary"} text={t1("delete")} handleClick={function (): void {
-                                if (!isDeleted) fetcherDelete('/account/post', post.id).then(() => { setIsDeleted(true); alert(t1("deletePost")); })
+                                if (!isDeleted) fetcherDelete('/account/post', post.id).then(() => { setIsDeleted(true); alert(t1("deletedPost")); })
                             }}></Button>
                             :
                             <>
@@ -195,7 +195,7 @@ function Content({ post, disableComments, disableLiking }: Props) {
                                 {
                                     userData.roles.includes("ROLE_ADMIN") &&
                                     <Button buttonType={"Teriatary"} text={t1("delete")} style ={{color: "red"}} handleClick={function (): void {
-                                        if (!isDeleted) fetcherDelete('/admin/post', post.id).then(() => { setIsDeleted(true); alert(t1("deleteCommmet")); })
+                                        if (!isDeleted) fetcherDelete('/admin/post', post.id).then(() => { setIsDeleted(true); alert(t1("deletedComment")); })
                                     }}></Button>
                                 }
                                 {
