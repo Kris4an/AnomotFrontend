@@ -26,7 +26,7 @@ const Text =styled.span<TextProps>`
     font-family: 'Roboto';
 `
 
-const codePath = `${process.env.NEXT_PUBLIC_FRONTEND_URL}follow?code=`
+const codePath = `${process.env.NEXT_PUBLIC_FRONTEND_URL}account/follow?code=`
 
 const Code:NextPage = () => {
     const [t2] = useTranslation("settings");
