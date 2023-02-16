@@ -586,7 +586,7 @@ function Overlay({ buttonSelected, close, followingCount, followersCount }: Over
                 {isSelected ?
                     <>
                         {noDubfollowers?.map((f: any, key: number) => {
-                            if (f == undefined) return null;
+                            if (f == undefined) return <MiniProfile anon={true} src={""}></MiniProfile>;
                             return (<MiniProfile src={f.avatarId} name={f.username} anon={false} key={key} handleClick={() => {
                                 router.push({
                                     pathname: '/user/[username]',
@@ -600,7 +600,7 @@ function Overlay({ buttonSelected, close, followingCount, followersCount }: Over
                     :
                     <>
                         {noDubfollowing.map((f: any, key: number) => {
-                            if (f == undefined) return null;
+                            if (f == undefined) return <MiniProfile anon={true} src={""}></MiniProfile>;
                             return (<MiniProfile src={f.avatarId} name={f.username} anon={false} key={key} handleClick={() => {
                                 router.push({
                                     pathname: '/user/[username]',
