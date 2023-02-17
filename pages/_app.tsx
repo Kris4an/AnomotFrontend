@@ -19,6 +19,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   useEffect(() => {
     if (!isValidating) {
+      if (router.pathname == "/login") return;
       if(userData == undefined){
         if (router.pathname == "/account") {
           router.push("/account/create");
