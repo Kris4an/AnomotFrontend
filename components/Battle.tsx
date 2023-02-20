@@ -311,6 +311,11 @@ const CommentsHolder = styled.div`
 const StyledVideo = styled.video`
     max-width: 100%;
     max-height: 100%;
+
+    @media (max-width: 840px) {
+        max-width: 100vw;
+        max-height: calc((100vh - 7rem - 50px)/2);
+    }
 `;
 const VideoHolder = styled.div`
     position: relative;
@@ -432,7 +437,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                             {
                                 userComments != null && userComments !== undefined &&
                                 userComments.map((comment: EComment, key: number) =>
-                                    <Comment comment={comment} key={key} notFechedComment={true}></Comment>
+                                    <Comment comment={comment} key={key}></Comment>
                                 )
                             }
                             {
@@ -443,21 +448,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                             }
                         </CommentsHolder>
                     </UpperCommentHolder>
-                    <CommentInput id={id} userComment={function (text: string, date: string): void {
-                        const comment: EComment = {
-                            text: text,
-                            commenter: {
-                                username: userData.username,
-                                id: userData.id,
-                                avatarId: userData?.avatarId
-                            },
-                            isEdited: false,
-                            responseCount: 0,
-                            likes: 0,
-                            hasUserLiked: false,
-                            lastChangeDate: date,
-                            id: userData.id + ""
-                        };
+                    <CommentInput id={id} userComment={function (comment: EComment): void {
                         let arr = [];
                         arr.push(comment);
                         if (userComments != null && userComments !== undefined) {
@@ -542,7 +533,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                                     <>
                                         <ExpandedButton onClick={() => {
                                             instance.post('/battle/report', {
-                                                "reason": Reasons.NSFW_CONTENT,
+                                                "reason": Reasons.NSFW_CONTENT.toString(),
                                                 "postId": goldPost.id,
                                                 "battleId": id,
                                                 other: undefined
@@ -554,7 +545,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                                         }}>{t3("nsfwContent")}</ExpandedButton>
                                         <ExpandedButton onClick={() => {
                                             instance.post('/battle/report', {
-                                                "reason": Reasons.ADVERTISING,
+                                                "reason": Reasons.ADVERTISING.toString(),
                                                 "postId": goldPost.id,
                                                 "battleId": id,
                                                 other: undefined
@@ -566,7 +557,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                                         }}>{t3("advertising")}</ExpandedButton>
                                         <ExpandedButton onClick={() => {
                                             instance.post('/battle/report', {
-                                                "reason": Reasons.VIOLENCE,
+                                                "reason": Reasons.VIOLENCE.toString(),
                                                 "postId": goldPost.id,
                                                 "battleId": id,
                                                 other: undefined
@@ -578,7 +569,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                                         }}>{t3("violence")}</ExpandedButton>
                                         <ExpandedButton onClick={() => {
                                             instance.post('/battle/report', {
-                                                "reason": Reasons.HARASSMENT,
+                                                "reason": Reasons.HARASSMENT.toString(),
                                                 "postId": goldPost.id,
                                                 "battleId": id,
                                                 other: undefined
@@ -590,7 +581,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                                         }}>{t3("harassment")}</ExpandedButton>
                                         <ExpandedButton onClick={() => {
                                             instance.post('/battle/report', {
-                                                "reason": Reasons.HATE_SPEECH,
+                                                "reason": Reasons.HATE_SPEECH.toString(),
                                                 "postId": goldPost.id,
                                                 "battleId": id,
                                                 other: undefined
@@ -602,7 +593,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                                         }}>{t3("hateSpeech")}</ExpandedButton>
                                         <ExpandedButton onClick={() => {
                                             instance.post('/battle/report', {
-                                                "reason": Reasons.TERRORISM,
+                                                "reason": Reasons.TERRORISM.toString(),
                                                 "postId": goldPost.id,
                                                 "battleId": id,
                                                 other: undefined
@@ -614,7 +605,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                                         }}>{t3("terrorism")}</ExpandedButton>
                                         <ExpandedButton onClick={() => {
                                             instance.post('/battle/report', {
-                                                "reason": Reasons.SPAM,
+                                                "reason": Reasons.SPAM.toString(),
                                                 "postId": goldPost.id,
                                                 "battleId": id,
                                                 other: undefined
@@ -626,7 +617,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                                         }}>{t3("spam")}</ExpandedButton>
                                         <ExpandedButton onClick={() => {
                                             instance.post('/battle/report', {
-                                                "reason": Reasons.IDENTITY_REVEAL,
+                                                "reason": Reasons.IDENTITY_REVEAL.toString(),
                                                 "postId": goldPost.id,
                                                 "battleId": id,
                                                 other: undefined
@@ -639,7 +630,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                                         <ExpandedButton onClick={() => {
                                             let other = prompt(t3("enterReason"))
                                             if (other != undefined) instance.post('/battle/report', {
-                                                "reason": Reasons.SPAM,
+                                                "reason": Reasons.SPAM.toString(),
                                                 "postId": goldPost.id,
                                                 "battleId": id,
                                                 other: other

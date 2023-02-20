@@ -197,14 +197,15 @@ function Content() {
         <ModifiedAuthContainer width='' height='' gap='1rem' padding='4rem 3.5rem'>
           <LoginInput handleChange={(event: React.ChangeEvent<HTMLInputElement>) => { setEmail(event.target.value); }} inputType='Email' placeHolder={t1("email")}></LoginInput>
           <Holder2>
-            <LoginInput handleChange={(event: React.ChangeEvent<HTMLInputElement>) => { setPassword(event.target.value); }} inputType='Password' placeHolder={t1("password")}></LoginInput>
+            <LoginInput handleChange={(event: React.ChangeEvent<HTMLInputElement>) => { setPassword(event.target.value); if(loginError) setLoginError(false); }} inputType='Password' placeHolder={t1("password")}></LoginInput>
             {loginError ? <ErrorMessage>{t2("errorMessage")}</ErrorMessage> : null}
           </Holder2>
           <Checkbox text={t2("rememberMe")} handleChange={(event: React.ChangeEvent<HTMLInputElement>) => (setRememberMe(event.target.checked))} style={{ alignSelf: 'flex-start', scale: '90%' }} />
-          <Button buttonType='Default' disabled={!(email.includes('@') && email.length >= 3 && password.length >= 1)} text={t2("login")} handleClick={() => {
+          <Button isLoading={isLogging} buttonType='Default' disabled={!(email.includes('@') && email.length >= 3 && password.length >= 1)} text={t2("login")} handleClick={() => {
             if (!isLogging) {
               setIsLogging(true);
               fetcher1('/account/mfa/status', email, password).then((res) => {
+                setIsLogging(false);
                 if (!res.data.isEnabled) fetcher2('/account/login', email, password, undefined, rememberMe, undefined, undefined).then(() => { router.push('/'); });
                 else {
                   const methods: any[] = res.data.mfaMethods;
@@ -213,7 +214,7 @@ function Content() {
                   goToPage(1);
                 }
                 //console.log(res.data.mfaMethods);
-              }).catch((e) => { if(e.response.status == '401') setLoginError(true); })
+              }).catch((e) => { setIsLogging(false); if (e.response.status == '401') setLoginError(true); })
             }
 
           }

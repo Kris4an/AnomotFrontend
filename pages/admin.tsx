@@ -25,7 +25,11 @@ const MainHolder = styled.div`
 `;
 const ButtonHolder = styled.div`
     width: 100%;
-    display: flex;
+    display: flex; 
+    
+    @media (max-width: 840px) {
+        flex-wrap: wrap;
+    }
 `;
 const ButtonType = styled.button`
     width: 100%;
@@ -88,7 +92,7 @@ const Admin: NextPage = () => {
     const [votePossibilities, setVotePossibilities] = useState<VotePossibilities>();
     const [battlesCount, setBattlesCount] = useState(0);
     const [queueLenght, setQueueLenght] = useState(0);
-    const [statsPage, setStatsPage] = useState(0);
+    const [statsPage, setStatsPage] = useState(365);
     useEffect(() => {
         if (userData == undefined) {
             //router.push('/account');
@@ -113,8 +117,8 @@ const Admin: NextPage = () => {
         fetcherDays('/admin/statistics/queue/count', statsPage).then((res) => { setQueueLenght(res.data.count) }).catch((e: any) => { console.log(e) })
     }
 
-    const Switcher = () => {
-        switch (selType) {
+    const Switcher = (stage: number) => {
+        switch (stage) {
             case 0: {
                 return (
                     <ContentHolder onScroll={(e: any) => {
@@ -131,6 +135,7 @@ const Admin: NextPage = () => {
                         }
                     }}>
                         {
+                            tickets != undefined &&
                             tickets?.map((ticket: EReportTicket, key: number) =>
                                 <Report report={ticket} key={key} />
                             )
@@ -154,6 +159,7 @@ const Admin: NextPage = () => {
                         }
                     }}>
                         {
+                            ticketsAll != undefined &&
                             ticketsAll?.map((ticket: EReportTicket, key: number) =>
                                 <Report report={ticket} key={key} />
                             )
@@ -213,7 +219,7 @@ const Admin: NextPage = () => {
                 return (
                     <ContentHolder style={{alignItems: 'center', gap: '3rem'}}>
                         <div style={{display: 'flex', gap: '2rem'}}>
-                            <StyledInput type='text' defaultValue={0} onChange={(e) => {
+                            <StyledInput type='text' defaultValue={statsPage} onChange={(e) => {
                                 if(!isNaN(Number(e.currentTarget.value))){
                                     setStatsPage(Number(e.currentTarget.value));
                                 }
@@ -233,7 +239,7 @@ const Admin: NextPage = () => {
                 )
             }
             default: {
-                setSelType(1);
+                setSelType(0);
                 return (
                     <></>
                 )
@@ -253,7 +259,7 @@ const Admin: NextPage = () => {
                             <ButtonType onClick={() => { setSelType(3) }}>{t2("appeals")} + {t2("decided")}</ButtonType>
                             <ButtonType onClick={() => { setSelType(4) }}>{t2("stats")}</ButtonType>
                         </ButtonHolder>
-                        {Switcher()}
+                        {Switcher(selType)}
                     </>
                 }
 
@@ -281,6 +287,9 @@ const VideoHolder = styled.div`
     position: relative;
     width: 100%;
     height: fit-content;
+    display: flex;
+    justify-content: center;
+    max-height: 40rem;
 `;
 const StyledVideo = styled.video`
     max-width: 100%;
@@ -396,9 +405,9 @@ interface ReportProps {
 }
 function Report({ report }: ReportProps) {
     const { t, i18n } = useTranslation();
-    const Switcher = () => {
+    const Switcher = (reportType: string) => {
 
-        switch (report.reportType) {
+        switch (reportType) {
             case "BATTLE": {
                 if (report.battle == null || report.battle == undefined) return (<></>);
                 return (
@@ -421,7 +430,7 @@ function Report({ report }: ReportProps) {
             case "POST": {
                 if (report.post == null || report.post == undefined) return (<></>);
                 return (
-                    <Post post={report.post!}></Post>
+                    <Post post={report.post!} disableLiking={true}></Post>
                 )
             }
             case "COMMENT": {
@@ -440,15 +449,15 @@ function Report({ report }: ReportProps) {
                     </Link>
                 )
             }
-            default: return (
-                <></>
-            )
         }
+        return(
+            <></>
+        )
     }
     return (
         <AppealMainHolder>
             <Title>{report.reportType} - {new Intl.DateTimeFormat(i18n.language, { timeStyle: 'short', dateStyle: 'medium' }).format(new Date(report.creationDate))}</Title>
-            {Switcher()}
+            {report!=undefined && Switcher(report.reportType)}
             <DecisionButton onClick={() => {
                 let decision = prompt("Decision");
                 if (decision != undefined) instance.post('/admin/ticket/decide', {

@@ -97,7 +97,7 @@ function NavBar({ children, stage }: Props) {
                     </a>
                 </Link>
 
-                {!isValidating &&
+                {!isValidating && userData != undefined &&
                     <>
                         {
                             userData.roles.includes("ROLE_ADMIN") &&

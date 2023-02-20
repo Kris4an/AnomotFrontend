@@ -26,7 +26,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           return;
         }
         if(router.pathname == '/terms-of-service' || router.pathname == '/privacy-policy') return;
-        else router.push('/login');
+        router.push('/login');
         return;
       }
       if (userData.id == undefined) {

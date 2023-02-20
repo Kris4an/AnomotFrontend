@@ -457,8 +457,6 @@ function Content() {
     const [recoveryCodes, setRecoveryCodes] = useState<string[]>();
     const [deleteAccPassword, setDeleteAccPassword] = useState('');
     const { t, i18n } = useTranslation();
-    const [resendP, setResendP] = useState("");
-    const [resendS, setResendS] = useState(true);
     interface TotpRes {
         "secret": string,
         "uri": string
@@ -730,22 +728,15 @@ function Content() {
 
                             <ProfileSettingsHolder isLast={false}>
                                 <ProfileSettingsHeading>{t2("verifyEmail")}</ProfileSettingsHeading>
-                                <LoginInput inputType={"Password"} placeHolder={t1("password")} handleChange={(event: React.ChangeEvent<HTMLInputElement>) => { setResendP(event.currentTarget.value) }} style={{ width: '100%', height: '3.5rem', fontSize: '20px' }} passwordStyle={{ height: '3.5rem' }}></LoginInput>
-                                <Button buttonType={"Solid"} text={t2("resendEmail")} disabled={resendP.length < 1 || (userData!= undefined? userData.isEmailVerified: false)} handleClick={() => {
-                                    instance.post('/account/mfa/email/send', {
-                                        "email": userData.email,
-                                        "password": resendP
-                                    }).then(() => {
+                                <Button buttonType={"Solid"} text={t2("resendEmail")} disabled={userData!= undefined? userData.isEmailVerified:false} handleClick={() => {
+                                    instance.post('/account/email/verification/new').then(() => {
                                         setMessage(5);
                                         setMessageS(true);
                                         setStage(3);
                                     }).catch((e) => {
-
-                                        setResendS(false); 
                                         console.log(e);
                                     })
                                 }}></Button>
-                                {resendS ? null : <ErrorMessage>{t2("errorMessage")}</ErrorMessage>}
                             </ProfileSettingsHolder>
 
                             <ProfileSettingsHolder isLast={false}>

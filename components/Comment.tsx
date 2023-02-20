@@ -101,10 +101,9 @@ enum Reasons {
     "NSFW_CONTENT", "ADVERTISING", "VIOLENCE", "HARASSMENT", "HATE_SPEECH", "TERRORISM", "SPAM", "IDENTITY_REVEAL"
 }
 interface Props {
-    comment: EComment,
-    notFechedComment?: boolean
+    comment: EComment
 }
-function Comment({ comment, notFechedComment }: Props) {
+function Comment({ comment }: Props) {
     const [t1] = useTranslation("burgerMenu");
     const [showBurgerMenu, setShowBurgerMenu] = useState(false);
     const fetcherDelete = (url: string, id: any) => instance.delete(url, { params: { id: id } });
@@ -115,7 +114,7 @@ function Comment({ comment, notFechedComment }: Props) {
     const [liked, setLiked] = useState<boolean>();
     const fetcherPost = (url: string, id: any) => instance.post(url, null, { params: { id: id } });
     const [showReports, setShowReports] = useState(false);
-    const fetcherReport = (url: string, id: string, reason: Reasons, other: string | undefined) => instance.post(url, {
+    const fetcherReport = (url: string, id: string, reason: string, other: string | undefined) => instance.post(url, {
         "commentId": id,
         "reason": reason,
         "other": other
@@ -144,10 +143,6 @@ function Comment({ comment, notFechedComment }: Props) {
                     </svg>
                 </BurgerMenuButton>
                 <BurgerMenuButton style={{ left: '10px' }} onClick={() => {
-                    if(notFechedComment){
-                        setLiked(!liked);
-                        return;
-                    }
                     switch (liked) {
                         case true: {
                             fetcherPost('/comment/unlike', comment.id).then(() => { setLiked(false); })
@@ -204,56 +199,56 @@ function Comment({ comment, notFechedComment }: Props) {
                                     showReports &&
                                     <>
                                         <Button buttonType={"Teriatary"} text={t1("spam")} handleClick={function (): void {
-                                            fetcherReport('/comment/report', comment.id, Reasons.SPAM, undefined).then(() => {
+                                            fetcherReport('/comment/report', comment.id, Reasons.SPAM.toString(), undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
                                             }).catch((e: any) => {})
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("terrorism")} handleClick={function (): void {
-                                            fetcherReport('/comment/report', comment.id, Reasons.TERRORISM, undefined).then(() => {
+                                            fetcherReport('/comment/report', comment.id, Reasons.TERRORISM.toString(), undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
                                             }).catch((e: any) => {})
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("hateSpeech")} handleClick={function (): void {
-                                            fetcherReport('/comment/report', comment.id, Reasons.HATE_SPEECH, undefined).then(() => {
+                                            fetcherReport('/comment/report', comment.id, Reasons.HATE_SPEECH.toString(), undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
                                             }).catch((e: any) => {})
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("harassment")} handleClick={function (): void {
-                                            fetcherReport('/comment/report', comment.id, Reasons.HARASSMENT, undefined).then(() => {
+                                            fetcherReport('/comment/report', comment.id, Reasons.HARASSMENT.toString(), undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
                                             }).catch((e: any) => {})
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("violence")} handleClick={function (): void {
-                                            fetcherReport('/comment/report', comment.id, Reasons.VIOLENCE, undefined).then(() => {
+                                            fetcherReport('/comment/report', comment.id, Reasons.VIOLENCE.toString(), undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
                                             }).catch((e: any) => {})
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("advertising")} handleClick={function (): void {
-                                            fetcherReport('/comment/report', comment.id, Reasons.ADVERTISING, undefined).then(() => {
+                                            fetcherReport('/comment/report', comment.id, Reasons.ADVERTISING.toString(), undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
                                             }).catch((e: any) => {})
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("nsfwContent")} handleClick={function (): void {
-                                            fetcherReport('/comment/report', comment.id, Reasons.NSFW_CONTENT, undefined).then(() => {
+                                            fetcherReport('/comment/report', comment.id, Reasons.NSFW_CONTENT.toString(), undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
                                             }).catch((e: any) => {})
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("identityReveal")} handleClick={function (): void {
-                                            fetcherReport('/comment/report', comment.id, Reasons.IDENTITY_REVEAL, undefined).then(() => {
+                                            fetcherReport('/comment/report', comment.id, Reasons.IDENTITY_REVEAL.toString(), undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
@@ -263,7 +258,7 @@ function Comment({ comment, notFechedComment }: Props) {
                                             let other = prompt(t1("enterReason"));
                                             if (other != undefined) {
                                                 if(other.length > 1000) other = other.substring(0,999);
-                                                fetcherReport('/comment/report', comment.id, Reasons.SPAM, other).then(() => {
+                                                fetcherReport('/comment/report', comment.id, Reasons.SPAM.toString(), other).then(() => {
                                                     setShowBurgerMenu(false);
                                                     setShowReports(false);
                                                     alert(t1("successReport"));
@@ -291,9 +286,9 @@ function Comment({ comment, notFechedComment }: Props) {
                 {comment.text == null && <InfoText>{t1("deleted")}</InfoText>}
             </InfoHolder>
             {editMode ?
-                <CommentInput id={comment.id} typeP={"EDIT"} text={comment.text + ""} style={{ marginTop: '0.5rem', border: '1px solid' }} userComment={function (text: string, date: string): void {
-                    comment.text = text;
-                    comment.lastChangeDate = date;
+                <CommentInput id={comment.id} typeP={"EDIT"} text={comment.text + ""} style={{ marginTop: '0.5rem', border: '1px solid' }} userComment={function (newComment: EComment): void {
+                    comment.text = newComment.text;
+                    comment.lastChangeDate = newComment.lastChangeDate;
                     setEditMode(false);
                 }}></CommentInput>
                 :

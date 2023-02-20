@@ -1,11 +1,15 @@
 import styled, { CSSProperties } from 'styled-components'
 
-const DefaultButton = styled.button`
+interface ButtonProps {
+    isLoading: boolean
+}
+
+const DefaultButton = styled.button<ButtonProps>`
     width: 100%;
     height: 3rem;
     padding: 10px 20px;
     gap: 10px;
-    background: ${props => props.theme.colors.primary};
+    background: ${props => props.isLoading? props.theme.colors.secondary:props.theme.colors.primary};
     color: ${props => props.theme.colors.textInverted};
     border: none;
     border-radius: 0px 100px;
@@ -36,12 +40,12 @@ const DefaultButton = styled.button`
 
 `;
 
-const SolidButton = styled.button`
+const SolidButton = styled.button<ButtonProps>`
     width: 100%;
     height: 3rem;
     padding: 10px 20px;
     gap: 10px;
-    background: ${props => props.theme.colors.primary};
+    background: ${props => props.isLoading? props.theme.colors.secondary:props.theme.colors.primary};
     color: ${props => props.theme.colors.textInverted};
     border: none;
     border-radius: 10px;
@@ -72,12 +76,12 @@ const SolidButton = styled.button`
     }
 `;
 
-const SecondaryButton = styled.button`
+const SecondaryButton = styled.button<ButtonProps>`
     width: 16rem;
     height: 3rem;
     padding: 10px 20px;
     gap: 10px;
-    background: ${props => props.theme.colors.secondaryButtonBackground};
+    background: ${props => props.isLoading? props.theme.colors.secondary:props.theme.colors.secondaryButtonBackground};
     color: ${props => props.theme.colors.primary};
     border: 1px solid ${props => props.theme.colors.primary};
     border-radius: 10px;
@@ -145,17 +149,18 @@ type Props = {
     style?: CSSProperties,
     ref?: any,
     handleClick: () => void,
-    title?: string
+    title?: string,
+    isLoading?: boolean
 }
-function Button({disabled, buttonType, text, style, ref, handleClick, title}: Props){
+function Button({disabled, buttonType, text, style, ref, handleClick, title, isLoading}: Props){
 
     switch (buttonType) {
         case "Default":
-            return(<DefaultButton onClick={handleClick} ref={ref} disabled = {disabled} style = {style} title={title}>{text}</DefaultButton>);
+            return(<DefaultButton isLoading={isLoading==undefined? false:isLoading} onClick={handleClick} ref={ref} disabled = {disabled} style = {style} title={title}>{text}</DefaultButton>);
         case "Solid":
-            return(<SolidButton onClick={handleClick} ref={ref} disabled = {disabled} style = {style} title={title}>{text}</SolidButton>);
+            return(<SolidButton isLoading={isLoading==undefined? false:isLoading} onClick={handleClick} ref={ref} disabled = {disabled} style = {style} title={title}>{text}</SolidButton>);
         case "Secondary":
-            return(<SecondaryButton onClick={handleClick} ref={ref} disabled = {disabled} style = {style} title={title}>{text}</SecondaryButton>);
+            return(<SecondaryButton isLoading={isLoading==undefined? false:isLoading} onClick={handleClick} ref={ref} disabled = {disabled} style = {style} title={title}>{text}</SecondaryButton>);
         case "Teriatary":
             return(<TeriataryButton onClick={handleClick} ref={ref} disabled = {disabled} style = {style} title={title}>{text}</TeriataryButton>);  
     }

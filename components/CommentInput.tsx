@@ -3,6 +3,7 @@ import React from "react";
 import { useState } from "react";
 import styled from "styled-components";
 import instance from "../axios_instance";
+import { EComment } from "./Intefaces";
 
 const MainHolder = styled.div`
     display: flex;
@@ -43,7 +44,7 @@ interface Props {
     typeP: string,
     style?: React.CSSProperties,
     text?: string,
-    userComment: (text: string, date: string) => void
+    userComment: (comment: EComment) => void
 }
 function CommentInput({ id, userComment, typeP, style, text }: Props) {
     const [t1] = useTranslation("common");
@@ -77,8 +78,8 @@ function CommentInput({ id, userComment, typeP, style, text }: Props) {
                             break;
                         }
                     }
-                    fetcher(url, inp.current.value).then(() => {
-                        userComment(inp.current.value, new Date() + "")
+                    fetcher(url, inp.current.value).then((res: any) => {
+                        userComment(res.data)
                         inp.current.value = "";
                     })
                 };

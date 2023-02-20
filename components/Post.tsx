@@ -136,7 +136,7 @@ function Content({ post, disableComments, disableLiking }: Props) {
     const { user: userData, isError: userDataError } = useUser();
     const fetcherPost = (url: string, id: any) => instance.post(url, null, { params: { id: id } });
     const fetcherDelete = (url: string, id: any) => instance.delete(url, { params: { id: id } });
-    const fetcherReport = (url: string, id: string, reason: Reasons, other: string | undefined) => instance.post(url, {
+    const fetcherReport = (url: string, id: string, reason: string, other: string | undefined) => instance.post(url, {
         "postId": id,
         "reason": reason,
         "other": other
@@ -202,49 +202,49 @@ function Content({ post, disableComments, disableLiking }: Props) {
                                     showReports &&
                                     <>
                                         <Button buttonType={"Teriatary"} text={t1("spam")} handleClick={function (): void {
-                                            fetcherReport('/post/report', post.id, Reasons.SPAM, undefined).then(() => {
+                                            fetcherReport('/post/report', post.id, Reasons.SPAM.toString(), undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
                                             }).catch((e: any) => console.log(e))
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("terrorism")} handleClick={function (): void {
-                                            fetcherReport('/post/report', post.id, Reasons.TERRORISM, undefined).then(() => {
+                                            fetcherReport('/post/report', post.id, Reasons.TERRORISM.toString(), undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
                                             }).catch((e: any) => console.log(e))
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("hateSpeech")} handleClick={function (): void {
-                                            fetcherReport('/post/report', post.id, Reasons.HATE_SPEECH, undefined).then(() => {
+                                            fetcherReport('/post/report', post.id, Reasons.HATE_SPEECH.toString(), undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
                                             }).catch((e: any) => console.log(e))
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("harassment")} handleClick={function (): void {
-                                            fetcherReport('/post/report', post.id, Reasons.HARASSMENT, undefined).then(() => {
+                                            fetcherReport('/post/report', post.id, Reasons.HARASSMENT.toString(), undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
                                             }).catch((e: any) => console.log(e))
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("violence")} handleClick={function (): void {
-                                            fetcherReport('/post/report', post.id, Reasons.VIOLENCE, undefined).then(() => {
+                                            fetcherReport('/post/report', post.id, Reasons.VIOLENCE.toString(), undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
                                             }).catch((e: any) => console.log(e))
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("advertising")} handleClick={function (): void {
-                                            fetcherReport('/post/report', post.id, Reasons.ADVERTISING, undefined).then(() => {
+                                            fetcherReport('/post/report', post.id, Reasons.ADVERTISING.toString(), undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
                                             }).catch((e: any) => console.log(e))
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("nsfwContent")} handleClick={function (): void {
-                                            fetcherReport('/post/report', post.id, Reasons.NSFW_CONTENT, undefined).then(() => {
+                                            fetcherReport('/post/report', post.id, Reasons.NSFW_CONTENT.toString(), undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
@@ -254,7 +254,7 @@ function Content({ post, disableComments, disableLiking }: Props) {
                                             let other = prompt(t1("enterReason"));
                                             if (other != undefined) {
                                                 if(other.length > 1000) other = other.substring(0,999);
-                                                fetcherReport('/post/report', post.id, Reasons.SPAM, other).then(() => {
+                                                fetcherReport('/post/report', post.id, Reasons.SPAM.toString(), other).then(() => {
                                                     setShowBurgerMenu(false);
                                                     setShowReports(false);
                                                     alert(t1("successReport"));

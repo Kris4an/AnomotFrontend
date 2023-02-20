@@ -84,7 +84,7 @@ const PostPage: NextPage = () => {
                             {
                                 userComments != null && userComments !== undefined &&
                                 userComments.map((comment: EComment, key: number) =>
-                                    <Comment comment={comment} key={key} notFechedComment={true}></Comment>
+                                    <Comment comment={comment} key={key}></Comment>
                                 )
                             }
                             {
@@ -94,21 +94,7 @@ const PostPage: NextPage = () => {
                                 )
                             }
                         </CommentsHolder>
-                        <CommentInput style={{ position: 'absolute', left: '0', bottom: '0' }} id={post?.id!} userComment={function (text: string, date: string): void {
-                            const comment: EComment = {
-                                text: text,
-                                commenter: {
-                                    username: userData.username,
-                                    id: userData.id,
-                                    avatarId: userData?.avatarId
-                                },
-                                isEdited: false,
-                                responseCount: 0,
-                                likes: 0,
-                                hasUserLiked: false,
-                                lastChangeDate: date,
-                                id: ""
-                            };
+                        <CommentInput style={{ position: 'absolute', left: '0', bottom: '0' }} id={post?.id!} userComment={function (comment: EComment): void {
                             let arr = [];
                             arr.push(comment);
                             if (userComments != null && userComments !== undefined) {

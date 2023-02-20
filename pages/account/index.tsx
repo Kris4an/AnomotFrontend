@@ -129,6 +129,10 @@ const MainNotiHolder = styled.div`
     flex-direction: column;
     padding-left: 1rem;
     padding-top: 1rem;
+
+    @media (max-width: 840px) {
+        padding-left: 0px;
+    }
 `;
 const StyledPath = styled.path`
     fill: ${props => props.theme.colors.primary};
@@ -158,8 +162,10 @@ const NotiHeader = styled.div`
     display: flex;
     align-items: center;
     gap: 2rem;
+
     @media (max-width: 840px) {
-        padding-top: 2rem;
+        padding-top: 1rem;
+        padding-left: 1rem;
     }
 `;
 const NotiTitle = styled.span`
@@ -180,6 +186,10 @@ const NotiText = styled.span`
     color: ${props => props.theme.colors.primary};
     font-style: normal;
     font-weight: 400;
+
+    @media (max-width: 840px) {
+        width: 220px;
+    }
 `;
 const NotiHolder = styled.div`
     width: 100%;
@@ -196,7 +206,16 @@ const ErrorText = styled.span`
     color: red;
     font-family: 'Roboto';
     top: 45vh;
-`
+`;
+const NotiWrapper = styled.div`
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 3rem;
+    overflow-y: scroll;
+    height: 100%;
+`;
 
 const Account: NextPage = () => {
     const [postSelection, setPostSelection] = useState(true);
@@ -354,7 +373,7 @@ const Account: NextPage = () => {
                             <NotiTitle>{t2("notifications")}</NotiTitle>
                         </NotiHeader>
                         {notis !== undefined &&
-                            <PostHolder onScroll={(e: any) => {
+                            <NotiWrapper onScroll={(e: any) => {
                                 const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
                                 if (bottom) {
                                     if (notis.length % 20 != 0) return;
@@ -448,7 +467,7 @@ const Account: NextPage = () => {
                                     }
                                     )
                                 }
-                            </PostHolder>
+                            </NotiWrapper>
                         }
                     </MainNotiHolder>
                 </NavBar>

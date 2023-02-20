@@ -88,10 +88,6 @@ function Content(){
   const [success, setSuccess] = useState(true);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
-  useEffect(() => {
-    goToPage(0);
-  },[])
-
   switch(stage){
       case 0:
         return(
