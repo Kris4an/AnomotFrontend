@@ -91,9 +91,9 @@ const SelectionButtonText = styled.span`
     height: 2rem;
 
     @media (max-width: 840px) {
-        font-size: 22px;
-        line-height: 24px;
-        width: 95%;
+        font-size: 20px;
+        line-height: 22px;
+        width: 100%;
     }
 `;
 const CreateBattleHolder = styled.div`

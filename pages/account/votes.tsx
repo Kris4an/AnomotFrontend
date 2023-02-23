@@ -140,15 +140,17 @@ const Votes: NextPage = () => {
                         {
                             battles?.map((battle: EVotedBattle, key: number) =>
                                 <BattleHolder key={key}>
-                                    <Battle goldPost={{
-                                        id: battle.votedPost.id,
-                                        type: battle.votedPost.type,
-                                        text: battle.votedPost.text,
-                                        media: battle.votedPost.media,
-                                        user: battle.votedPost.poster!
-                                    }} redPost={battle.otherPost} jwt={""} id={battle.id} selfBattle={true} selfVotes={battle.votesForVoted} otherVotes={battle.votesForOther} nextBattle={function (): void {
-                                        throw new Error("Function not implemented.");
-                                    }} />
+                                    {battle!=undefined && battle!=null && battle.votedPost!=null && battle.otherPost!=null &&
+                                        <Battle goldPost={{
+                                            id: battle.votedPost.id,
+                                            type: battle.votedPost.type,
+                                            text: battle.votedPost.text,
+                                            media: battle.votedPost.media,
+                                            user: battle.votedPost.poster!
+                                        }} redPost={battle.otherPost} jwt={""} id={battle.id} selfBattle={true} selfVotes={battle.votesForVoted} otherVotes={battle.votesForOther} nextBattle={function (): void {
+                                            throw new Error("Function not implemented.");
+                                        }} />
+                                    }
                                 </BattleHolder>
                             )
                         }

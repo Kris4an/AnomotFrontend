@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -16,12 +17,24 @@ const PostHolder = styled.div`
     overflow-y: scroll;
     margin-top: 3rem;
 `;
+const Title = styled.span`
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 40px;
+    line-height: 42px;
+    display: flex;
+    align-items: flex-end;
+    text-indent: 14px;
+    color: ${props => props.theme.colors.inputPlaceholder};
+`;
 
 const Feed: NextPage = () => {
     const fetcherGetPage = (url: string, page: number) => instance.get(url, { params: { page: page } });
     const [posts, setPosts] = useState<EPost[]>([]);
     const [noDubPosts, setNoDubPosts] = useState<EPost[]>([]);
     const [page, setPage] = useState(0);
+    const [t2] = useTranslation("feed");
     useEffect(() => {
         fetcherGetPage('/feed', page).then((res) => {
             setPosts(res.data);
@@ -62,12 +75,14 @@ const Feed: NextPage = () => {
                 }
             }}>
                 {
-                    (posts.length!=0 && (Array.isArray(posts)) && noDubPosts!=undefined && (Array.isArray(noDubPosts))) &&
+                    (posts.length!=0 && (Array.isArray(posts)) && noDubPosts!=undefined && (Array.isArray(noDubPosts)))?
                     noDubPosts.filter(post => post != undefined).map((post: EPost, key: number) => {
                         return (
                             <Post post={post} key={key}></Post>
                         )
                     })
+                    :
+                    <Title>{t2("noPosts")}</Title>
                 }
             </PostHolder>
         </NavBar>
@@ -77,7 +92,7 @@ const Feed: NextPage = () => {
 export async function getStaticProps({ locale }: any) {
     return {
         props: {
-            ...(await serverSideTranslations(locale, ["burgerMenu"])),
+            ...(await serverSideTranslations(locale, ["burgerMenu", "feed"])),
         },
     };
 }
