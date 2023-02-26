@@ -22,6 +22,7 @@ import js from 'highlight.js/lib/languages/javascript'
 import ts from 'highlight.js/lib/languages/typescript'
 import html from 'highlight.js/lib/languages/xml'
 import Underline from "@tiptap/extension-underline";
+import MiniProfile from "./MiniProfile";
 
 lowlight.registerLanguage('html', html)
 lowlight.registerLanguage('css', css)
@@ -86,7 +87,6 @@ const HalfHolder = styled.div<ButtonProps>`
     }
 `;
 interface ButtonProps {
-    isExpanded?: boolean,
     isLeft: boolean,
     isReady?: boolean
 }
@@ -94,7 +94,7 @@ const ButtonHolder = styled.div<ButtonProps>`
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: ${props => props.isExpanded ? '10rem' : '4.5rem'};
+    height: 4.5rem;
     box-shadow: 7px 0px 15px ${props => props.theme.colors.authContainerShadow};
     background-color: ${props => props.theme.colors.secondaryButtonBackground};
     transition: all 0.4s ease-in-out;
@@ -106,7 +106,7 @@ const ButtonHolder = styled.div<ButtonProps>`
     border-radius: ${props => props.isLeft ? '10px 0px 0px 0px;' : '0px 10px 0px 0px;'};
 
     @media (max-width: 840px) {
-        height: ${props => props.isExpanded ? '7rem' : '3rem'};
+        height: 3rem;
         padding: 0px;
         
     }
@@ -155,16 +155,6 @@ const VoteButton = styled.button<ButtonProps>`
     &:disabled ${StyledPath}{
         fill: ${props => props.theme.colors.buttonDisabled};
     }
-`;
-const ExpandButton = styled.button<ButtonProps>`
-    height: 3.5rem;
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-    position: absolute;
-    left: 1.5rem;   
-    transition: transform 0.3s ease-in;
-    transform: ${props => props.isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'};
 `;
 const ExpandedHolder = styled.div`
     display: flex;
@@ -325,24 +315,46 @@ const VideoHolder = styled.div`
     justify-content: center;
     height: fit-content;
 `;
-const ReportsHolder = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow-y: scroll;
-    gap: 1rem;
-
-    @media (max-width: 840px) {
-        
-    }
-`;
 const StyledSvg = styled.svg`
     @media (max-width: 840px) {
         scale: 70%;
     }
 `;
+const BurgerMenuButton = styled.button`
+    background-color: transparent;
+    border: none;
+    width: fit-content;
+    height: fit-content;
+    position: absolute;
+    top: 1.5rem;
+    right: 5px;
+    cursor: pointer;
+`;
+const ButgerMenuHolder = styled.div`
+    right: 0px;
+    bottom: 20px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    width: 20rem;
+    background: ${props => props.theme.colors.textInverted};
+    border: 1px solid ${props => props.theme.colors.primary};
+    box-shadow: 0px -10px 10px ${props => props.theme.colors.authContainerShadow};
+    border-radius: 10px;
+    z-index: 2;
+`;
 enum Reasons {
-    "NSFW_CONTENT", "ADVERTISING", "VIOLENCE", "HARASSMENT", "HATE_SPEECH", "TERRORISM", "SPAM", "IDENTITY_REVEAL"
+    NSFW_CONTENT = "NSFW_CONTENT",
+    ADVERTISING = "ADVERTISING",
+    VIOLENCE = "VIOLENCE",
+    HARASSMENT = "HARASSMENT",
+    HATE_SPEECH = "HATE_SPEECH",
+    TERRORISM = "TERRORISM",
+    SPAM = "SPAM",
+    IDENTITY_REVEAL = "IDENTITY_REVEAL"
 }
 interface Props {
     goldPost: EBattlePost | EPost,
@@ -356,10 +368,8 @@ interface Props {
     nextBattle: () => void
 }
 function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes, disableVote, nextBattle }: Props) {
+    const { user: userData, isError: userDataError, isValidating: isValidating } = useUser();
     const [t2] = useTranslation("battle");
-    const [t3] = useTranslation("burgerMenu");
-    const [isExpanded1, setIsExpanded1] = useState(false);
-    const [isExpanded2, setIsExpanded2] = useState(false);
     const [isGold, setIsGold] = useState(0);
     const [showComments, setShowComments] = useState(false);
     //only for new user comments
@@ -376,9 +386,8 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
     const fetcher = (url: any, page: number) => instance.get(url, { params: { page: page, id: id } })
     const [comments, setComments] = useState<any>();
     const [page, setPage] = useState(0);
-    const { user: userData, isError: userDataError } = useUser();
-    const [showReportsG, setShowReportsG] = useState(false);
-    const [showReportsR, setShowReportsR] = useState(false);
+    const [showBurgerMenuG, setShowBurgerMenuG] = useState(false);
+    const [showBurgerMenuR, setShowBurgerMenuR] = useState(false);
 
     const editorGold = useEditor({
         extensions: [
@@ -406,6 +415,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
             editorRed.commands.setContent(sanitizeHtml(redPost?.text));
         }
     }, [editorRed])
+
     return (
         <MainHolder>
             {
@@ -512,144 +522,23 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                         // <div dangerouslySetInnerHTML={{__html: textHTML}} />
                         <EditorContent editor={editorGold} readOnly={true} />
                 }
-                <ButtonHolder isExpanded={isExpanded1} isLeft={true}>
-                    <ExpandButton isLeft={true} isExpanded={isExpanded1} onClick={() => { setIsExpanded1(!isExpanded1) }}>
-                        <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <StyledPath d="M2.115 0.88501L9 7.75501L15.885 0.88501L18 3.00001L9 12L0 3.00001L2.115 0.88501Z" />
-                        </svg>
-                    </ExpandButton>
+                <ButtonHolder isLeft={true}>
                     <ExpandedHolder>
-                        <VoteButton isLeft={true} onClick={() => { fetcherVote(goldPost.id).then((res: any) => { setVotedUser(res.data.votedPost.poster); setIsGold(1) }).catch((e) => {  }) }} disabled={isGold != 0 || selfBattle || disableVote}>
+                        <VoteButton isLeft={true} onClick={() => { fetcherVote(goldPost.id).then((res: any) => { setVotedUser(res.data.votedPost.poster); setIsGold(1) }).catch((e) => { }) }} disabled={isGold != 0 || selfBattle || disableVote}>
                             <StyledSvg width="49" height="54" viewBox="0 0 49 54" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <StyledPath d="M40.5 29.3369H38.6867L33.3533 34.6702H38.4467L43.1667 40.0036H5.83333L10.58 34.6702H16.0467L10.7133 29.3369H8.5L0.5 37.3369V48.0036C0.5 50.9369 2.87333 53.3369 5.80667 53.3369H43.1667C44.5812 53.3369 45.9377 52.775 46.9379 51.7748C47.9381 50.7746 48.5 49.4181 48.5 48.0036V37.3369L40.5 29.3369ZM43.1667 48.0036H5.83333V45.3369H43.1667V48.0036ZM22.74 34.7236C23.78 35.7636 25.46 35.7636 26.5 34.7236L43.46 17.7636C43.7072 17.5169 43.9033 17.2238 44.0372 16.9012C44.171 16.5786 44.2399 16.2328 44.2399 15.8836C44.2399 15.5343 44.171 15.1885 44.0372 14.8659C43.9033 14.5433 43.7072 14.2503 43.46 14.0036L30.26 0.803579C30.0194 0.55185 29.7307 0.351014 29.411 0.212986C29.0913 0.0749589 28.7472 0.00255349 28.399 6.63299e-05C28.0508 -0.00242083 27.7056 0.065061 27.384 0.198508C27.0624 0.331954 26.7708 0.528646 26.5267 0.776912L9.54 17.7636C9.29279 18.0103 9.09666 18.3033 8.96285 18.6259C8.82903 18.9485 8.76015 19.2943 8.76015 19.6436C8.76015 19.9928 8.82903 20.3386 8.96285 20.6612C9.09666 20.9838 9.29279 21.2769 9.54 21.5236L22.74 34.7236ZM28.3933 6.43025L37.8333 15.8702L24.6333 29.0702L15.1933 19.6302L28.3933 6.43025Z" />
                             </StyledSvg>
                             <BoldText>{selfBattle ? t2("votes") + " " + selfVotes : t2("vote")}</BoldText>
                         </VoteButton>
-                        {isExpanded1 &&
-                            <ReportsHolder>
-                                <ExpandedButton onClick={() => { setShowReportsG(true) }}>{t2("report")}</ExpandedButton>
-                                {
-                                    showReportsG &&
-                                    <>
-                                        <ExpandedButton onClick={() => {
-                                            instance.post('/battle/report', {
-                                                "reason": Reasons.NSFW_CONTENT.toString(),
-                                                "postId": goldPost.id,
-                                                "battleId": id,
-                                                other: undefined
-                                            }).then(() => {
-                                                setIsExpanded1(false);
-                                                setShowReportsG(false);
-                                                alert(t3("successReport"));
-                                            })
-                                        }}>{t3("nsfwContent")}</ExpandedButton>
-                                        <ExpandedButton onClick={() => {
-                                            instance.post('/battle/report', {
-                                                "reason": Reasons.ADVERTISING.toString(),
-                                                "postId": goldPost.id,
-                                                "battleId": id,
-                                                other: undefined
-                                            }).then(() => {
-                                                setIsExpanded1(false);
-                                                setShowReportsG(false);
-                                                alert(t3("successReport"));
-                                            })
-                                        }}>{t3("advertising")}</ExpandedButton>
-                                        <ExpandedButton onClick={() => {
-                                            instance.post('/battle/report', {
-                                                "reason": Reasons.VIOLENCE.toString(),
-                                                "postId": goldPost.id,
-                                                "battleId": id,
-                                                other: undefined
-                                            }).then(() => {
-                                                setIsExpanded1(false);
-                                                setShowReportsG(false);
-                                                alert(t3("successReport"));
-                                            })
-                                        }}>{t3("violence")}</ExpandedButton>
-                                        <ExpandedButton onClick={() => {
-                                            instance.post('/battle/report', {
-                                                "reason": Reasons.HARASSMENT.toString(),
-                                                "postId": goldPost.id,
-                                                "battleId": id,
-                                                other: undefined
-                                            }).then(() => {
-                                                setIsExpanded1(false);
-                                                setShowReportsG(false);
-                                                alert(t3("successReport"));
-                                            })
-                                        }}>{t3("harassment")}</ExpandedButton>
-                                        <ExpandedButton onClick={() => {
-                                            instance.post('/battle/report', {
-                                                "reason": Reasons.HATE_SPEECH.toString(),
-                                                "postId": goldPost.id,
-                                                "battleId": id,
-                                                other: undefined
-                                            }).then(() => {
-                                                setIsExpanded1(false);
-                                                setShowReportsG(false);
-                                                alert(t3("successReport"));
-                                            })
-                                        }}>{t3("hateSpeech")}</ExpandedButton>
-                                        <ExpandedButton onClick={() => {
-                                            instance.post('/battle/report', {
-                                                "reason": Reasons.TERRORISM.toString(),
-                                                "postId": goldPost.id,
-                                                "battleId": id,
-                                                other: undefined
-                                            }).then(() => {
-                                                setIsExpanded1(false);
-                                                setShowReportsG(false);
-                                                alert(t3("successReport"));
-                                            })
-                                        }}>{t3("terrorism")}</ExpandedButton>
-                                        <ExpandedButton onClick={() => {
-                                            instance.post('/battle/report', {
-                                                "reason": Reasons.SPAM.toString(),
-                                                "postId": goldPost.id,
-                                                "battleId": id,
-                                                other: undefined
-                                            }).then(() => {
-                                                setIsExpanded1(false);
-                                                setShowReportsG(false);
-                                                alert(t3("successReport"));
-                                            })
-                                        }}>{t3("spam")}</ExpandedButton>
-                                        <ExpandedButton onClick={() => {
-                                            instance.post('/battle/report', {
-                                                "reason": Reasons.IDENTITY_REVEAL.toString(),
-                                                "postId": goldPost.id,
-                                                "battleId": id,
-                                                other: undefined
-                                            }).then(() => {
-                                                setIsExpanded1(false);
-                                                setShowReportsG(false);
-                                                alert(t3("successReport"));
-                                            })
-                                        }}>{t3("identityReveal")}</ExpandedButton>
-                                        <ExpandedButton onClick={() => {
-                                            let other = prompt(t3("enterReason"))
-                                            if (other != undefined) instance.post('/battle/report', {
-                                                "reason": Reasons.SPAM.toString(),
-                                                "postId": goldPost.id,
-                                                "battleId": id,
-                                                other: other
-                                            }).then(() => {
-                                                setIsExpanded1(false);
-                                                setShowReportsG(false);
-                                                alert(t3("successReport"));
-                                            })
-                                        }}>{t3("other")}</ExpandedButton>
-                                    </>
-
-                                }
-                                <ExpandedButton onClick={() => {
-                                    setShowReportsG(false)
-                                }}>{t3("close")}</ExpandedButton>
-                            </ReportsHolder>
-
-                        }
                     </ExpandedHolder>
+                    {
+                        showBurgerMenuG && <ReportMenu hasVoted={isGold != 0} isValidating={isValidating} userData={userData} reportedId={goldPost.id} close={() => { setShowBurgerMenuG(false); }} id={id} poster={"user" in goldPost ? goldPost.user : goldPost.poster}></ReportMenu>
+                    }
+                    <BurgerMenuButton onClick={() => { setShowBurgerMenuG(!showBurgerMenuG); }}>
+                        <svg width="4" height="16" viewBox="0 0 4 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <StyledPath d="M2 4C3.1 4 4 3.1 4 2C4 0.9 3.1 0 2 0C0.9 0 0 0.9 0 2C0 3.1 0.9 4 2 4ZM2 6C0.9 6 0 6.9 0 8C0 9.1 0.9 10 2 10C3.1 10 4 9.1 4 8C4 6.9 3.1 6 2 6ZM2 12C0.9 12 0 12.9 0 14C0 15.1 0.9 16 2 16C3.1 16 4 15.1 4 14C4 12.9 3.1 12 2 12Z" />
+                        </svg>
+                    </BurgerMenuButton>
                 </ButtonHolder>
             </HalfHolder>
             <HalfHolder isLeft={false} isReady={isGold == 2}>
@@ -669,147 +558,173 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                         // <div dangerouslySetInnerHTML={{__html: textHTML}} />
                         <EditorContent editor={editorRed} readOnly={true} />
                 }
-                <ButtonHolder isExpanded={isExpanded2} isLeft={false}>
-                    <ExpandButton isLeft={false} isExpanded={isExpanded2} onClick={() => { setIsExpanded2(!isExpanded2) }}>
-                        <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <StyledPath d="M2.115 0.88501L9 7.75501L15.885 0.88501L18 3.00001L9 12L0 3.00001L2.115 0.88501Z" />
-                        </svg>
-                    </ExpandButton>
+                <ButtonHolder isLeft={false}>
                     <ExpandedHolder>
-                        <VoteButton isLeft={false} onClick={() => { fetcherVote(redPost.id).then((res: any) => { setVotedUser(res.data.votedPost.poster); setIsGold(2); }).catch((e) => {  }) }} disabled={isGold != 0 || selfBattle || disableVote}>
+                        <VoteButton isLeft={false} onClick={() => { fetcherVote(redPost.id).then((res: any) => { setVotedUser(res.data.votedPost.poster); setIsGold(2); }).catch((e) => { }) }} disabled={isGold != 0 || selfBattle || disableVote}>
                             <StyledSvg width="49" height="54" viewBox="0 0 49 54" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <StyledPath d="M40.5 29.3369H38.6867L33.3533 34.6702H38.4467L43.1667 40.0036H5.83333L10.58 34.6702H16.0467L10.7133 29.3369H8.5L0.5 37.3369V48.0036C0.5 50.9369 2.87333 53.3369 5.80667 53.3369H43.1667C44.5812 53.3369 45.9377 52.775 46.9379 51.7748C47.9381 50.7746 48.5 49.4181 48.5 48.0036V37.3369L40.5 29.3369ZM43.1667 48.0036H5.83333V45.3369H43.1667V48.0036ZM22.74 34.7236C23.78 35.7636 25.46 35.7636 26.5 34.7236L43.46 17.7636C43.7072 17.5169 43.9033 17.2238 44.0372 16.9012C44.171 16.5786 44.2399 16.2328 44.2399 15.8836C44.2399 15.5343 44.171 15.1885 44.0372 14.8659C43.9033 14.5433 43.7072 14.2503 43.46 14.0036L30.26 0.803579C30.0194 0.55185 29.7307 0.351014 29.411 0.212986C29.0913 0.0749589 28.7472 0.00255349 28.399 6.63299e-05C28.0508 -0.00242083 27.7056 0.065061 27.384 0.198508C27.0624 0.331954 26.7708 0.528646 26.5267 0.776912L9.54 17.7636C9.29279 18.0103 9.09666 18.3033 8.96285 18.6259C8.82903 18.9485 8.76015 19.2943 8.76015 19.6436C8.76015 19.9928 8.82903 20.3386 8.96285 20.6612C9.09666 20.9838 9.29279 21.2769 9.54 21.5236L22.74 34.7236ZM28.3933 6.43025L37.8333 15.8702L24.6333 29.0702L15.1933 19.6302L28.3933 6.43025Z" />
                             </StyledSvg>
                             <BoldText>{selfBattle ? t2("votes") + " " + otherVotes : t2("vote")}</BoldText>
                         </VoteButton>
-                        {isExpanded2 &&
-                            <ReportsHolder>
-                                <ExpandedButton onClick={() => { setShowReportsR(true); }}>{t2("report")}</ExpandedButton>
-                                {
-                                    showReportsR &&
-                                    <>
-                                        <ExpandedButton onClick={() => {
-                                            instance.post('/battle/report', {
-                                                "reason": Reasons.NSFW_CONTENT,
-                                                "postId": redPost.id,
-                                                "battleId": id,
-                                                other: undefined
-                                            }).then(() => {
-                                                setIsExpanded2(false);
-                                                setShowReportsR(false);
-                                                alert(t3("successReport"));
-                                            })
-                                        }}>{t3("nsfwContent")}</ExpandedButton>
-                                        <ExpandedButton onClick={() => {
-                                            instance.post('/battle/report', {
-                                                "reason": Reasons.ADVERTISING,
-                                                "postId": redPost.id,
-                                                "battleId": id,
-                                                other: undefined
-                                            }).then(() => {
-                                                setIsExpanded2(false);
-                                                setShowReportsR(false);
-                                                alert(t3("successReport"));
-                                            })
-                                        }}>{t3("advertising")}</ExpandedButton>
-                                        <ExpandedButton onClick={() => {
-                                            instance.post('/battle/report', {
-                                                "reason": Reasons.VIOLENCE,
-                                                "postId": redPost.id,
-                                                "battleId": id,
-                                                other: undefined
-                                            }).then(() => {
-                                                setIsExpanded2(false);
-                                                setShowReportsR(false);
-                                                alert(t3("successReport"));
-                                            })
-                                        }}>{t3("violence")}</ExpandedButton>
-                                        <ExpandedButton onClick={() => {
-                                            instance.post('/battle/report', {
-                                                "reason": Reasons.HARASSMENT,
-                                                "postId": redPost.id,
-                                                "battleId": id,
-                                                other: undefined
-                                            }).then(() => {
-                                                setIsExpanded2(false);
-                                                setShowReportsR(false);
-                                                alert(t3("successReport"));
-                                            })
-                                        }}>{t3("harassment")}</ExpandedButton>
-                                        <ExpandedButton onClick={() => {
-                                            instance.post('/battle/report', {
-                                                "reason": Reasons.HATE_SPEECH,
-                                                "postId": redPost.id,
-                                                "battleId": id,
-                                                other: undefined
-                                            }).then(() => {
-                                                setIsExpanded2(false);
-                                                setShowReportsR(false);
-                                                alert(t3("successReport"));
-                                            })
-                                        }}>{t3("hateSpeech")}</ExpandedButton>
-                                        <ExpandedButton onClick={() => {
-                                            instance.post('/battle/report', {
-                                                "reason": Reasons.TERRORISM,
-                                                "postId": redPost.id,
-                                                "battleId": id,
-                                                other: undefined
-                                            }).then(() => {
-                                                setIsExpanded2(false);
-                                                setShowReportsR(false);
-                                                alert(t3("successReport"));
-                                            })
-                                        }}>{t3("terrorism")}</ExpandedButton>
-                                        <ExpandedButton onClick={() => {
-                                            instance.post('/battle/report', {
-                                                "reason": Reasons.SPAM,
-                                                "postId": redPost.id,
-                                                "battleId": id,
-                                                other: undefined
-                                            }).then(() => {
-                                                setIsExpanded2(false);
-                                                setShowReportsR(false);
-                                                alert(t3("successReport"));
-                                            })
-                                        }}>{t3("spam")}</ExpandedButton>
-                                        <ExpandedButton onClick={() => {
-                                            instance.post('/battle/report', {
-                                                "reason": Reasons.IDENTITY_REVEAL,
-                                                "postId": redPost.id,
-                                                "battleId": id,
-                                                other: undefined
-                                            }).then(() => {
-                                                setIsExpanded2(false);
-                                                setShowReportsR(false);
-                                                alert(t3("successReport"));
-                                            })
-                                        }}>{t3("identityReveal")}</ExpandedButton>
-                                        <ExpandedButton onClick={() => {
-                                            let other = prompt(t3("enterReason"))
-                                            if (other != undefined) instance.post('/battle/report', {
-                                                "reason": Reasons.SPAM,
-                                                "postId": redPost.id,
-                                                "battleId": id,
-                                                other: other
-                                            }).then(() => {
-                                                setIsExpanded2(false);
-                                                setShowReportsR(false);
-                                                alert(t3("successReport"));
-                                            })
-                                        }}>{t3("other")}</ExpandedButton>
-                                    </>
-
-                                }
-                                <ExpandedButton onClick={() => {
-                                    setShowReportsR(false)
-                                }}>{t3("close")}</ExpandedButton>
-                            </ReportsHolder>
-                        }
                     </ExpandedHolder>
+                    {
+                        showBurgerMenuR && <ReportMenu hasVoted={isGold != 0} isValidating={isValidating} userData={userData} reportedId={redPost.id} close={() => { setShowBurgerMenuR(false); }} id={id} poster={"user" in redPost ? redPost.user : redPost.poster}></ReportMenu>
+                    }
+                    <BurgerMenuButton onClick={() => { setShowBurgerMenuR(!showBurgerMenuR); }}>
+                        <svg width="4" height="16" viewBox="0 0 4 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <StyledPath d="M2 4C3.1 4 4 3.1 4 2C4 0.9 3.1 0 2 0C0.9 0 0 0.9 0 2C0 3.1 0.9 4 2 4ZM2 6C0.9 6 0 6.9 0 8C0 9.1 0.9 10 2 10C3.1 10 4 9.1 4 8C4 6.9 3.1 6 2 6ZM2 12C0.9 12 0 12.9 0 14C0 15.1 0.9 16 2 16C3.1 16 4 15.1 4 14C4 12.9 3.1 12 2 12Z" />
+                        </svg>
+                    </BurgerMenuButton>
                 </ButtonHolder>
             </HalfHolder>
         </MainHolder>
     );
+}
+interface ReportMenuProps {
+    reportedId: string,
+    id: string,
+    close: () => void,
+    poster: ENonSelfUser | undefined | null,
+    userData: any,
+    isValidating: boolean,
+    hasVoted: boolean
+}
+function ReportMenu({ reportedId, id, close, poster, userData, isValidating, hasVoted }: ReportMenuProps) {
+    const [showReports, setShowReports] = useState(false);
+    const [t3] = useTranslation("burgerMenu");
+    const [t2] = useTranslation("battle");
+    const fetcherDelete = (url: string, id: string) => instance.delete(url, { params: { id: id } });
+
+    return (
+        <ButgerMenuHolder>
+            {poster != undefined && poster != null && <MiniProfile src={poster.avatarId} name={poster.username} handleClick={() => {
+                router.push({
+                    pathname: '/user/[username]',
+                    query: { username: poster.username, id: poster.id },
+                })
+            }} anon={false}></MiniProfile>}
+            <ExpandedButton onClick={() => { 
+                if(!hasVoted) {
+                    alert(t2("voteReport"));
+                    return;
+                }
+                setShowReports(!showReports); 
+                }}>{t2("report")}</ExpandedButton>
+            {!isValidating &&
+                <>{
+                    userData.roles.includes("ROLE_ADMIN") &&
+                    <ExpandedButton style={{ color: 'red' }} onClick={() => { fetcherDelete('/admin/post', id).then(() => { alert(t3("deledPost")) }) }}>{t3("delete")}</ExpandedButton>
+                }</>
+            }
+            {showReports &&
+                <>
+                    <ExpandedButton onClick={() => {
+                        instance.post('/battle/report', {
+                            "reason": Reasons.NSFW_CONTENT,
+                            "postId": reportedId,
+                            "battleId": id,
+                            other: undefined
+                        }).then(() => {
+                            close();
+                            alert(t3("successReport"));
+                        }).catch((e) => { console.log(id); console.log(e) })
+                    }}>{t3("nsfwContent")}</ExpandedButton>
+                    <ExpandedButton onClick={() => {
+                        instance.post('/battle/report', {
+                            "reason": Reasons.ADVERTISING,
+                            "postId": reportedId,
+                            "battleId": id,
+                            other: undefined
+                        }).then(() => {
+                            close();;
+                            alert(t3("successReport"));
+                        })
+                    }}>{t3("advertising")}</ExpandedButton>
+                    <ExpandedButton onClick={() => {
+                        instance.post('/battle/report', {
+                            "reason": Reasons.VIOLENCE,
+                            "postId": reportedId,
+                            "battleId": id,
+                            other: undefined
+                        }).then(() => {
+                            close();
+                            alert(t3("successReport"));
+                        })
+                    }}>{t3("violence")}</ExpandedButton>
+                    <ExpandedButton onClick={() => {
+                        instance.post('/battle/report', {
+                            "reason": Reasons.HARASSMENT,
+                            "postId": reportedId,
+                            "battleId": id,
+                            other: undefined
+                        }).then(() => {
+                            close();
+                            alert(t3("successReport"));
+                        })
+                    }}>{t3("harassment")}</ExpandedButton>
+                    <ExpandedButton onClick={() => {
+                        instance.post('/battle/report', {
+                            "reason": Reasons.HATE_SPEECH,
+                            "postId": reportedId,
+                            "battleId": id,
+                            other: undefined
+                        }).then(() => {
+                            close();
+                            alert(t3("successReport"));
+                        })
+                    }}>{t3("hateSpeech")}</ExpandedButton>
+                    <ExpandedButton onClick={() => {
+                        instance.post('/battle/report', {
+                            "reason": Reasons.TERRORISM,
+                            "postId": reportedId,
+                            "battleId": id,
+                            other: undefined
+                        }).then(() => {
+                            close();
+                            alert(t3("successReport"));
+                        })
+                    }}>{t3("terrorism")}</ExpandedButton>
+                    <ExpandedButton onClick={() => {
+                        instance.post('/battle/report', {
+                            "reason": Reasons.SPAM,
+                            "postId": reportedId,
+                            "battleId": id,
+                            other: undefined
+                        }).then(() => {
+                            close();
+                            alert(t3("successReport"));
+                        })
+                    }}>{t3("spam")}</ExpandedButton>
+                    <ExpandedButton onClick={() => {
+                        instance.post('/battle/report', {
+                            "reason": Reasons.IDENTITY_REVEAL,
+                            "postId": reportedId,
+                            "battleId": id,
+                            other: undefined
+                        }).then(() => {
+                            close();
+                            alert(t3("successReport"));
+                        })
+                    }}>{t3("identityReveal")}</ExpandedButton>
+                    <ExpandedButton onClick={() => {
+                        let other = prompt(t3("enterReason"))
+                        if (other != undefined) instance.post('/battle/report', {
+                            "reason": Reasons.SPAM,
+                            "postId": reportedId,
+                            "battleId": id,
+                            other: other
+                        }).then(() => {
+                            close();
+                            alert(t3("successReport"));
+                        })
+                    }}>{t3("other")}</ExpandedButton>
+                </>
+            }
+            <ExpandedButton onClick={() => {
+                close();
+            }}>{t3("close")}</ExpandedButton>
+        </ButgerMenuHolder>
+    )
 }
 
 

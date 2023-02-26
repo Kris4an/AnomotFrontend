@@ -98,7 +98,14 @@ const StyledSVG = styled.svg`
 `;
 
 enum Reasons {
-    "NSFW_CONTENT", "ADVERTISING", "VIOLENCE", "HARASSMENT", "HATE_SPEECH", "TERRORISM", "SPAM", "IDENTITY_REVEAL"
+    NSFW_CONTENT = "NSFW_CONTENT",
+    ADVERTISING = "ADVERTISING",
+    VIOLENCE = "VIOLENCE",
+    HARASSMENT = "HARASSMENT",
+    HATE_SPEECH = "HATE_SPEECH",
+    TERRORISM = "TERRORISM",
+    SPAM = "SPAM",
+    IDENTITY_REVEAL = "IDENTITY_REVEAL"
 }
 interface Props {
     comment: EComment
@@ -125,13 +132,13 @@ function Comment({ comment }: Props) {
             setSelfPost(false)
             return;
         }
-        
+
         if (userData !== undefined) setSelfPost(comment.commenter.id == userData.id)
     }, [userData])
 
     useEffect(() => {
         setLiked(comment.hasUserLiked);
-    },[])
+    }, [])
 
     if (comment === undefined || isDeleted) return (<></>);
     return (
@@ -172,7 +179,7 @@ function Comment({ comment }: Props) {
                     {
                         selfPost ?
                             <>
-                                <Button buttonType={"Teriatary"} text={t1("delete")} style={{color: 'red'}} handleClick={function (): void {
+                                <Button buttonType={"Teriatary"} text={t1("delete")} style={{ color: 'red' }} handleClick={function (): void {
                                     if (!isDeleted) fetcherDelete('/comment', comment.id).then(() => { setIsDeleted(true); alert(t1("deleteCommmet")); })
                                 }}></Button>
                                 <Button buttonType={"Teriatary"} text={t1("edit")} handleClick={function (): void {
@@ -189,80 +196,80 @@ function Comment({ comment }: Props) {
                                 {
                                     userData.roles.includes("ROLE_ADMIN") &&
                                     <>
-                                        <Button buttonType={"Teriatary"} text={t1("delete")} style={{color: 'red'}} handleClick={function (): void {
+                                        <Button buttonType={"Teriatary"} text={t1("delete")} style={{ color: 'red' }} handleClick={function (): void {
                                             if (!isDeleted) fetcherDelete('/admin/comment', comment.id).then(() => { setIsDeleted(true); alert(t1("deleteCommmet")); })
                                         }}></Button>
                                     </>
-                                    
+
                                 }
                                 {
                                     showReports &&
                                     <>
                                         <Button buttonType={"Teriatary"} text={t1("spam")} handleClick={function (): void {
-                                            fetcherReport('/comment/report', comment.id, Reasons.SPAM.toString(), undefined).then(() => {
+                                            fetcherReport('/comment/report', comment.id, Reasons.SPAM, undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
-                                            }).catch((e: any) => {})
+                                            }).catch((e: any) => { })
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("terrorism")} handleClick={function (): void {
-                                            fetcherReport('/comment/report', comment.id, Reasons.TERRORISM.toString(), undefined).then(() => {
+                                            fetcherReport('/comment/report', comment.id, Reasons.TERRORISM, undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
-                                            }).catch((e: any) => {})
+                                            }).catch((e: any) => { })
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("hateSpeech")} handleClick={function (): void {
-                                            fetcherReport('/comment/report', comment.id, Reasons.HATE_SPEECH.toString(), undefined).then(() => {
+                                            fetcherReport('/comment/report', comment.id, Reasons.HATE_SPEECH, undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
-                                            }).catch((e: any) => {})
+                                            }).catch((e: any) => { })
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("harassment")} handleClick={function (): void {
-                                            fetcherReport('/comment/report', comment.id, Reasons.HARASSMENT.toString(), undefined).then(() => {
+                                            fetcherReport('/comment/report', comment.id, Reasons.HARASSMENT, undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
-                                            }).catch((e: any) => {})
+                                            }).catch((e: any) => { })
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("violence")} handleClick={function (): void {
-                                            fetcherReport('/comment/report', comment.id, Reasons.VIOLENCE.toString(), undefined).then(() => {
+                                            fetcherReport('/comment/report', comment.id, Reasons.VIOLENCE, undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
-                                            }).catch((e: any) => {})
+                                            }).catch((e: any) => { })
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("advertising")} handleClick={function (): void {
-                                            fetcherReport('/comment/report', comment.id, Reasons.ADVERTISING.toString(), undefined).then(() => {
+                                            fetcherReport('/comment/report', comment.id, Reasons.ADVERTISING, undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
-                                            }).catch((e: any) => {})
+                                            }).catch((e: any) => { })
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("nsfwContent")} handleClick={function (): void {
-                                            fetcherReport('/comment/report', comment.id, Reasons.NSFW_CONTENT.toString(), undefined).then(() => {
+                                            fetcherReport('/comment/report', comment.id, Reasons.NSFW_CONTENT, undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
-                                            }).catch((e: any) => {})
+                                            }).catch((e: any) => { })
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("identityReveal")} handleClick={function (): void {
-                                            fetcherReport('/comment/report', comment.id, Reasons.IDENTITY_REVEAL.toString(), undefined).then(() => {
+                                            fetcherReport('/comment/report', comment.id, Reasons.IDENTITY_REVEAL, undefined).then(() => {
                                                 setShowBurgerMenu(false);
                                                 setShowReports(false);
                                                 alert(t1("successReport"));
-                                            }).catch((e: any) => {})
+                                            }).catch((e: any) => { })
                                         }}></Button>
                                         <Button buttonType={"Teriatary"} text={t1("other")} handleClick={function (): void {
                                             let other = prompt(t1("enterReason"));
                                             if (other != undefined) {
-                                                if(other.length > 1000) other = other.substring(0,999);
-                                                fetcherReport('/comment/report', comment.id, Reasons.SPAM.toString(), other).then(() => {
+                                                if (other.length > 1000) other = other.substring(0, 999);
+                                                fetcherReport('/comment/report', comment.id, Reasons.SPAM, other).then(() => {
                                                     setShowBurgerMenu(false);
                                                     setShowReports(false);
                                                     alert(t1("successReport"));
-                                                }).catch((e: any) => {})
+                                                }).catch((e: any) => { })
                                             }
                                         }}></Button>
                                     </>

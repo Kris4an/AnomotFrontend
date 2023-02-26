@@ -27,7 +27,7 @@ const Text = styled.span`
 `;
 
 interface Props {
-    src: string,
+    src: string | null,
     name?: string,
     style?: any,
     anon: boolean,

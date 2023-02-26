@@ -72,7 +72,11 @@ const BurgerMenuHolder = styled.div`
 `;
 
 enum Reasons {
-    "ADVERTISING", "INAPPROPRIATE_USERNAME", "TERRORISM", "UNDERAGE", "ABUSE_OF_SERVICE"
+    ADVERTISING = "ADVERTISING",
+    INAPPROPRIATE_USERNAME = "INAPPROPRIATE_USERNAME",
+    TERRORISM = "TERRORISM",
+    UNDERAGE = "UNDERAGE",
+    ABUSE_OF_SERVICE = "ABUSE_OF_SERVICE"
 }
 const Account: NextPage = () => {
     const fetcherGet = (url: string, id: any) => instance.get(url, { params: { id: id } });
@@ -99,6 +103,7 @@ const Account: NextPage = () => {
     useEffect(() => {
         if (router.isReady && !isValidating && user == undefined) {
             const { id } = router.query
+            if (id == userData.id) router.push('/account');
             fetcherGet('/account/follows', id).then((res: any) => { setIsFollowed(res.data) }).catch((e) => { console.log(e) })
             if (!userData.roles.includes("ROLE_ADMIN")) {
                 fetcherGet('/followers/count', id).then((res: any) => { setFollowersCount(res?.data.count) }).catch((e) => { console.log(e) })
@@ -117,7 +122,7 @@ const Account: NextPage = () => {
                     setNoDubPosts(arr2);
                 })
             }
-            else{
+            else {
                 fetcherGet('/admin/user/followers/count', id).then((res: any) => { setFollowersCount(res?.data.count) }).catch((e) => { console.log(e) })
                 fetcherGet('/admin/user/followed/count', id).then((res: any) => { setFollowingCount(res?.data.count) }).catch((e) => { console.log(e) })
                 fetcherGet('/admin/user', id).then((res: any) => { setUser(res?.data); }).catch((e) => { router.push('/404'); console.log(e) })
@@ -255,8 +260,8 @@ const Account: NextPage = () => {
                     const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
                     if (bottom) {
                         if (posts.length % 9 != 0) return;
-                        const url = userData.roles.includes("ROLE_ADMIN")? "/admin":"";
-                        fetcherGetPage(url+'/posts', user?.id, page + 1).then((res) => {
+                        const url = userData.roles.includes("ROLE_ADMIN") ? "/admin" : "";
+                        fetcherGetPage(url + '/posts', user?.id, page + 1).then((res) => {
                             let arr = [];
                             arr = posts;
                             arr = arr.concat(res?.data);
@@ -279,12 +284,12 @@ const Account: NextPage = () => {
                         {
                             (Array.isArray(posts)) &&
                             noDubPosts
-                            .filter(post => post != undefined)
-                            .map((post: EPost, key: number) => {
-                                return (
-                                    <Post post={post} key={key}></Post>
-                                )
-                            })
+                                .filter(post => post != undefined)
+                                .map((post: EPost, key: number) => {
+                                    return (
+                                        <Post post={post} key={key}></Post>
+                                    )
+                                })
                         }
                     </>
                 </PostHolder>

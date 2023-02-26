@@ -51,7 +51,7 @@ function CommentInput({ id, userComment, typeP, style, text }: Props) {
     const fetcher = (url: string, text: any) => instance.post(url, {
         "id": id,
         "text": text
-    }).then((res: any) => { }).catch((e: any) => { console.log(e) });
+    })
     const inp: any = React.createRef();
 
     return (

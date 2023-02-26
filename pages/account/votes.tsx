@@ -107,7 +107,7 @@ const Votes: NextPage = () => {
     const [t2] = useTranslation("votes");
     useEffect(() => {
         fetcherGetPage('/account/votes', page).then((res) => {
-            setBattles(res.data);
+            setBattles(res.data);   
         }).catch((e) => { console.log(e) });
     }, [])
 
@@ -147,7 +147,9 @@ const Votes: NextPage = () => {
                                             text: battle.votedPost.text,
                                             media: battle.votedPost.media,
                                             user: battle.votedPost.poster!
-                                        }} redPost={battle.otherPost} jwt={""} id={battle.id} selfBattle={true} selfVotes={battle.votesForVoted} otherVotes={battle.votesForOther} nextBattle={function (): void {
+                                        }} redPost={battle.otherPost} jwt={""} id={battle.id} selfBattle={true} 
+                                        selfVotes={battle.votesForVoted} otherVotes={battle.votesForOther}
+                                        nextBattle={function (): void {
                                             throw new Error("Function not implemented.");
                                         }} />
                                     }
