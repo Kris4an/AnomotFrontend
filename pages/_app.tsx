@@ -10,10 +10,6 @@ import instance from '../axios_instance';
 import useUser from '../components/useUser';
 import { useRouter } from 'next/router';
 
-const fetcher = (url: any) => instance.get(url).then(res => {
-  return res.data;
-})
-
 function MyApp({ Component, pageProps }: AppProps) {
   const { user: userData, isError: userDataError, isValidating: isValidating } = useUser();
   const router = useRouter();
@@ -40,8 +36,6 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
   }, [isValidating])
   useEffect(() => {
-    fetcher("/account/user");
-    //document.body.style.backgroundColor = "#1D2440"
     document.title = "Anomot";
   }, [])
   return <ThemeProvider theme={theme}>

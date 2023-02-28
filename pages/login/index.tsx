@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react';
 import MessageScreen from '../../components/MessageScreen';
 import instance from '../../axios_instance';
 import Checkbox from '../../components/Checkbox';
+import Head from 'next/head';
 
 const Holder = styled.div`
   height: 100vh;
@@ -92,9 +93,17 @@ const ModifiedAuthContainer = styled(AuthContainer) <ModifiedAuthContainerProps>
 `;
 
 const Login: NextPage = () => {
-
+  const [t4] = useTranslation("title");
   return (
     <Holder>
+      <Head>
+        <title>{t4("title")}</title>
+        <meta
+          name='description'
+          content={t4("description")}
+          key='desc'
+        />
+      </Head>
       <LogoSlogan />
       <Content />
     </Holder>
@@ -292,7 +301,7 @@ function Content() {
 export async function getStaticProps({ locale }: any) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common', 'login'])),
+      ...(await serverSideTranslations(locale, ['common', 'login', 'title'])),
       // Will be passed to the page component as props
     },
   };

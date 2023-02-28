@@ -19,5 +19,6 @@
     "appeal": "Appeal",
     "linkMax": "The link must be below 2000 characters",
     "linkHttp": "The link must be HTTP or HTTPS",
-    "linkCouldNotBeUploaded": "The link could not be validate. Check if it is correct again."
+    "linkCouldNotBeUploaded": "The link could not be validate. Check if it is correct again.",
+    "justASec": "Just a second!"
 }

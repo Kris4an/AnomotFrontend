@@ -4,7 +4,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
 import React from "react";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import AuthContainer from "../components/AuthContainer";
 import Button from "../components/Button";
 import NavBar from "../components/NavBar"
@@ -15,6 +15,7 @@ import MessageScreen from "../components/MessageScreen";
 import { EMediaPost, ENsfwError, EPost, ESimilarPosts } from "../components/Intefaces";
 import Post from "../components/Post";
 import useUser from "../components/useUser";
+import Logo from "../components/Logo";
 
 const Create: NextPage = () => {
     return (
@@ -233,6 +234,36 @@ const SimilarityHolder = styled.div`
     overflow-y: scroll;
     height: 50rem;
 `;
+const IsLoadingText = styled.span`
+    color: ${props => props.theme.colors.textInverted};
+    font-size: 24px;
+    line-height: 26px;
+    font-family: 'Roboto';
+    font-weight: 400;
+`;
+const LogoAnim = keyframes`
+    0% {
+        transform: rotate(0);
+        scale: 100%;
+    }
+    33% {
+        transform: rotate(-90deg);
+        scale: 115%;
+    }
+    66% {
+        transform: rotate(90deg);
+        scale: 120%;
+    } 
+    100%{
+        transform: rotate(360deg);
+        scale: 100%;
+    }
+`;
+
+const LogoHolder = styled.div`
+    animation: ${LogoAnim} 1s ease-in-out 0s infinite alternate;
+`;
+
 
 interface MessageScreenI {
     success: boolean,
@@ -259,6 +290,7 @@ function Content() {
     });
     const [nsfwError, setNsfwError] = useState<ENsfwError>();
     const [similarityError, setSimilarityError] = useState<ESimilarPosts>();
+    const [isLoading, setIsLoading] = useState(false);
     const { user: userData, isError: userDataError, isValidating: isValidating } = useUser();
 
     const uploadFileFetcher = (url: string, formData: any) => instance.post(url, formData, {
@@ -282,7 +314,7 @@ function Content() {
             setPreview(undefined)
             return
         }
-        
+
         const objectUrl = URL.createObjectURL(selectedFile)
         setPreview(objectUrl)
 
@@ -306,17 +338,19 @@ function Content() {
     useEffect(() => {
         if (stage != 1) {
             setSelectedFile(undefined);
+            setIsLoading(false);
+            setText("");
         }
     }, [stage])
 
     useEffect(() => {
-        if(!isValidating){
-            if(!userData.isEmailVerified){
+        if (!isValidating) {
+            if (!userData.isEmailVerified) {
                 alert(t1("notVerified"));
                 router.push('/account/settings?s=1');
             }
         }
-    },[isValidating])
+    }, [isValidating])
 
     switch (stage) {
         case 0: {
@@ -356,188 +390,200 @@ function Content() {
         }
         case 1: {
             return (
-                <CreateBattleMainHolder>
-                    <CreateBattleHolder>
-                        <SwitchTypeButtonHolder>
-                            <SwitchTypeButton isSelected={selectedPostType} onClick={() => { setSelectedPostType(true) }}>
-                                <svg xmlns="http://www.w3.org/2000/svg" height="48" width="48">
-                                    <PostTypePath isSelected={selectedPostType} d="M9 42q-1.2 0-2.1-.9Q6 40.2 6 39V9q0-1.2.9-2.1Q7.8 6 9 6h30q1.2 0 2.1.9.9.9.9 2.1v30q0 1.2-.9 2.1-.9.9-2.1.9Zm0-3h30V9H9v30Zm2.8-4.85h24.45l-7.35-9.8-6.6 8.55-4.65-6.35ZM9 39V9v30Z" />
-                                </svg>
-                            </SwitchTypeButton>
-                            <SwitchTypeButton isSelected={!selectedPostType} onClick={() => { setSelectedPostType(false) }}>
-                                <svg xmlns="http://www.w3.org/2000/svg" height="48" width="48">
-                                    <PostTypePath isSelected={!selectedPostType} d="M15.95 35.5h16.1v-3h-16.1Zm0-8.5h16.1v-3h-16.1ZM11 44q-1.2 0-2.1-.9Q8 42.2 8 41V7q0-1.2.9-2.1Q9.8 4 11 4h18.05L40 14.95V41q0 1.2-.9 2.1-.9.9-2.1.9Zm16.55-27.7V7H11v34h26V16.3ZM11 7v9.3V7v34V7Z" />
-                                </svg>
-                            </SwitchTypeButton>
-                        </SwitchTypeButtonHolder>
-                        <TitleContentHolder>
+                <>
+                    {
+                        isLoading &&
+                        <OverlayHolder style={{gap: '3rem', flexDirection: 'column', background: '#29335ccc'}}>
+                            <LogoHolder>
+                                <Logo />
+                            </LogoHolder>
+                            <IsLoadingText>{t2("justASec")}</IsLoadingText>
+                        </OverlayHolder>
+                    }
+                    <CreateBattleMainHolder>
+                        <CreateBattleHolder>
+                            <SwitchTypeButtonHolder>
+                                <SwitchTypeButton isSelected={selectedPostType} onClick={() => { setSelectedPostType(true) }}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="48" width="48">
+                                        <PostTypePath isSelected={selectedPostType} d="M9 42q-1.2 0-2.1-.9Q6 40.2 6 39V9q0-1.2.9-2.1Q7.8 6 9 6h30q1.2 0 2.1.9.9.9.9 2.1v30q0 1.2-.9 2.1-.9.9-2.1.9Zm0-3h30V9H9v30Zm2.8-4.85h24.45l-7.35-9.8-6.6 8.55-4.65-6.35ZM9 39V9v30Z" />
+                                    </svg>
+                                </SwitchTypeButton>
+                                <SwitchTypeButton isSelected={!selectedPostType} onClick={() => { setSelectedPostType(false) }}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="48" width="48">
+                                        <PostTypePath isSelected={!selectedPostType} d="M15.95 35.5h16.1v-3h-16.1Zm0-8.5h16.1v-3h-16.1ZM11 44q-1.2 0-2.1-.9Q8 42.2 8 41V7q0-1.2.9-2.1Q9.8 4 11 4h18.05L40 14.95V41q0 1.2-.9 2.1-.9.9-2.1.9Zm16.55-27.7V7H11v34h26V16.3ZM11 7v9.3V7v34V7Z" />
+                                    </svg>
+                                </SwitchTypeButton>
+                            </SwitchTypeButtonHolder>
+                            <TitleContentHolder>
 
-                            {
-                                selectedPostType ?
-                                    <UploadImageHolder>
-                                        <form method="post">
-                                            <CustomUpload onChange={(e: any) => {
-                                                if (!e.target.files || e.target.files.length === 0) {
-                                                    setSelectedFile(undefined)
+                                {
+                                    selectedPostType ?
+                                        <UploadImageHolder>
+                                            <form method="post">
+                                                <CustomUpload onChange={(e: any) => {
+                                                    if (!e.target.files || e.target.files.length === 0) {
+                                                        setSelectedFile(undefined)
+                                                        return;
+                                                    }
+
+                                                    setSelectedFile(e.target.files[0])
+                                                }}>
+                                                    {<div style={{ display: 'flex', flexDirection: 'column', gap: '3rem', alignItems: 'center' }}>
+                                                        <input type="file" name="file" style={{ display: 'none' }} ref={fileUpload} accept={".png, .jpeg, .jpg, .webp, .heic, .heif, .mp4, .mkv, .mov"} />
+                                                        <svg style={{ scale: '200%' }} xmlns="http://www.w3.org/2000/svg" height="48" width="48">
+                                                            <PostTypePath isSelected={true} d="M9 42q-1.25 0-2.125-.875T6 39V9q0-1.25.875-2.125T9 6h20.45v3H9v30h30V18.6h3V39q0 1.25-.875 2.125T39 42Zm26-24.9v-4.05h-4.05v-3H35V6h3v4.05h4.05v3H38v4.05ZM12 33.9h24l-7.2-9.6-6.35 8.35-4.7-6.2ZM9 9v30V9Z" />
+                                                        </svg>
+                                                        <UploadFileButtonText>{!selectedFile ? t2("uploadFile") : ""}</UploadFileButtonText>
+                                                    </div>}
+                                                    {(selectedFile && preview) &&
+                                                        (selectedFile.name.match(new RegExp("^(.*\.(mkv|mov|mp4))$", "i")) ?
+                                                            <VideoWrapper>
+                                                                <StyledVideo controls={true}>
+                                                                    <source src={preview} />
+                                                                </StyledVideo>
+                                                            </VideoWrapper>
+                                                            :
+                                                            <Image src={preview} objectFit={'contain'} layout={'fill'} />)}
+                                                </CustomUpload>
+                                            </form>
+                                        </UploadImageHolder>
+                                        :
+                                        <UploadTextHolder><Tiptap getText={(html: string, text: string) => {
+                                            setHtml(html);
+                                            setText(text);
+                                        }} /></UploadTextHolder>
+                                }
+                            </TitleContentHolder>
+                            <Button buttonType={"Solid"}
+                                handleClick={() => {
+                                    setIsLoading(true);
+                                    switch (selectedPostType) {
+                                        case true: {
+                                            if (selectedFile == undefined) return
+                                            const formData = new FormData();
+                                            formData.append('file', selectedFile, selectedFile.name)
+
+                                            switch (postType) {
+                                                case "post": {
+                                                    uploadFileFetcher('/account/post/media', formData).then(() => {
+                                                        setMessageScr({
+                                                            "success": true,
+                                                            "messsage": t2("successMessageP")
+                                                        })
+                                                        setStage(3);
+                                                    }).catch((e: any) => {
+                                                        switch (e.response.status) {
+                                                            case 415: {
+                                                                setMessageScr({
+                                                                    "success": false,
+                                                                    "messsage": t2("unsupportedMediaType")
+                                                                })
+                                                                setStage(3);
+                                                                break;
+                                                            }
+                                                            default: {
+                                                                setMessageScr({
+                                                                    "success": false,
+                                                                    "messsage": t2("failMessage")
+                                                                })
+                                                                setStage(3);
+                                                                break;
+                                                            }
+                                                        }
+                                                    });
                                                     return;
                                                 }
-
-                                                setSelectedFile(e.target.files[0])
-                                            }}>
-                                                {<div style={{ display: 'flex', flexDirection: 'column', gap: '3rem', alignItems: 'center' }}>
-                                                    <input type="file" name="file" style={{ display: 'none' }} ref={fileUpload} accept={".png, .jpeg, .jpg, .webp, .heic, .heif, .mp4, .mkv, .mov"} />
-                                                    <svg style={{ scale: '200%' }} xmlns="http://www.w3.org/2000/svg" height="48" width="48">
-                                                        <PostTypePath isSelected={true} d="M9 42q-1.25 0-2.125-.875T6 39V9q0-1.25.875-2.125T9 6h20.45v3H9v30h30V18.6h3V39q0 1.25-.875 2.125T39 42Zm26-24.9v-4.05h-4.05v-3H35V6h3v4.05h4.05v3H38v4.05ZM12 33.9h24l-7.2-9.6-6.35 8.35-4.7-6.2ZM9 9v30V9Z" />
-                                                    </svg>
-                                                    <UploadFileButtonText>{!selectedFile ? t2("uploadFile") : ""}</UploadFileButtonText>
-                                                </div>}
-                                                {(selectedFile && preview) &&
-                                                    (selectedFile.name.match(new RegExp("^(.*\.(mkv|mov|mp4))$", "i")) ?
-                                                        <VideoWrapper>
-                                                            <StyledVideo controls={true}>
-                                                                <source src={preview} />
-                                                            </StyledVideo>
-                                                        </VideoWrapper>
-                                                        :
-                                                        <Image src={preview} objectFit={'contain'} layout={'fill'} />)}
-                                            </CustomUpload>
-                                        </form>
-                                    </UploadImageHolder>
-                                    :
-                                    <UploadTextHolder><Tiptap getText={(html: string, text: string) => {
-                                        setHtml(html);
-                                        setText(text);
-                                    }} /></UploadTextHolder>
-                            }
-                        </TitleContentHolder>
-                        <Button buttonType={"Solid"}
-                            handleClick={() => {
-                                switch (selectedPostType) {
-                                    case true: {
-                                        if (selectedFile == undefined) return
-                                        const formData = new FormData();
-                                        formData.append('file', selectedFile, selectedFile.name)
-
-                                        switch (postType) {
-                                            case "post": {
-                                                uploadFileFetcher('/account/post/media', formData).then(() => {
-                                                    setMessageScr({
-                                                        "success": true,
-                                                        "messsage": t2("successMessageP")
-                                                    })
-                                                    setStage(3);
-                                                }).catch((e: any) => {
-                                                    switch (e.response.status) {
-                                                        case 415: {
-                                                            setMessageScr({
-                                                                "success": false,
-                                                                "messsage": t2("unsupportedMediaType")
-                                                            })
-                                                            setStage(3);
-                                                            break;
+                                                case "battle": {
+                                                    uploadFileFetcher('/account/battle/media', formData).then((res: any) => {
+                                                        setMessageScr({
+                                                            "success": true,
+                                                            "messsage": t2("successMessageB")
+                                                        })
+                                                        setStage(3);
+                                                    }).catch((e) => {
+                                                        switch (e.response.status) {
+                                                            case 406: {
+                                                                setNsfwError(e.response.data);
+                                                                setStage(4);
+                                                                break;
+                                                            }
+                                                            case 409: {
+                                                                setSimilarityError(e.response.data);
+                                                                setStage(5);
+                                                                break;
+                                                            }
+                                                            case 415: {
+                                                                setMessageScr({
+                                                                    "success": false,
+                                                                    "messsage": t2("unsupportedMediaType")
+                                                                })
+                                                                setStage(3);
+                                                                break;
+                                                            }
+                                                            default: {
+                                                                setMessageScr({
+                                                                    "success": false,
+                                                                    "messsage": t2("failMessage")
+                                                                })
+                                                                setStage(3);
+                                                                break;
+                                                            }
                                                         }
-                                                        default: {
-                                                            setMessageScr({
-                                                                "success": false,
-                                                                "messsage": t2("failMessage")
-                                                            })
-                                                            setStage(3);
-                                                            break;
-                                                        }
-                                                    }
-                                                });
-                                                return;
-                                            }
-                                            case "battle": {
-                                                uploadFileFetcher('/account/battle/media', formData).then((res: any) => {
-                                                    setMessageScr({
-                                                        "success": true,
-                                                        "messsage": t2("successMessageB")
-                                                    })
-                                                    setStage(3);
-                                                }).catch((e) => {
-                                                    switch (e.response.status) {
-                                                        case 406: {
-                                                            setNsfwError(e.response.data);
-                                                            setStage(4);
-                                                            break;
-                                                        }
-                                                        case 409: {
-                                                            setSimilarityError(e.response.data);
-                                                            setStage(5);
-                                                            break;
-                                                        }
-                                                        case 415: {
-                                                            setMessageScr({
-                                                                "success": false,
-                                                                "messsage": t2("unsupportedMediaType")
-                                                            })
-                                                            setStage(3);
-                                                            break;
-                                                        }
-                                                        default: {
-                                                            setMessageScr({
-                                                                "success": false,
-                                                                "messsage": t2("failMessage")
-                                                            })
-                                                            setStage(3);
-                                                            break;
-                                                        }
-                                                    }
-                                                });
-                                                return;
-                                            }
-                                            case "geopost": {
-                                                return;
-                                            }
-                                        }
-                                    }
-                                    case false: {
-                                        switch (postType) {
-                                            case "post": {
-                                                uploadTextFetcher('/account/post/text', html).then(() => {
-                                                    setMessageScr({
-                                                        "success": true,
-                                                        "messsage": t2("successMessageP")
                                                     });
-                                                    setStage(3);
-                                                }).catch(() => {
-                                                    setMessageScr({
-                                                        "success": false,
-                                                        "messsage": t2("failMessage")
-                                                    })
-                                                    setStage(3);
-                                                });
-                                                return;
-                                            }
-                                            case "battle": {
-                                                uploadTextFetcher('/account/battle/text', html).then(() => {
-                                                    setMessageScr({
-                                                        "success": true,
-                                                        "messsage": t2("successMessageB")
-                                                    })
-                                                    setStage(3);
-                                                }).catch(() => {
-                                                    setMessageScr({
-                                                        "success": false,
-                                                        "messsage": t2("failMessage")
-                                                    })
-                                                    setStage(3);
-                                                });
-                                                return;
-                                            }
-                                            case "geopost": {
-                                                return;
+                                                    return;
+                                                }
+                                                case "geopost": {
+                                                    return;
+                                                }
                                             }
                                         }
-                                    }
+                                        case false: {
+                                            switch (postType) {
+                                                case "post": {
+                                                    uploadTextFetcher('/account/post/text', html).then(() => {
+                                                        setMessageScr({
+                                                            "success": true,
+                                                            "messsage": t2("successMessageP")
+                                                        });
+                                                        setStage(3);
+                                                    }).catch(() => {
+                                                        setMessageScr({
+                                                            "success": false,
+                                                            "messsage": t2("failMessage")
+                                                        })
+                                                        setStage(3);
+                                                    });
+                                                    return;
+                                                }
+                                                case "battle": {
+                                                    uploadTextFetcher('/account/battle/text', html).then(() => {
+                                                        setMessageScr({
+                                                            "success": true,
+                                                            "messsage": t2("successMessageB")
+                                                        })
+                                                        setStage(3);
+                                                    }).catch(() => {
+                                                        setMessageScr({
+                                                            "success": false,
+                                                            "messsage": t2("failMessage")
+                                                        })
+                                                        setStage(3);
+                                                    });
+                                                    return;
+                                                }
+                                                case "geopost": {
+                                                    return;
+                                                }
+                                            }
+                                        }
 
-                                }
-                            }} text={t1("continue")} style={{ width: '38rem', maxWidth: '95vw' }}
-                            disabled={(postType != "battle" && postType != "post") || (selectedPostType ? selectedFile == null : text.length < 50)}
-                            title={selectedPostType ? "" : t2("textPostReq")}></Button>
-                    </CreateBattleHolder>
-                </CreateBattleMainHolder>
+                                    }
+                                }} text={t1("continue")} style={{ width: '38rem', maxWidth: '95vw' }}
+                                disabled={(postType != "battle" && postType != "post") || (selectedPostType ? selectedFile == null : text.length < 50) || isLoading}
+                                title={selectedPostType ? "" : t2("textPostReq")}></Button>
+                        </CreateBattleHolder>
+                    </CreateBattleMainHolder>
+                </>
             )
         }
         case 3: {
@@ -563,8 +609,8 @@ function Content() {
                         </ErrorImageHolder>
                     }
                     <Button buttonType={"Solid"} text={t2("appeal")} handleClick={() => {
-                       if(nsfwError!=undefined) appealFetcher('/appeal', nsfwError?.appealJwt).then(() => {alert(t1("success"));router.reload()}).catch((e: any) => {console.log(e)})
-                    }} style={{maxWidth: '90%', width: '30rem'}}></Button>
+                        if (nsfwError != undefined) appealFetcher('/appeal', nsfwError?.appealJwt).then(() => { alert(t1("success")); router.reload() }).catch((e: any) => { console.log(e) })
+                    }} style={{ maxWidth: '90%', width: '30rem' }}></Button>
                 </ErrorHolder>
             )
         }
@@ -584,8 +630,8 @@ function Content() {
                         </SimilarityHolder>
                     }
                     <Button buttonType={"Solid"} text={t2("appeal")} handleClick={() => {
-                        if(similarityError!=undefined) appealFetcher('/appeal', similarityError?.appealJwt).then(() => {alert(t1("success"));router.reload()}).catch((e: any) => {console.log(e)})
-                    }} style={{maxWidth: '90%', width: '30rem'}}></Button>
+                        if (similarityError != undefined) appealFetcher('/appeal', similarityError?.appealJwt).then(() => { alert(t1("success")); router.reload() }).catch((e: any) => { console.log(e) })
+                    }} style={{ maxWidth: '90%', width: '30rem' }}></Button>
                 </ErrorHolder>
             )
         }
