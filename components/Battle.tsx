@@ -347,7 +347,8 @@ const BurgerMenuHolder = styled.div`
     z-index: 2;
 `;
 const StyledEditorContent = styled(EditorContent)`
-    margin: 1rem;
+    overflow-y: auto;
+    margin-left: 12px;
 `;
 
 enum Reasons {
