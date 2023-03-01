@@ -12,7 +12,7 @@ import Tiptap from "../components/Tiptap";
 import Image from "next/image";
 import instance from "../axios_instance";
 import MessageScreen from "../components/MessageScreen";
-import { EMediaPost, ENsfwError, EPost, ESimilarPosts } from "../components/Intefaces";
+import { EMediaPost, ENsfwError, EPost, ESimilarPosts } from "../components/Interfaces";
 import Post from "../components/Post";
 import useUser from "../components/useUser";
 import Logo from "../components/Logo";

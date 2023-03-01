@@ -7,7 +7,7 @@ import styled from "styled-components";
 import instance from "../../axios_instance";
 import Button from "../../components/Button";
 import IconButton from "../../components/IconButton";
-import { ENonSelfUser, EPost } from "../../components/Intefaces";
+import { ENonSelfUser, EPost } from "../../components/Interfaces";
 import NavBar from "../../components/NavBar";
 import Post from "../../components/Post";
 import ProfilePic from "../../components/ProfilePic";

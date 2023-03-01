@@ -5,7 +5,7 @@ import styled from "styled-components";
 import instance from "../axios_instance";
 import Button from "./Button";
 import CommentInput from "./CommentInput";
-import { EComment } from "./Intefaces";
+import { EComment } from "./Interfaces";
 import MiniPostHeader from "./MiniPostHeader";
 import useUser from "./useUser";
 

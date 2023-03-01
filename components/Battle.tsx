@@ -6,7 +6,7 @@ import React from "react";
 import MiniProfilePic from "./MiniProfilePic";
 import router from "next/router";
 import instance from "../axios_instance";
-import { EBattlePost, EComment, ENonSelfUser, EPost } from "./Intefaces";
+import { EBattlePost, EComment, ENonSelfUser, EPost } from "./Interfaces";
 import Comment from "./Comment";
 import CommentInput from "./CommentInput";
 import useUser from "./useUser";
@@ -330,7 +330,7 @@ const BurgerMenuButton = styled.button`
     right: 5px;
     cursor: pointer;
 `;
-const ButgerMenuHolder = styled.div`
+const BurgerMenuHolder = styled.div`
     right: 0px;
     bottom: 20px;
     position: absolute;
@@ -346,6 +346,10 @@ const ButgerMenuHolder = styled.div`
     border-radius: 10px;
     z-index: 2;
 `;
+const StyledEditorContent = styled(EditorContent)`
+    margin: 1rem;
+`;
+
 enum Reasons {
     NSFW_CONTENT = "NSFW_CONTENT",
     ADVERTISING = "ADVERTISING",
@@ -409,11 +413,13 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
         if (goldPost.type == "TEXT" && goldPost.text != null && editorGold != null) {
             editorGold.commands.setContent(sanitizeHtml(goldPost?.text));
         }
+        if(editorGold!=null) editorGold?.setEditable(false)
     }, [editorGold])
     useEffect(() => {
         if (redPost.type == "TEXT" && redPost.text != null && editorRed != null) {
             editorRed.commands.setContent(sanitizeHtml(redPost?.text));
         }
+        if(editorRed!=null) editorRed?.setEditable(false)
     }, [editorRed])
 
     return (
@@ -519,8 +525,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                                 </StyledVideo>
                             </VideoHolder>
                         :
-                        // <div dangerouslySetInnerHTML={{__html: textHTML}} />
-                        <EditorContent editor={editorGold} readOnly={true} />
+                        <StyledEditorContent editor={editorGold} readOnly={true} />
                 }
                 <ButtonHolder isLeft={true}>
                     <ExpandedHolder>
@@ -555,8 +560,7 @@ function Battle({ goldPost, redPost, jwt, id, selfBattle, selfVotes, otherVotes,
                                 </StyledVideo>
                             </VideoHolder>
                         :
-                        // <div dangerouslySetInnerHTML={{__html: textHTML}} />
-                        <EditorContent editor={editorRed} readOnly={true} />
+                        <StyledEditorContent editor={editorRed} readOnly={true} />
                 }
                 <ButtonHolder isLeft={false}>
                     <ExpandedHolder>
@@ -596,7 +600,7 @@ function ReportMenu({ reportedId, id, close, poster, userData, isValidating, has
     const fetcherDelete = (url: string, id: string) => instance.delete(url, { params: { id: id } });
 
     return (
-        <ButgerMenuHolder>
+        <BurgerMenuHolder>
             {poster != undefined && poster != null && <MiniProfile src={poster.avatarId} name={poster.username} handleClick={() => {
                 router.push({
                     pathname: '/user/[username]',
@@ -723,7 +727,7 @@ function ReportMenu({ reportedId, id, close, poster, userData, isValidating, has
             <ExpandedButton onClick={() => {
                 close();
             }}>{t3("close")}</ExpandedButton>
-        </ButgerMenuHolder>
+        </BurgerMenuHolder>
     )
 }
 

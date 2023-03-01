@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import instance from "../../../axios_instance";
 import Battle from "../../../components/Battle";
-import { ESelfBattle, EVotedBattle } from "../../../components/Intefaces";
+import { ESelfBattle, EVotedBattle } from "../../../components/Interfaces";
 import MessageScreen from "../../../components/MessageScreen";
 import NavBar from "../../../components/NavBar";
 import useUser from "../../../components/useUser";

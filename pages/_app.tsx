@@ -6,10 +6,8 @@ import { ThemeProvider } from 'styled-components';
 import theme from '../components/Theme';
 import { appWithTranslation, useTranslation } from 'next-i18next';
 import { useEffect } from 'react';
-import instance from '../axios_instance';
 import useUser from '../components/useUser';
 import { useRouter } from 'next/router';
-import { Head } from 'next/document';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -41,17 +39,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     document.title = "Anomot";
   }, [])
 
-  const [t4] = useTranslation("title");
-
   return <ThemeProvider theme={theme}>
-    <Head>
-        <title>{t4("title")}</title>
-        <meta
-          name='description'
-          content={t4("description")}
-          key='desc'
-        />
-      </Head>
     <Component {...pageProps} />
   </ThemeProvider>
 }

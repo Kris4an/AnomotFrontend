@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import instance from "../../axios_instance";
 import Battle from "../../components/Battle";
-import { EVotedBattle } from "../../components/Intefaces";
+import { EVotedBattle } from "../../components/Interfaces";
 import NavBar from "../../components/NavBar";
 
 const MianHolder = styled.div`

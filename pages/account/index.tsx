@@ -8,7 +8,7 @@ import styled, { keyframes } from "styled-components";
 import instance from "../../axios_instance";
 import Battle from "../../components/Battle";
 import IconButton from "../../components/IconButton";
-import { EBattlePost, ENotification, EPost, ESelfBattle } from "../../components/Intefaces";
+import { EBattlePost, ENotification, EPost, ESelfBattle } from "../../components/Interfaces";
 import MiniProfile from "../../components/MiniProfile";
 import NavBar from "../../components/NavBar";
 import Post from "../../components/Post";

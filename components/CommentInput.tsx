@@ -3,7 +3,7 @@ import React from "react";
 import { useState } from "react";
 import styled from "styled-components";
 import instance from "../axios_instance";
-import { EComment } from "./Intefaces";
+import { EComment } from "./Interfaces";
 
 const MainHolder = styled.div`
     display: flex;

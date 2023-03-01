@@ -4,7 +4,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import instance from "../axios_instance";
-import { EPost } from "../components/Intefaces";
+import { EPost } from "../components/Interfaces";
 import NavBar from "../components/NavBar";
 import Post from "../components/Post";
 

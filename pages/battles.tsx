@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import Logo from "../components/Logo";
-import { EBattlePost } from "../components/Intefaces";
+import { EBattlePost } from "../components/Interfaces";
 
 const MainHolder = styled.div`
    display: flex;

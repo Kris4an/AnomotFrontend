@@ -15,7 +15,7 @@ import js from 'highlight.js/lib/languages/javascript'
 import ts from 'highlight.js/lib/languages/typescript'
 import html from 'highlight.js/lib/languages/xml'
 import Underline from "@tiptap/extension-underline";
-import { EPost, ENonSelfUser } from "./Intefaces";
+import { EPost, ENonSelfUser } from "./Interfaces";
 import router from "next/router";
 import useUser from "./useUser";
 import Button from "./Button";
@@ -108,7 +108,7 @@ const BurgerMenuButton = styled.button`
     right: 5px;
     cursor: pointer;
 `;
-const ButgerMenuHolder = styled.div`
+const BurgerMenuHolder = styled.div`
     right: 0px;
     top: 20px;
     position: absolute;
@@ -180,7 +180,7 @@ function Content({ post, disableComments, disableLiking }: Props) {
             </BurgerMenuButton>
             {
                 showBurgerMenu &&
-                <ButgerMenuHolder>
+                <BurgerMenuHolder>
                     {
                         selfPost ?
                             <Button buttonType={"Teriatary"} text={t1("delete")} handleClick={function (): void {
@@ -269,7 +269,7 @@ function Content({ post, disableComments, disableLiking }: Props) {
                     <Button buttonType={"Teriatary"} text={t1("close")} handleClick={function (): void {
                         setShowBurgerMenu(false);
                     }}></Button>
-                </ButgerMenuHolder>
+                </BurgerMenuHolder>
             }
             {post.poster != null && <MiniPostHeader name={post?.poster?.username + ""} date={post.creationDate} src={post.poster?.avatarId != undefined ? post.poster?.avatarId : null} id={post.poster.id}></MiniPostHeader>}
             {

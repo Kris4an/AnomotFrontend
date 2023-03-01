@@ -5,7 +5,7 @@ import router from "next/router";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import instance from "../axios_instance";
-import { EAdminAppeal, EPost, EReportTicket } from "../components/Intefaces";
+import { EAdminAppeal, EPost, EReportTicket } from "../components/Interfaces";
 import MiniPostHeader from "../components/MiniPostHeader";
 import NavBar from "../components/NavBar";
 import useUser from "../components/useUser";

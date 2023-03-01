@@ -2,7 +2,7 @@ import { GetStaticPaths, NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { EComment, EPost } from "../../components/Intefaces";
+import { EComment, EPost } from "../../components/Interfaces";
 import Post from "../../components/Post";
 import Comment from "../../components/Comment";
 import CommentInput from "../../components/CommentInput";
